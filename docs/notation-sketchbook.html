@@ -1,0 +1,610 @@
+<title>Gateau Notation Sketchbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column for prose, figures break out to full width; datasheet-like, ink on cool paper. */
+:root {
+  --bg: #F3F5F7;
+  --surface: #FFFFFF;
+  --fg: #18212B;
+  --muted: #5E6B78;
+  --rule: #CBD3DB;
+  --track: #B3BDC8;
+  --box: #FFFFFF;
+  --soft: #E4E9EE;
+  --accent: #2F5BD3;
+  --accent-soft: #E2E9FB;
+  --vid: #B5560B;
+  --vid-soft: #F6E3D2;
+  --sdp: #7B3FB5;
+  --ok: #2D7A4B;
+  --ok-soft: #DDF0E4;
+  --bad: #C0312B;
+  --bad-soft: #F8DEDC;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1318; --surface: #151C23; --fg: #E4E9EF; --muted: #93A1AF; --rule: #2B3540; --track: #3E4A57;
+    --box: #18212A; --soft: #24303B; --accent: #7C9DFF; --accent-soft: #1D2A4A; --vid: #F0A25A; --vid-soft: #3A2817;
+    --sdp: #C49AF5; --ok: #62C98C; --ok-soft: #173326; --bad: #FF7A72; --bad-soft: #3D1D1B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1318; --surface: #151C23; --fg: #E4E9EF; --muted: #93A1AF; --rule: #2B3540; --track: #3E4A57;
+  --box: #18212A; --soft: #24303B; --accent: #7C9DFF; --accent-soft: #1D2A4A; --vid: #F0A25A; --vid-soft: #3A2817;
+  --sdp: #C49AF5; --ok: #62C98C; --ok-soft: #173326; --bad: #FF7A72; --bad-soft: #3D1D1B; color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+.page { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 48px 96px; display: flex; flex-direction: column; gap: 56px; }
+.prose { max-width: 68ch; display: flex; flex-direction: column; gap: 14px; }
+.prose p { margin: 0; }
+h1, h2, h3 { font-family: var(--display); font-stretch: 85%; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(34px, 5vw, 54px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 28px; font-weight: 700; }
+h3 { font-size: 19px; font-weight: 700; font-stretch: 90%; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 20px; line-height: 1.5; max-width: 62ch; margin: 0; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 20px; }
+header { display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid var(--rule); padding-bottom: 32px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+
+figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.sheet { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; overflow-x: auto; }
+.sheet svg { display: block; width: 100%; height: auto; min-width: 880px; }
+figcaption { font-size: 15px; color: var(--muted); max-width: 80ch; }
+figcaption b { color: var(--fg); font-weight: 600; }
+.fig-id { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.06em; margin-right: 8px; }
+
+/* SVG vocabulary, styled from page tokens */
+svg text { font-family: var(--mono); fill: var(--fg); }
+svg .t-name { font-size: 12.5px; }
+svg .t-w { font-size: 10.5px; fill: var(--muted); }
+svg .t-box { font-size: 12.5px; font-weight: 600; text-anchor: middle; }
+svg .t-sub { font-size: 10px; fill: var(--muted); text-anchor: middle; }
+svg .t-note { font-size: 10.5px; fill: var(--muted); }
+svg .t-acc { fill: var(--accent); }
+svg .t-vid { fill: var(--vid); }
+svg .t-sdp { fill: var(--sdp); }
+svg .t-ok { fill: var(--ok); }
+svg .t-bad { fill: var(--bad); }
+svg .t-mid { text-anchor: middle; }
+svg .t-end { text-anchor: end; }
+svg .track { stroke: var(--track); stroke-width: 1; stroke-dasharray: 2 4; fill: none; }
+svg .lane { stroke: var(--fg); stroke-width: 2; fill: none; }
+svg .lane-vid { stroke: var(--vid); stroke-width: 2; fill: none; }
+svg .lane-sdp { stroke: var(--sdp); stroke-width: 2; fill: none; }
+svg .wire { stroke: var(--fg); stroke-width: 1.5; fill: none; }
+svg .wire-vid { stroke: var(--vid); stroke-width: 1.5; fill: none; }
+svg .cfg { stroke: var(--fg); stroke-width: 1.6; stroke-dasharray: 1.5 3.5; fill: none; }
+svg .msg { stroke: var(--fg); stroke-width: 1.1; fill: none; }
+svg .conn { stroke: var(--fg); stroke-width: 1.2; fill: none; }
+svg .box { fill: var(--box); stroke: var(--fg); stroke-width: 1.2; }
+svg .box-opt { fill: var(--box); stroke: var(--fg); stroke-width: 1.2; stroke-dasharray: 4 3; }
+svg .box-vid { fill: var(--box); stroke: var(--vid); stroke-width: 1.4; }
+svg .fill-vid-soft { fill: var(--vid-soft); }
+svg .fill-box { fill: var(--box); }
+svg .outline { fill: none; stroke: var(--fg); stroke-width: 1.2; }
+svg .dot { fill: var(--fg); }
+svg .odot { fill: var(--box); stroke: var(--fg); stroke-width: 1.4; }
+svg .band { fill: var(--accent-soft); }
+svg .slice { stroke: var(--accent); stroke-width: 1.3; stroke-dasharray: 5 4; }
+svg .acc-line { stroke: var(--accent); stroke-width: 1.4; fill: none; stroke-dasharray: 3 3; }
+svg .badge-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 1; }
+svg .cell { fill: var(--box); stroke: var(--rule); stroke-width: 1; }
+svg .cell-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1; }
+svg .cell-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 1; }
+svg .cell-bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 1.2; }
+svg .grid { stroke: var(--rule); stroke-width: 1; }
+svg .bar { fill: var(--fg); }
+svg .bar-vid { fill: var(--vid); }
+svg .f-dat { fill: var(--soft); stroke: var(--track); stroke-width: 1; }
+svg .f-k { fill: var(--track); }
+svg .f-lock { fill: var(--fg); }
+svg .f-tag { fill: var(--accent); }
+svg .f-dup { fill: url(#d-hatch); }
+svg .f-vid { fill: var(--vid-soft); stroke: var(--vid); stroke-width: 1; }
+svg .hatch-bg { fill: var(--accent-soft); }
+svg .hatch-line { stroke: var(--accent); stroke-width: 1.4; }
+svg .arrow-ink { fill: var(--fg); }
+svg .arrow-vid { fill: var(--vid); }
+svg .arrow-sdp { fill: var(--sdp); }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; min-width: 12ch; }
+td .src { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+
+.glyphs { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.glyph { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.glyph svg { width: 100%; height: auto; max-width: 200px; display: block; aspect-ratio: 160 / 56; }
+.glyph h3 { font-size: 15.5px; }
+.glyph p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.45; }
+.glyph .from { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.04em; }
+
+.verdict { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.verdict > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.verdict .role { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.role.primary { color: var(--ok); }
+.role.overlay { color: var(--accent); }
+.role.zoom { color: var(--vid); }
+.verdict p { margin: 0; font-size: 15px; }
+ol.questions { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 12px; max-width: 72ch; }
+ol.questions li::marker { font-family: var(--mono); color: var(--accent); }
+.note { font-size: 14px; color: var(--muted); max-width: 80ch; border-top: 1px solid var(--rule); padding-top: 16px; }
+@media (max-width: 600px) { body { font-size: 16px; } .page { padding-block: 32px 64px; gap: 44px; } }
+</style>
+
+<div class="page">
+
+<header>
+  <div class="eyebrow">gateau · notation study 01</div>
+  <h1>Gateau Notation Sketchbook</h1>
+  <p class="lede">One real data path, drawn five ways by hand, to decide what the generated diagrams should look like before writing any layout code.</p>
+  <div class="meta">
+    <span>subject: Parretto DisplayPort RX link layer (<span class="mono">prt_dprx_lnk.sv</span>)</span>
+    <span>defaults: P_LANES = 4, P_SPL = 2, P_PPC = 2</span>
+    <span>status: mockups, not generated</span>
+  </div>
+</header>
+
+<section>
+  <div class="prose">
+    <h2>The subject</h2>
+    <p>Every stage of the RX link layer takes and returns the same record, <code>prt_dp_rx_lnk_if</code>: symbol data <code>dat[ℓ][s]</code> (8 bits each), the K-flag <code>k[ℓ][s]</code>, six one-bit tag fields (<code>sol eol vid sdp msa vbid</code>) per lane and symbol, and <code>lock</code>. Here ℓ is the lane axis (P_LANES) and s is symbols per lane (P_SPL). Stages add tags, consume them, or rewrite the data. The RTL spells out each of these by hand: zeroing killed fields, copying unchanged ones, and re-attaching the parser's tags after the descrambler.</p>
+    <p>That makes it a good test, because the structure is real but invisible. Every drawing below shows the same design. All of them were drawn by hand from reading the RTL. Stage latencies are drawn only where the source states them (parser and scrambler, both one cycle); the others are left out rather than guessed.</p>
+  </div>
+
+  <figure>
+    <div class="sheet">
+      <svg viewBox="0 0 1000 175" role="img" aria-label="Conventional block diagram of the RX link layer: every arrow carries the same interface name, so the diagram cannot say which fields each stage reads, writes or drops.">
+        <defs>
+          <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker>
+        </defs>
+        <polyline class="wire" points="90,82 148,82" marker-end="url(#a-ink)"/>
+        <text class="t-note t-mid" x="120" y="74">lnk_if</text>
+        <polyline class="wire" points="230,82 262,82 262,42 298,42" marker-end="url(#a-ink)"/>
+        <polyline class="wire" points="262,82 262,122 298,122" marker-end="url(#a-ink)"/>
+        <polyline class="wire" points="380,42 440,42 440,76"/>
+        <polyline class="wire" points="380,122 440,122 440,88"/>
+        <circle class="dot" cx="440" cy="82" r="4"/>
+        <text class="t-note" x="452" y="70">join</text>
+        <polyline class="wire" points="444,82 488,82" marker-end="url(#a-ink)"/>
+        <polyline class="wire" points="570,82 628,82" marker-end="url(#a-ink)"/>
+        <text class="t-note t-mid" x="600" y="74">lnk_if</text>
+        <polyline class="wire" points="710,82 768,82" marker-end="url(#a-ink)"/>
+        <text class="t-note t-mid" x="740" y="74">lnk_if</text>
+        <polyline class="wire" points="850,82 975,82" marker-end="url(#a-ink)"/>
+        <text class="t-note t-mid" x="910" y="74">video</text>
+        <polyline class="wire" points="670,104 670,150" marker-end="url(#a-ink)"/>
+        <text class="t-note" x="680" y="150">SDP out</text>
+        <rect class="box" x="20" y="60" width="70" height="44" rx="3"/><text class="t-box" x="55" y="86">PHY</text>
+        <rect class="box" x="150" y="60" width="80" height="44" rx="3"/><text class="t-box" x="190" y="86">TRN</text>
+        <rect class="box" x="300" y="20" width="80" height="44" rx="3"/><text class="t-box" x="340" y="46">PARS</text>
+        <rect class="box" x="300" y="100" width="80" height="44" rx="3"/><text class="t-box" x="340" y="126">SCRM ×ℓ</text>
+        <rect class="box" x="490" y="60" width="80" height="44" rx="3"/><text class="t-box" x="530" y="86">MSA</text>
+        <rect class="box-opt" x="630" y="60" width="80" height="44" rx="3"/><text class="t-box" x="670" y="86">SDP</text>
+        <rect class="box" x="770" y="60" width="80" height="44" rx="3"/><text class="t-box" x="810" y="86">VID</text>
+      </svg>
+    </div>
+    <figcaption><span class="fig-id">FIG A</span><b>The baseline.</b> This is what a block diagram of this design usually looks like. Every arrow carries the same type, so the picture cannot say that PARS creates the tags, that MSA and SDP each consume one, or that the join is only correct because two branches happen to have equal latency. That gap is what the rest of this page tries to close.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <div class="eyebrow">candidate 1</div>
+    <h2>The bus, drawn as a quantum circuit</h2>
+    <p>Each field of the record gets a fixed row, as a qubit does in a circuit diagram or a belt in a Factorio main bus. A row is faint where nothing is on it and solid where a value is live. A box sits on the rows it <em>writes</em>; a dot connected to a box marks a row it <em>reads</em>, just like a control dot on a controlled gate. Rows that pass a box untouched are drawn straight through and need no code. The control plane gets the quantum convention for classical wires: a double line.</p>
+  </div>
+
+  <figure>
+    <div class="sheet">
+      <svg viewBox="0 0 1200 485" role="img" aria-label="Bus view of the RX link layer. Each record field is a fixed horizontal row. PARS reads lane 0 of k and dat and produces six tag rows. SCRM rewrites lock, k and dat in the same one-cycle band, so tags and data rejoin aligned. MSA and SDP each consume one tag row; VID consumes everything and hands off to the video clock domain through a FIFO.">
+        <defs>
+          <marker id="b-vid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker>
+          <marker id="b-sdp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-sdp"/></marker>
+        </defs>
+
+        <!-- row labels -->
+        <text class="t-name" x="16" y="44">msg</text><text class="t-w t-end" x="110" y="44">16b ring</text>
+        <text class="t-name" x="16" y="82">cfg</text><text class="t-w t-end" x="110" y="82">static</text>
+        <text class="t-name" x="16" y="129">lock</text><text class="t-w t-end" x="110" y="129">1</text>
+        <text class="t-name" x="16" y="164">k</text><text class="t-w t-end" x="110" y="164">ℓ·s</text>
+        <text class="t-name" x="16" y="199">dat</text><text class="t-w t-end" x="110" y="199">ℓ·s·8</text>
+        <text class="t-name" x="16" y="249">sol</text><text class="t-w t-end" x="110" y="249">ℓ·s</text>
+        <text class="t-name" x="16" y="277">eol</text><text class="t-w t-end" x="110" y="277">ℓ·s</text>
+        <text class="t-name" x="16" y="305">vid</text><text class="t-w t-end" x="110" y="305">ℓ·s</text>
+        <text class="t-name" x="16" y="333">sdp</text><text class="t-w t-end" x="110" y="333">ℓ·s</text>
+        <text class="t-name" x="16" y="361">msa</text><text class="t-w t-end" x="110" y="361">ℓ·s</text>
+        <text class="t-name" x="16" y="389">vbid</text><text class="t-w t-end" x="110" y="389">ℓ·s</text>
+
+        <!-- empty tracks -->
+        <line class="track" x1="116" y1="125" x2="1188" y2="125"/>
+        <line class="track" x1="116" y1="160" x2="1188" y2="160"/>
+        <line class="track" x1="116" y1="195" x2="1188" y2="195"/>
+        <line class="track" x1="116" y1="245" x2="1188" y2="245"/>
+        <line class="track" x1="116" y1="273" x2="1188" y2="273"/>
+        <line class="track" x1="116" y1="301" x2="1188" y2="301"/>
+        <line class="track" x1="116" y1="329" x2="1188" y2="329"/>
+        <line class="track" x1="116" y1="357" x2="1188" y2="357"/>
+        <line class="track" x1="116" y1="385" x2="1188" y2="385"/>
+
+        <!-- one-cycle band around the fork/join -->
+        <rect class="band" x="290" y="106" width="230" height="300"/>
+        <line class="slice" x1="290" y1="100" x2="290" y2="410"/>
+        <line class="slice" x1="520" y1="100" x2="520" y2="410"/>
+        <text class="t-w t-acc t-mid" x="290" y="96">@n</text>
+        <text class="t-w t-acc t-mid" x="520" y="96">@n+1</text>
+
+        <!-- live rows -->
+        <line class="msg" x1="116" y1="38" x2="1176" y2="38"/>
+        <line class="msg" x1="116" y1="42" x2="1176" y2="42"/>
+        <text class="t-note t-end" x="1188" y="28">to host</text>
+        <line class="cfg" x1="165" y1="78" x2="1020" y2="78"/>
+        <line class="lane" x1="270" y1="125" x2="800" y2="125"/>
+        <line class="lane" x1="116" y1="160" x2="800" y2="160"/>
+        <line class="lane" x1="116" y1="195" x2="800" y2="195"/>
+        <line class="lane" x1="390" y1="245" x2="800" y2="245"/>
+        <line class="lane" x1="390" y1="273" x2="800" y2="273"/>
+        <line class="lane" x1="390" y1="301" x2="800" y2="301"/>
+        <line class="lane" x1="390" y1="329" x2="700" y2="329"/>
+        <line class="lane" x1="390" y1="357" x2="580" y2="357"/>
+        <line class="lane" x1="390" y1="385" x2="800" y2="385"/>
+
+        <!-- read connectors -->
+        <line class="conn" x1="165" y1="52" x2="165" y2="78"/>
+        <line class="conn" x1="237" y1="40" x2="237" y2="113"/>
+        <line class="conn" x1="355" y1="160" x2="355" y2="233"/>
+        <line class="conn" x1="455" y1="78" x2="455" y2="113"/>
+        <line class="conn" x1="595" y1="40" x2="595" y2="345"/>
+        <line class="conn" x1="715" y1="40" x2="715" y2="317"/>
+        <line class="conn" x1="835" y1="40" x2="835" y2="113"/>
+        <line class="conn" x1="1020" y1="78" x2="1020" y2="259"/>
+
+        <!-- side outputs -->
+        <line class="lane" x1="715" y1="341" x2="715" y2="420"/>
+        <line class="conn" x1="708" y1="422" x2="722" y2="416"/>
+        <line class="conn" x1="708" y1="429" x2="722" y2="423"/>
+        <line class="lane-sdp" x1="715" y1="428" x2="715" y2="470" marker-end="url(#b-sdp)"/>
+        <text class="t-note t-sdp" x="726" y="466">SDP packets · sdp_clk</text>
+        <line class="lane" x1="870" y1="273" x2="910" y2="273"/>
+        <line class="lane-vid" x1="960" y1="273" x2="985" y2="273"/>
+        <line class="lane-vid" x1="1055" y1="273" x2="1182" y2="273" marker-end="url(#b-vid)"/>
+        <text class="t-note t-vid t-mid" x="1118" y="262">video · ppc·3·bpc</text>
+
+        <!-- boxes -->
+        <rect class="box" x="140" y="28" width="50" height="24" rx="3"/><text class="t-box" x="165" y="44">CTL</text>
+        <rect class="box" x="205" y="113" width="65" height="94" rx="3"/><text class="t-box" x="237.5" y="157">TRN</text><text class="t-sub" x="237.5" y="172">align</text>
+        <rect class="box" x="320" y="233" width="70" height="164" rx="3"/><text class="t-box" x="355" y="318">PARS</text>
+        <polygon class="box" points="340,206 363,206 371,214 363,222 340,222"/><text class="t-sub" x="354" y="217.5" style="fill:var(--fg)">ℓ=0</text>
+        <rect class="box" x="420" y="113" width="70" height="94" rx="3"/><text class="t-box" x="455" y="157">SCRM</text><text class="t-sub" x="455" y="172">×ℓ · ∧lock</text>
+        <rect class="box" x="560" y="345" width="70" height="24" rx="3"/><text class="t-box" x="595" y="361">MSA</text>
+        <rect class="box-opt" x="680" y="317" width="70" height="24" rx="3"/><text class="t-box" x="715" y="333">SDP</text>
+        <rect class="box" x="800" y="113" width="70" height="284" rx="3"/><text class="t-box" x="835" y="250">VID</text><text class="t-sub" x="835" y="266">lmap</text>
+        <rect class="fill-box" x="910" y="259" width="25" height="28"/><rect class="fill-vid-soft" x="935" y="259" width="25" height="28"/><rect class="outline" x="910" y="259" width="50" height="28" rx="2"/>
+        <text class="t-sub" x="935" y="277" style="fill:var(--fg)">FIFO</text>
+        <rect class="box-vid" x="985" y="259" width="70" height="28" rx="3"/><text class="t-box t-vid" x="1020" y="277">vmap</text>
+
+        <!-- dots -->
+        <circle class="odot" cx="165" cy="78" r="3.6"/>
+        <circle class="dot" cx="237" cy="40" r="3.6"/>
+        <circle class="dot" cx="355" cy="160" r="3.6"/><circle class="dot" cx="355" cy="195" r="3.6"/>
+        <circle class="dot" cx="455" cy="78" r="3.6"/>
+        <circle class="dot" cx="595" cy="40" r="3.6"/><circle class="dot" cx="595" cy="78" r="3.6"/><circle class="dot" cx="595" cy="160" r="3.6"/><circle class="dot" cx="595" cy="195" r="3.6"/>
+        <circle class="dot" cx="715" cy="40" r="3.6"/><circle class="dot" cx="715" cy="78" r="3.6"/><circle class="dot" cx="715" cy="160" r="3.6"/><circle class="dot" cx="715" cy="195" r="3.6"/>
+        <circle class="dot" cx="835" cy="40" r="3.6"/><circle class="dot" cx="835" cy="78" r="3.6"/>
+        <circle class="dot" cx="1020" cy="78" r="3.6"/>
+
+        <!-- contract badge -->
+        <rect class="badge-ok" x="420" y="418" width="200" height="22" rx="11"/>
+        <text class="t-note t-ok t-mid" x="520" y="433">join aligned: tags +1, dat +1</text>
+      </svg>
+    </div>
+    <figcaption><span class="fig-id">FIG B</span><b>The bus view.</b> Read left to right. PARS reads only lane 0 of <code>k</code> and <code>dat</code> (the pentagon is NCD's index glyph) and produces six tag rows. SCRM rewrites <code>lock</code>, <code>k</code> and <code>dat</code> in the same one-cycle band, so both branches cross exactly one register edge and rejoin aligned. MSA and SDP each consume one tag (the row stops inside the box) and publish what they decode to the message ring or to their own clock domain. VID consumes the whole bus. The colour change at the FIFO is the hand-off from <code>lnk_clk</code> to <code>vid_clk</code>. SDP is dashed because it only exists when <code>P_SDP</code> is set. In the RTL, the tag rows passing straight over SCRM, MSA and SDP correspond to about 60 lines of hand-written zeroing and copying.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>What this view shows that FIG A could not</h3>
+    <p>Producers and consumers are where the rows start and stop. The fork/join stops being an invisible convention: both branches sit inside one shaded band between two register edges. Side channels (messages, SDP packets, video) leave the bus at right angles, so they never look like bus traffic. And the empty tracks to the right of MSA and SDP show the "lane freed" moment you described from Factorio.</p>
+    <p>Its weakness is that the rows are fields, so the lane axis ℓ is hidden inside the width labels. A design that rearranges lanes needs the next view.</p>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <div class="eyebrow">overlay</div>
+    <h2>The contract at the join</h2>
+    <p>The only things keeping the join correct are two comments. <code>prt_dprx_pars.sv:1394</code> says the tags have one clock of latency, and <code>prt_dprx_scrm.sv:128</code> says the scrambler's input register exists "to compensate for the parser delay". There is also a commented-out block in the parser that used to delay the data instead, which suggests the contract has been rearranged at least once. A generated diagram should check this, not only draw it. Here are the two outcomes on a cycle grid, the way a pipeline diagram or a Filament timeline type would state them.</p>
+  </div>
+
+  <figure>
+    <div class="sheet">
+      <svg viewBox="0 0 1200 232" role="img" aria-label="Two cycle grids. Left: scrambler and parser both add one cycle, so each joined word pairs descrambled data with its own tags. Right: if the scrambler gains a second register, every joined word pairs data with the next symbol's tags.">
+        <text class="t-name" x="10" y="20" style="font-weight:600">As written: SCRM +1, PARS +1</text>
+        <text class="t-name" x="620" y="20" style="font-weight:600">After adding one register inside SCRM: +2 vs +1</text>
+        <g>
+          <text class="t-w t-mid" x="190" y="48">c0</text><text class="t-w t-mid" x="270" y="48">c1</text><text class="t-w t-mid" x="350" y="48">c2</text><text class="t-w t-mid" x="430" y="48">c3</text><text class="t-w t-mid" x="510" y="48">c4</text>
+          <text class="t-note" x="10" y="82">TRN out (raw)</text>
+          <text class="t-note" x="10" y="117">PARS tags</text>
+          <text class="t-note" x="10" y="152">SCRM dat</text>
+          <text class="t-note" x="10" y="194" style="fill:var(--fg)">joined record</text>
+          <line class="grid" x1="150" y1="168" x2="550" y2="168"/>
+          <rect class="cell" x="156" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="190" y="82" style="fill:var(--fg)">D0</text>
+          <rect class="cell" x="236" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="270" y="82" style="fill:var(--fg)">D1</text>
+          <rect class="cell" x="316" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="350" y="82" style="fill:var(--fg)">D2</text>
+          <rect class="cell" x="396" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="430" y="82" style="fill:var(--fg)">D3</text>
+          <rect class="cell" x="476" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="510" y="82" style="fill:var(--fg)">D4</text>
+          <rect class="cell-acc" x="236" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="270" y="117">T0</text>
+          <rect class="cell-acc" x="316" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="350" y="117">T1</text>
+          <rect class="cell-acc" x="396" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="430" y="117">T2</text>
+          <rect class="cell-acc" x="476" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="510" y="117">T3</text>
+          <rect class="cell" x="236" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="270" y="152" style="fill:var(--fg)">D0′</text>
+          <rect class="cell" x="316" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="350" y="152" style="fill:var(--fg)">D1′</text>
+          <rect class="cell" x="396" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="430" y="152" style="fill:var(--fg)">D2′</text>
+          <rect class="cell" x="476" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="510" y="152" style="fill:var(--fg)">D3′</text>
+          <rect class="cell-ok" x="236" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-ok" x="270" y="195">D0′·T0</text>
+          <rect class="cell-ok" x="316" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-ok" x="350" y="195">D1′·T1</text>
+          <rect class="cell-ok" x="396" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-ok" x="430" y="195">D2′·T2</text>
+          <rect class="cell-ok" x="476" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-ok" x="510" y="195">D3′·T3</text>
+          <text class="t-note t-ok" x="236" y="224">every word carries its own tags</text>
+        </g>
+        <g transform="translate(610,0)">
+          <text class="t-w t-mid" x="190" y="48">c0</text><text class="t-w t-mid" x="270" y="48">c1</text><text class="t-w t-mid" x="350" y="48">c2</text><text class="t-w t-mid" x="430" y="48">c3</text><text class="t-w t-mid" x="510" y="48">c4</text>
+          <text class="t-note" x="10" y="82">TRN out (raw)</text>
+          <text class="t-note" x="10" y="117">PARS tags</text>
+          <text class="t-note" x="10" y="152">SCRM dat</text>
+          <text class="t-note" x="10" y="194" style="fill:var(--fg)">joined record</text>
+          <line class="grid" x1="150" y1="168" x2="550" y2="168"/>
+          <rect class="cell" x="156" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="190" y="82" style="fill:var(--fg)">D0</text>
+          <rect class="cell" x="236" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="270" y="82" style="fill:var(--fg)">D1</text>
+          <rect class="cell" x="316" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="350" y="82" style="fill:var(--fg)">D2</text>
+          <rect class="cell" x="396" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="430" y="82" style="fill:var(--fg)">D3</text>
+          <rect class="cell" x="476" y="66" width="68" height="24" rx="2"/><text class="t-w t-mid" x="510" y="82" style="fill:var(--fg)">D4</text>
+          <rect class="cell-acc" x="236" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="270" y="117">T0</text>
+          <rect class="cell-acc" x="316" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="350" y="117">T1</text>
+          <rect class="cell-acc" x="396" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="430" y="117">T2</text>
+          <rect class="cell-acc" x="476" y="101" width="68" height="24" rx="2"/><text class="t-w t-mid t-acc" x="510" y="117">T3</text>
+          <rect class="cell" x="316" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="350" y="152" style="fill:var(--fg)">D0′</text>
+          <rect class="cell" x="396" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="430" y="152" style="fill:var(--fg)">D1′</text>
+          <rect class="cell" x="476" y="136" width="68" height="24" rx="2"/><text class="t-w t-mid" x="510" y="152" style="fill:var(--fg)">D2′</text>
+          <rect class="cell-bad" x="236" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-bad" x="270" y="195">?·T0</text>
+          <rect class="cell-bad" x="316" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-bad" x="350" y="195">D0′·T1</text>
+          <rect class="cell-bad" x="396" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-bad" x="430" y="195">D1′·T2</text>
+          <rect class="cell-bad" x="476" y="178" width="68" height="26" rx="2"/><text class="t-w t-mid t-bad" x="510" y="195">D2′·T3</text>
+          <text class="t-note t-bad" x="236" y="224">sol / eol now mark the wrong symbol pair</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><span class="fig-id">FIG C</span><b>Same join, two latencies.</b> On the left, each joined word pairs descrambled data D′ with the tags T computed from the same raw symbols. On the right, one extra register inside SCRM shifts every pairing by a symbol. Nothing fails to compile or elaborate, and lint stays clean. In the bus view this should become a red badge on the band, replacing the green one in FIG B. It belongs as an overlay on the join, not as a separate diagram.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <div class="eyebrow">candidate 2</div>
+    <h2>The axis view, in Neural Circuit Diagram style</h2>
+    <p>Here each <em>axis</em> is a wire, not each field. This is NCD's "all broadcasted" form. It is the right view for the parts of a datapath that rearrange data rather than tag it: replicating a block per lane, picking one lane, copying a value to every lane, reducing over lanes, and regrouping lanes and symbols into pixels.</p>
+  </div>
+
+  <figure>
+    <div class="sheet">
+      <svg viewBox="0 0 1200 300" role="img" aria-label="Axis view of the parser, scrambler and video mapping. The lane axis passes over the scrambler, meaning one scrambler per lane. The parser sees only lane 0, then its tags are copied to every lane. Per-lane lock is reduced with AND. Lane and symbol axes are regrouped into stripes, cross into the video clock domain at the FIFO, and are regrouped again into pixels.">
+        <defs>
+          <marker id="c-vid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker>
+        </defs>
+        <text class="t-note" x="60" y="34">dat</text>
+        <text class="t-name t-end" x="52" y="64">ℓ</text><text class="t-name t-end" x="52" y="89">s</text><text class="t-name t-end" x="52" y="114">8</text>
+        <line class="wire" x1="60" y1="60" x2="756" y2="60"/>
+        <line class="wire" x1="60" y1="85" x2="756" y2="85"/>
+        <line class="wire" x1="60" y1="110" x2="756" y2="110"/>
+        <path class="wire" d="M120,60 C170,60 180,190 230,190"/>
+        <path class="wire" d="M120,85 C170,85 180,215 290,215"/>
+        <path class="wire" d="M120,110 C170,110 180,240 290,240"/>
+        <circle class="dot" cx="120" cy="60" r="3.4"/><circle class="dot" cx="120" cy="85" r="3.4"/><circle class="dot" cx="120" cy="110" r="3.4"/>
+        <text class="t-note t-end" x="112" y="140">fork</text>
+        <polygon class="box" points="228,182 250,182 258,190 250,198 228,198"/><text class="t-sub" x="241" y="194" style="fill:var(--fg)">0</text>
+        <text class="t-note t-mid" x="241" y="275">index: lane 0 only</text>
+        <rect class="box" x="290" y="202" width="60" height="50" rx="3"/><text class="t-box" x="320" y="232">PARS</text>
+        <line class="wire" x1="350" y1="215" x2="756" y2="215"/><text class="t-w" x="356" y="210">s</text>
+        <line class="wire" x1="350" y1="240" x2="756" y2="240"/><text class="t-w" x="356" y="235">6 tags</text>
+        <circle class="dot" cx="410" cy="215" r="3.4"/>
+        <path class="wire" d="M410,215 C428,215 430,190 450,190 L756,190"/><text class="t-w" x="456" y="185">ℓ</text>
+        <text class="t-note t-mid" x="430" y="275">Δℓ: copy tags to every lane</text>
+        <rect class="box" x="290" y="72" width="60" height="50" rx="3"/><text class="t-box" x="320" y="101">SCRM</text>
+        <text class="t-note t-mid" x="320" y="44">ℓ passes over: one per lane</text>
+        <path class="wire" d="M335,122 C335,150 345,150 360,150 L410,150"/><text class="t-w" x="364" y="145">ℓ</text>
+        <polygon class="box" points="410,141 430,150 410,159"/>
+        <line class="wire" x1="430" y1="150" x2="756" y2="150"/><text class="t-w" x="436" y="145">lock</text>
+        <text class="t-note" x="436" y="170">∧ over active lanes</text>
+        <path class="acc-line" d="M560,60 C592,60 592,190 560,190"/>
+        <path class="acc-line" d="M574,85 C606,85 606,215 574,215"/>
+        <text class="t-note t-acc" x="612" y="125">same ℓ, s:</text>
+        <text class="t-note t-acc" x="612" y="140">zip needs</text>
+        <text class="t-note t-acc" x="612" y="155">equal latency</text>
+        <rect class="bar" x="756" y="48" width="8" height="204"/>
+        <text class="t-note t-mid" x="760" y="38">lmap</text>
+        <line class="wire" x1="764" y1="110" x2="860" y2="110"/><text class="t-w" x="770" y="105">word</text>
+        <line class="wire" x1="764" y1="135" x2="860" y2="135"/><text class="t-w" x="770" y="130">stripe</text>
+        <text class="t-note t-mid" x="760" y="275">reshape ℓ·s → stripes</text>
+        <rect class="fill-box" x="860" y="98" width="25" height="50"/><rect class="fill-vid-soft" x="885" y="98" width="25" height="50"/><rect class="outline" x="860" y="98" width="50" height="50" rx="2"/>
+        <text class="t-sub" x="885" y="127" style="fill:var(--fg)">FIFO</text>
+        <line class="wire-vid" x1="910" y1="110" x2="986" y2="110"/>
+        <line class="wire-vid" x1="910" y1="135" x2="986" y2="135"/>
+        <text class="t-note t-mid" x="900" y="293">colour change = clock-domain crossing</text>
+        <rect class="bar-vid" x="986" y="88" width="8" height="74"/>
+        <text class="t-note t-vid t-mid" x="990" y="80">vmap</text>
+        <line class="wire-vid" x1="994" y1="100" x2="1176" y2="100"/><text class="t-w t-vid" x="1000" y="95">ppc</text>
+        <line class="wire-vid" x1="994" y1="125" x2="1176" y2="125" marker-end="url(#c-vid)"/><text class="t-w t-vid" x="1000" y="120">3</text>
+        <line class="wire-vid" x1="994" y1="150" x2="1176" y2="150"/><text class="t-w t-vid" x="1000" y="145">bpc</text>
+        <text class="t-note t-vid t-end" x="1176" y="175">AXIS video</text>
+        <text class="t-note t-mid" x="1080" y="275">reshape → pixels</text>
+      </svg>
+    </div>
+    <figcaption><span class="fig-id">FIG D</span><b>The axis view.</b> The lane wire ℓ passes <em>over</em> SCRM, which is NCD's notation for broadcasting: one scrambler per lane, which is the <code>generate</code> loop in the RTL. PARS sees lane 0 only (index pentagon). Its tags are then copied back across ℓ (Δℓ), which is the RTL's <code>lnk_from_scrm.sol[i] = lnk_from_pars.sol[0]</code>. Per-lane scrambler lock is reduced with AND, masked by the active-lane count. The dotted arcs show the join's real requirement: the tag tuple and the data tuple share the ℓ and s axes, so they can only be zipped if they arrive in the same cycle. Bars are reshapes. <code>k</code> follows <code>dat</code> and is omitted.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <p>This view earns its keep on the lane-mapping blocks, which are 5,000 lines of RTL (<code>prt_dprx_vid_lmap.sv</code>, <code>prt_dprx_vid_vmap.sv</code>) whose whole job is the two bars on the right. At the top level it would double the wire count without adding any producer/consumer information, so I'd treat it as a zoom, not the default.</p>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <div class="eyebrow">candidate 3</div>
+    <h2>The cost view: the bus drawn to scale</h2>
+    <p>Napkin reads transfer cost off its diagrams. Here the equivalent is flip-flops: if row thickness is proportional to bits, the area of the bus between two register edges is the pipeline-register cost of that stage. Drawn this way, the tag copies from FIG D become visible as area.</p>
+  </div>
+
+  <figure>
+    <div class="sheet">
+      <svg viewBox="0 0 1200 300" role="img" aria-label="Bus width in bits after each stage, drawn to scale: 72, 73, 121, 113, 105, then 48 bits of video. Of the 48 tag bits, only 12 are distinct; 36 are copies of lane 0's tags.">
+        <defs>
+          <pattern id="d-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect class="hatch-bg" width="5" height="5"/>
+            <line class="hatch-line" x1="0" y1="0" x2="0" y2="5"/>
+          </pattern>
+        </defs>
+        <line class="grid" x1="80" y1="250" x2="1090" y2="250"/>
+        <line class="grid" x1="230" y1="56" x2="230" y2="256"/>
+        <line class="grid" x1="400" y1="56" x2="400" y2="256"/>
+        <line class="grid" x1="570" y1="56" x2="570" y2="256"/>
+        <line class="grid" x1="740" y1="56" x2="740" y2="256"/>
+        <line class="grid" x1="910" y1="56" x2="910" y2="256"/>
+        <text class="t-note t-mid" x="80" y="272">PHY</text>
+        <text class="t-note t-mid" x="230" y="272">TRN</text>
+        <text class="t-note t-mid" x="400" y="272">PARS ∥ SCRM</text>
+        <text class="t-note t-mid" x="570" y="272">MSA</text>
+        <text class="t-note t-mid" x="740" y="272">SDP</text>
+        <text class="t-note t-mid" x="910" y="272">VID</text>
+
+        <rect class="f-dat" x="80" y="154" width="830" height="96"/>
+        <rect class="f-k" x="80" y="142" width="830" height="12"/>
+        <rect class="f-lock" x="230" y="140" width="680" height="2"/>
+        <rect class="f-dup" x="400" y="128" width="510" height="9"/><rect class="f-tag" x="400" y="137" width="510" height="3"/>
+        <rect class="f-dup" x="400" y="116" width="510" height="9"/><rect class="f-tag" x="400" y="125" width="510" height="3"/>
+        <rect class="f-dup" x="400" y="104" width="510" height="9"/><rect class="f-tag" x="400" y="113" width="510" height="3"/>
+        <rect class="f-dup" x="400" y="92" width="510" height="9"/><rect class="f-tag" x="400" y="101" width="510" height="3"/>
+        <rect class="f-dup" x="400" y="80" width="340" height="9"/><rect class="f-tag" x="400" y="89" width="340" height="3"/>
+        <rect class="f-dup" x="400" y="68" width="170" height="9"/><rect class="f-tag" x="400" y="77" width="170" height="3"/>
+        <rect class="f-vid" x="910" y="178" width="170" height="72"/>
+
+        <text class="t-name t-mid" x="155" y="207">dat 64</text>
+        <text class="t-w t-mid" x="155" y="152" style="fill:var(--fg)">k 8</text>
+        <text class="t-w t-end" x="394" y="138">sol</text>
+        <text class="t-w t-end" x="394" y="126">eol</text>
+        <text class="t-w t-end" x="394" y="114">vid</text>
+        <text class="t-w t-end" x="394" y="102">vbid</text>
+        <text class="t-w t-end" x="394" y="90">sdp</text>
+        <text class="t-w t-end" x="394" y="78">msa</text>
+        <text class="t-name t-mid" x="155" y="132">72 b</text>
+        <text class="t-name t-mid" x="315" y="132">73 b</text>
+        <text class="t-name t-mid" x="485" y="60">121 b</text>
+        <text class="t-name t-mid" x="655" y="72">113 b</text>
+        <text class="t-name t-mid" x="825" y="84">105 b</text>
+        <text class="t-name t-mid t-vid" x="995" y="170">48 b · vid_clk</text>
+        <text class="t-note t-acc t-mid" x="655" y="30">36 of the 121 bits are lane copies of lane 0's tags</text>
+      </svg>
+    </div>
+    <figcaption><span class="fig-id">FIG E</span><b>Bits on the bus after each stage,</b> at P_LANES = 4, P_SPL = 2, 1.5 px per bit. Solid blue is the 12 distinct tag bits (6 tags × s). Hatching is the copies across lanes that the RTL keeps registered in every stage after the parser (MSA, SDP and VID register per-lane tags). Synthesis may merge some of these equivalent registers, so the drawing shows what the RTL asks for, not what the netlist contains. <code>lock</code> is the thin black line.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <p>This one works best as a toggle on FIG B ("width ∝ bits"), the way tsncd lets you flip between forms. It doesn't need its own layout.</p>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>A glyph vocabulary</h2>
+    <p>Everything used above, plus one glyph this design doesn't need yet (back-edges). The aim is a small, closed set that an algorithm can emit and a reader can learn once. Each card names where the glyph comes from.</p>
+  </div>
+  <div class="glyphs">
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="solid line"><g transform="translate(0,8)"><line class="lane" x1="8" y1="20" x2="152" y2="20"/></g></svg><h3>Live row</h3><p>A field that holds a value at this point.</p><span class="from">from Factorio belts</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="faint dotted line"><g transform="translate(0,8)"><line class="track" x1="8" y1="20" x2="152" y2="20"/></g></svg><h3>Empty track</h3><p>The row's position is reserved, but nothing is on it yet, or anymore.</p><span class="from">from Factorio belts</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="line with width slash"><g transform="translate(0,8)"><line class="lane" x1="8" y1="24" x2="152" y2="24"/><line class="conn" x1="64" y1="32" x2="74" y2="16"/><text class="t-w" x="80" y="16" style="fill:var(--fg)">ℓ·s·8</text></g></svg><h3>Width</h3><p>A bundle, with its width written in axis terms rather than bits.</p><span class="from">from quantikz wire bundles</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="dot on line connected to a box below"><line class="lane" x1="8" y1="12" x2="152" y2="12"/><line class="conn" x1="80" y1="12" x2="80" y2="30"/><circle class="dot" cx="80" cy="12" r="3.6"/><rect class="box" x="60" y="30" width="40" height="20" rx="3"/></svg><h3>Read</h3><p>A dot on a row connected to a box. The box reads that row and doesn't change it.</p><span class="from">from quantum control dots</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="line through a box"><g transform="translate(0,8)"><line class="lane" x1="8" y1="20" x2="152" y2="20"/><rect class="box" x="60" y="8" width="40" height="24" rx="3"/></g></svg><h3>Write</h3><p>The row runs through the box, which rewrites it.</p><span class="from">from quantum target gates</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="row starting at a box and another ending in a box"><g transform="translate(0,8)"><rect class="box" x="8" y="8" width="30" height="24" rx="3"/><line class="lane" x1="38" y1="20" x2="68" y2="20"/><line class="track" x1="92" y1="20" x2="122" y2="20"/><line class="lane" x1="92" y1="20" x2="122" y2="20"/><rect class="box" x="122" y="8" width="30" height="24" rx="3"/></g></svg><h3>Produce / consume</h3><p>A row starts at a box's right edge or ends inside a box. An open dot marks a row produced through a connector.</p><span class="from">from ancilla init / discard</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="shaded band between two dashed lines"><g transform="translate(0,4)"><rect class="band" x="40" y="10" width="80" height="34"/><line class="slice" x1="40" y1="8" x2="40" y2="46"/><line class="slice" x1="120" y1="8" x2="120" y2="46"/><line class="lane" x1="8" y1="27" x2="152" y2="27"/><text class="t-w t-acc t-mid" x="40" y="6">@n</text><text class="t-w t-acc t-mid" x="120" y="6">@n+1</text></g></svg><h3>Cycle band</h3><p>Two register edges. Everything inside the band happens in one cycle, and position inside the band means nothing.</p><span class="from">from quantum barriers / Cirq moments</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="axis wire passing above a box"><line class="wire" x1="8" y1="12" x2="152" y2="12"/><text class="t-w" x="10" y="9" style="fill:var(--fg)">ℓ</text><line class="wire" x1="8" y1="38" x2="152" y2="38"/><rect class="box" x="60" y="24" width="40" height="28" rx="3"/></svg><h3>Broadcast</h3><p>An axis wire passing over a box means one copy of the box per index: a <code>generate</code> loop.</p><span class="from">from NCD</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="wire ending in a pentagon with 0"><g transform="translate(0,8)"><line class="wire" x1="8" y1="20" x2="70" y2="20"/><polygon class="box" points="70,11 94,11 103,20 94,29 70,29"/><text class="t-sub" x="85" y="24" style="fill:var(--fg)">0</text></g></svg><h3>Index</h3><p>Takes one position of an axis; that axis ends here.</p><span class="from">from NCD</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="dot splitting a wire into two"><g transform="translate(0,4)"><line class="wire" x1="8" y1="16" x2="152" y2="16"/><path class="wire" d="M70,16 C95,16 95,36 120,36 L152,36"/><circle class="dot" cx="70" cy="16" r="3.4"/></g></svg><h3>Copy</h3><p>One value, two consumers. On an axis (Δℓ), copies a value to every index.</p><span class="from">from NCD / string diagrams</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="wire into a triangle then a thinner wire"><g transform="translate(0,8)"><line class="wire" x1="8" y1="20" x2="70" y2="20"/><text class="t-w" x="12" y="15" style="fill:var(--fg)">ℓ</text><polygon class="box" points="70,10 92,20 70,30"/><line class="wire" x1="92" y1="20" x2="152" y2="20"/><text class="t-w" x="98" y="15" style="fill:var(--fg)">1</text></g></svg><h3>Reduce</h3><p>Folds an axis away (AND, OR, sum). The operator is written beside it.</p><span class="from">from NCD contraction</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="black line into a half-colored box then orange line"><g transform="translate(0,8)"><line class="lane" x1="8" y1="20" x2="60" y2="20"/><rect class="fill-box" x="60" y="8" width="20" height="24"/><rect class="fill-vid-soft" x="80" y="8" width="20" height="24"/><rect class="outline" x="60" y="8" width="40" height="24" rx="2"/><line class="lane-vid" x1="100" y1="20" x2="152" y2="20"/></g></svg><h3>Clock domain</h3><p>Colour is the domain, and a colour change is a CDC. Like Napkin's memory levels, a change of colour costs something.</p><span class="from">from FlashAttention on a Napkin</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="dotted line"><g transform="translate(0,8)"><line class="cfg" x1="8" y1="20" x2="152" y2="20"/></g></svg><h3>Quasi-static</h3><p>Configuration written rarely (lane count, bpc). It is read everywhere but never pipelined with the data.</p><span class="from">new</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="double line with a tap dot"><g transform="translate(0,8)"><line class="msg" x1="8" y1="18" x2="152" y2="18"/><line class="msg" x1="8" y1="22" x2="152" y2="22"/><circle class="dot" cx="80" cy="20" r="3.6"/><line class="conn" x1="80" y1="20" x2="80" y2="38"/></g></svg><h3>Control plane</h3><p>The message ring. Each module taps it by ID.</p><span class="from">from quantum classical wires</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="dashed box on a line"><g transform="translate(0,8)"><line class="lane" x1="8" y1="20" x2="152" y2="20"/><rect class="box-opt" x="60" y="8" width="40" height="24" rx="3"/></g></svg><h3>Optional block</h3><p>Exists only under a parameter (<code>if (P_SDP)</code>). When it's absent, the row passes straight through.</p><span class="from">new</span></div>
+    <div class="glyph"><svg viewBox="0 0 160 56" role="img" aria-label="loop from a box back to an earlier point, labelled z inverse"><line class="lane" x1="8" y1="14" x2="152" y2="14"/><rect class="box" x="96" y="4" width="34" height="20" rx="3"/><path class="wire" d="M113,24 L113,44 L44,44 L44,14" style="stroke-dasharray:4 3"/><text class="t-w t-mid" x="78" y="40" style="fill:var(--fg)">z⁻¹</text></svg><h3>Back-edge</h3><p>Feedback routes under the bus and carries its delay. Not needed for this data path, but your controller will have them.</p><span class="from">from Ghica et al. circuit diagrams</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>What I took from NCD and tsncd</h2>
+    <p>I read the TMLR paper end to end and rendered tsncd's published examples in a browser in all three of its display forms. Six things carry over directly:</p>
+    <p><b>One term, several forms.</b> tsncd draws the same model as "arrows and boxes", "arrows and broadcasted" and "all broadcasted", switched by a toggle. That is the answer to "which of these views?": FIG A, B and D are three forms of one description, not three diagrams to maintain.</p>
+    <p><b>Annotations on wires.</b> The quantised view labels each wire with its number format (FP32, INT32, BF16). The hardware equivalent is the width label, and later the clock domain.</p>
+    <p><b>An axis legend beside the drawing.</b> tsncd shows a table mapping each axis symbol to its code name. Here that is ℓ → <code>P_LANES</code> and s → <code>P_SPL</code>, which keeps the drawing short.</p>
+    <p><b>Nested coloured sections for hierarchy</b>, and a bracket with ×N for repetition. They map one to one onto module hierarchy and <code>generate</code> loops.</p>
+    <p><b>Cost read off the picture.</b> In the paper, the height of a diagram tracks memory use. Napkin reads transfer cost from colour changes. FIG E is the same move.</p>
+    <p><b>Where it stops.</b> The paper excludes recursive models explicitly, so there is no time and no feedback. Its free-form curved wires also stop being readable at around fifteen wires (look at the full transformer in the paper's figure 22). For hardware, fixed rows (from quantum circuits) are the discipline NCD lacks, and cycle bands are the time axis it never needed.</p>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Prior art, and what each contributes</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Notation</th><th>What it draws well</th><th>What gateau takes</th><th>Where it falls short here</th></tr></thead>
+      <tbody>
+        <tr><td>Neural circuit diagrams<span class="src">Abbott, TMLR 2023; tsncd / pyncd</span></td><td>Axes as wires, broadcasting, index and copy, nested sections, multiple forms from one term</td><td>The axis view (FIG D), its glyphs, the forms toggle, the axis legend</td><td>No time, no feedback; curved wires tangle at scale</td></tr>
+        <tr><td>FlashAttention on a Napkin<span class="src">Abbott &amp; Zardini, 2024</span></td><td>Colour = memory level; transfer cost = sum of arrays that change colour</td><td>Colour = clock domain; cost read from the drawing (FIG E)</td><td>Specific to GPU memory hierarchies</td></tr>
+        <tr><td>Quantum circuit notation<span class="src">quantikz, Cirq</span></td><td>Fixed row per wire, gates on any subset, control dots, ancilla init and discard, classical double wires, barriers</td><td>The whole layout of FIG B: rows, dots as reads, double line for control, bands as barriers</td><td>Every row lives for the whole circuit; no notion of a field being produced mid-way</td></tr>
+        <tr><td>String diagrams for digital circuits<span class="src">Ghica, Jung, Lopez, CSL 2017</span></td><td>Delay and feedback as first-class, with rewriting rules</td><td>Formal meaning for the back-edge and delay glyphs</td><td>A semantics, not a layout style for large designs</td></tr>
+        <tr><td>TL-Verilog transaction flow<span class="src">Hoover &amp; Salman, 2018</span></td><td>Transactions as bundles of fields; "flow of a field" from where it is assigned to where it is used; <code>$ANY</code> pass-through</td><td>The closest thing to your bus idea that ships; confirms pass-through should be implicit</td><td>Hand-drawn figures; tied to its own language and tools</td></tr>
+        <tr><td>Filament timeline types<span class="src">Nigam, Azevedo de Amorim, Sampson, PLDI 2023</span></td><td>When each signal is valid, as cycle intervals, checked by a type system</td><td>The join check in FIG C: matching intervals on both sides of a zip</td><td>Textual; no diagrams</td></tr>
+        <tr><td>SpinalHDL pipeline API<span class="src">used in VexiiRiscv</span></td><td>Payload keys inserted at one node and read at another; registers inferred</td><td>A future extraction source: payloads survive elaboration</td><td>No visualization</td></tr>
+        <tr><td>Pipeline diagrams<span class="src">Hennessy &amp; Patterson</span></td><td>Instruction × cycle grid</td><td>The cycle grid used for the contract overlay</td><td>Shows occupancy, not structure</td></tr>
+        <tr><td>Storyline visualizations<span class="src">Tanahashi &amp; Ma, TVCG 2012; xkcd 657</span></td><td>Entities that appear, travel together and leave, with crossings and wiggles minimised</td><td>The layout-optimisation literature for ordering rows (when fixed order isn't good enough)</td><td>No semantics</td></tr>
+        <tr><td>netlistsvg / ELK layered<span class="src">Yosys ecosystem; Eclipse Layout Kernel</span></td><td>Automatic layered layout with ports</td><td>A candidate engine for placing boxes along the bus</td><td>Works at netlist level, where the record has already been flattened</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Where I land</h2>
+    <p>The bus view should be the primary picture. On this design it answered the most questions for the least ink. The other views earn their place as overlays or zooms on it, not as separate diagrams.</p>
+  </div>
+  <div class="verdict">
+    <div><span class="role primary">primary · FIG B</span><h3>Bus view</h3><p>Rows are fields, boxes are stages, dots are reads, bands are cycles. This is the default rendering of a design.</p></div>
+    <div><span class="role overlay">overlay · FIG C, E</span><h3>Contract and cost</h3><p>A badge on every join (aligned or skewed), and a "width ∝ bits" toggle. These are computed from the same description, not drawn separately.</p></div>
+    <div><span class="role zoom">zoom · FIG D</span><h3>Axis view</h3><p>Open a single box to see how it rearranges ℓ, s and pixels. It should be used for lane mappers and similar blocks, never at the top level.</p></div>
+  </div>
+  <div class="prose">
+    <h3>Decisions to make before the algorithm</h3>
+  </div>
+  <ol class="questions">
+    <li><b>What the x-axis means.</b> FIG B uses stage order with cycle bands only where latency is known. The alternative is true cycle positions, which is more precise but needs latencies for every block. I lean towards stage order, with bands wherever latency is declared.</li>
+    <li><b>Row order.</b> Fixed by declaration (the Factorio way: predictable, diffable) or optimised to cut connector crossings (the storyline way: prettier, but it shifts when the design changes). I lean towards fixed order with manual pins.</li>
+    <li><b>Row granularity.</b> One row per field (FIG B), or one per field × lane when lanes are treated differently. My view is per field, and lanes belong in the axis zoom.</li>
+    <li><b>Control plane.</b> Same picture as a double-line row (as drawn), or its own diagram. On your controller this depends on how much the data path and register interface interact.</li>
+    <li><b>What your controller has that this one doesn't.</b> The Parretto link layer is fixed-rate and feed-forward. If the work design has valid/ready backpressure, stateful memories or feedback, those cases need mocking up next, before any code. I'd draw the hardest block of it the same way, by hand, from memory.</li>
+  </ol>
+  <p class="note">Sources read for this study: the TMLR NCD paper (all 35 pages); tsncd and pyncd source and pre-rendered examples, screenshotted in all three forms; Napkin (arXiv 2412.03317); TL-Verilog transaction-level design (arXiv 1811.01780); Filament (arXiv 2304.10646); Ghica, Jung, Lopez (CSL 2017). The DisplayPort code is Parretto's and source-available under a commercial licence, not open source. These drawings model its structure, and no code from it is reproduced here.</p>
+</section>
+
+</div>
