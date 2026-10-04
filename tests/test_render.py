@@ -164,3 +164,81 @@ def test_no_row_starts_or_ends_in_mid_air(name):
         if not (x2 >= width - 22 or anchored(x2, y)):
             loose.append(f"{ln.get('data-row')} ends at {x2:.0f}")
     assert not loose
+
+
+@pytest.mark.parametrize("name", NAMES)
+def test_stubs_sit_in_free_space(name):
+    """A state stub never touches a live row line (3 px clearance) or another box: it sits in a gap."""
+    _, root = svg(name)
+    lines = [(float(ln.get("x1")), float(ln.get("x2")), float(ln.get("y1")))
+             for ln in root.iterfind(".//s:line[@data-row]", NS)]
+    boxes = []
+    for g in root.iterfind(".//s:g[@data-item]", NS):
+        sh = g[0]
+        if sh.tag.endswith("rect"):
+            x, y, w, h = (float(sh.get(k)) for k in ("x", "y", "width", "height"))
+        else:
+            pts = [tuple(map(float, p.split(","))) for p in sh.get("points").split()]
+            x, y = min(p[0] for p in pts), min(p[1] for p in pts)
+            w, h = max(p[0] for p in pts) - x, max(p[1] for p in pts) - y
+        boxes.append((g.get("data-item"), x, y, w, h))
+    stubs = root.findall(".//s:rect[@data-stub]", NS)
+    clashes = []
+    for st in stubs:
+        x, y, w, h = (float(st.get(k)) for k in ("x", "y", "width", "height"))
+        for lx0, lx1, ly in lines:
+            if lx0 - 3.2 < x + w and lx1 + 3.2 > x and y - 3 <= ly <= y + h + 3:   # dot radius, 3 px clearance
+                clashes.append(f"{st.get('data-stub')} stub on the row at y={ly:.0f}")
+        for n, bx, by, bw, bh in boxes:
+            if bx < x + w and bx + bw > x and by < y + h and by + bh > y:
+                clashes.append(f"{st.get('data-stub')} stub on box {n}")
+    assert not clashes
+    if name == "mstrx":
+        assert any(st.get("data-stub") == "STRM" for st in stubs)
+
+
+@pytest.mark.parametrize("name", NAMES)
+def test_no_connector_runs_through_a_badge(name):
+    """Check badges sit on box corners; no tap, read or emit connector may touch one."""
+    d, fs = model(name)
+    root = ET.fromstring(render_svg(d, fs))
+    badges = [(float(c.get("cx")), float(c.get("cy")), float(c.get("r")))
+              for c in root.iter(f"{{{NS['s']}}}circle") if (c.get("class") or "").startswith("badge-")]
+    hits = []
+    for ln in root.iterfind(".//s:line[@class='conn']", NS):
+        x, ya, yb = float(ln.get("x1")), float(ln.get("y1")), float(ln.get("y2"))
+        if x != float(ln.get("x2")):
+            continue
+        for bx, by, r in badges:
+            if abs(x - bx) < r + 1 and min(ya, yb) < by + r and max(ya, yb) > by - r:
+                hits.append(f"connector at x={x:.0f} over badge at ({bx:.0f}, {by:.0f})")
+    assert not hits
+
+
+@pytest.mark.parametrize("name", NAMES)
+def test_one_badge_per_subject_covers_every_finding(name):
+    """Badges never stack: a subject with several findings gets one badge showing the worst status and
+    a count, and every finding still reaches a badge (or the list) and its tooltip."""
+    d, fs = model(name)
+    root = ET.fromstring(render_svg(d, fs))
+    groups = [g for g in root.iterfind(".//s:g[@data-findings]", NS)]
+    spots = [(float(g[0].get("cx")), float(g[0].get("cy"))) for g in groups]
+    assert len(spots) == len(set(spots))
+    for i, (xa, ya) in enumerate(spots):
+        for xb, yb in spots[i + 1:]:
+            assert (xa - xb) ** 2 + (ya - yb) ** 2 >= 16 ** 2
+    tips = " ".join(g.find("s:title", NS).text for g in groups)
+    for f in fs:
+        if f.subject.split()[0] in d.order or f.subject.split(".")[0] in d.states:
+            assert f.message in tips
+    if name == "dprx":
+        doubles = sorted(g[0].get("class") for g in groups if g.get("data-findings") == "2")
+        assert doubles == ["badge-pass", "badge-unchecked"]               # PARS: 2 pass; SDP: 2 unchecked
+
+
+def test_badge_status_prefers_verdicts_over_info():
+    """ROUTE has two passes and a cost note: its badge is a pass, not the info dot."""
+    d, fs = model("mstrx")
+    root = ET.fromstring(render_svg(d, fs))
+    route = [g for g in root.iterfind(".//s:g[@data-findings='3']", NS)]
+    assert [g[0].get("class") for g in route] == ["badge-pass"]

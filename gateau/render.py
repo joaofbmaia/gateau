@@ -19,9 +19,13 @@ from .model import Design, Field, Merge, Route, Stage
 LABEL_W, X0, COL, BOX_W = 118, 132, 104, 72
 ROW_H, BAND_HEAD, BAND_PAD, BAND_GAP = 24, 20, 10, 16
 PILL_H, PILL_GAP, LANE_H = 18, 8, 22
+READ_X, TAP_X, EMIT_X = -14, -2, 22  # x slots in a column, from its centre: read connector, state taps, emits
+DOT_R = 3.2
+STUB_H = 13                       # height of a state stub
 INSET = 12                        # slant of the route / merge trapezoids
 MAX_ROWS = 18                     # collapse groups when a view would exceed this many rows
 GLYPH = {"pass": "✓", "fail": "✗", "unchecked": "?", "info": "·"}
+SEVERITY = ["fail", "unchecked", "pass", "info"]          # a badge shows the first of these; info is not a verdict, so it shows only alone
 
 
 def _t(s) -> str:
@@ -346,7 +350,7 @@ def layout(d: Design) -> Layout:
                 bx = L.boxes[end]
                 read = {f.path for f in r.fields} & touches[end]["reads"]
                 if read and not bx.y0 <= r.y <= bx.y1:
-                    x1 = _cx(L, end) - 14
+                    x1 = _cx(L, end) + READ_X
                 else:
                     _cover(bx, r.y)
                     x1 = _cx(L, end) - BOX_W / 2
@@ -513,15 +517,17 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
                 bx = L.boxes[n]
                 mine = [(s_, at) for s_ in L.pills for at, _ in _state_taps(it, s_)]
                 i = mine.index((name, attr))
-                x = _cx(L, n) + (i - (len(mine) - 1) / 2) * 10
+                x = _cx(L, n) + TAP_X + i * 10
                 far = bx.band_top > 1 and st.writer == "out-of-flow"
                 g = f'<g{fade(it)}>'
                 if far:
                     lbl = name + (f".{t.sub}" if t.sub else "")
                     w = len(lbl) * 5.6 + 12
-                    a(g + f'<line class="conn" x1="{x}" y1="{bx.y0}" x2="{x}" y2="{bx.y0-14}"/>'
-                      f'<rect class="stub" x="{x-w/2:.0f}" y="{bx.y0-27}" width="{w:.0f}" height="13" rx="6"/>'
-                      f'<text class="t-stub" x="{x}" y="{bx.y0-17}">{_t(lbl)}</text></g>')
+                    sx = x - 6                     # grows rightwards, clear of the read connector
+                    sy = _free_y(L, items, touches, sx, sx + w, bx.y0 - 4, STUB_H)
+                    a(g + f'<line class="conn" x1="{x}" y1="{bx.y0}" x2="{x}" y2="{sy+STUB_H}"/>'
+                      f'<rect class="stub" data-stub="{_t(n)}" x="{sx:.0f}" y="{sy:.0f}" width="{w:.0f}" height="{STUB_H}" rx="6"/>'
+                      f'<text class="t-stub" x="{sx+w/2:.0f}" y="{sy+10:.0f}">{_t(lbl)}</text></g>')
                 elif attr == "state_writes":
                     a(g + f'<line class="conn" x1="{x}" y1="{bx.y0}" x2="{x}" y2="{y+PILL_H+1}" marker-end="url(#g-ink)"/></g>')
                 else:
@@ -537,11 +543,11 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
         ys_in = [L.rowmap[p].y for p in touches[n]["reads"] if p in L.rowmap and bx.y0 <= L.rowmap[p].y <= bx.y1]
         g = [f'<g{fade(it)}>']
         if ys_above:
-            g.append(f'<line class="conn" x1="{cx-14}" y1="{min(ys_above)}" x2="{cx-14}" y2="{bx.y0}"/>')
-            g += [f'<circle class="dot" cx="{cx-14}" cy="{yy}" r="3.2"/>' for yy in ys_above]
+            g.append(f'<line class="conn" x1="{cx+READ_X}" y1="{min(ys_above)}" x2="{cx+READ_X}" y2="{bx.y0}"/>')
+            g += [f'<circle class="dot" cx="{cx+READ_X}" cy="{yy}" r="3.2"/>' for yy in ys_above]
         if ys_below:
-            g.append(f'<line class="conn" x1="{cx-14}" y1="{max(ys_below)}" x2="{cx-14}" y2="{bx.y1}"/>')
-            g += [f'<circle class="dot" cx="{cx-14}" cy="{yy}" r="3.2"/>' for yy in ys_below]
+            g.append(f'<line class="conn" x1="{cx+READ_X}" y1="{max(ys_below)}" x2="{cx+READ_X}" y2="{bx.y1}"/>')
+            g += [f'<circle class="dot" cx="{cx+READ_X}" cy="{yy}" r="3.2"/>' for yy in ys_below]
         g += [f'<circle class="dot" cx="{bx.x-5}" cy="{yy}" r="3.2"/>' for yy in ys_in]
         g.append('</g>')
         a(''.join(g))
@@ -551,7 +557,7 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
                 ry = L.rowmap.get(f"{e.carrier}:") or (L.bands[band_index[e.carrier]].rows[0])
                 ty = ry.y + (4 if ry.y > bx.y0 else -4)
                 sy = bx.y0 if ry.y < bx.y0 else bx.y1
-                a(f'<g{fade(it)}><line class="conn" x1="{cx+18}" y1="{sy}" x2="{cx+18}" y2="{ty}" marker-end="url(#g-ink)"/></g>')
+                a(f'<g{fade(it)}><line class="conn" x1="{cx+EMIT_X}" y1="{sy}" x2="{cx+EMIT_X}" y2="{ty}" marker-end="url(#g-ink)"/></g>')
 
     # boxes
     for n, it in _items(d):
@@ -624,14 +630,18 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
 
     # finding badges on their subjects, and the list below the gutter
     if findings is not None:
+        # one badge per subject: the worst status, a count when there are several, all of them in the tooltip
+        groups: dict[tuple[float, float], list[Finding]] = {}
         for f in findings:
             target = _subject_box(d, L, f)
-            if target is None:
-                continue
-            x, y = target
-            a(f'<g class="chk"><circle class="badge-{f.status}" cx="{x:.0f}" cy="{y:.0f}" r="8"/>'
-              f'<text class="t-badge" x="{x:.0f}" y="{y+4:.0f}">{GLYPH[f.status]}</text>'
-              f'<title>{_t(f.check)} · {_t(f.subject)}: {_t(f.message)}</title></g>')
+            if target is not None:
+                groups.setdefault(target, []).append(f)
+        for (x, y), fs_ in groups.items():
+            st = min((f.status for f in fs_), key=SEVERITY.index)
+            tip = "&#10;".join(f"{GLYPH[f.status]} {_t(f.check)} · {_t(f.subject)}: {_t(f.message)}" for f in fs_)
+            count = (f'<text class="t-count" x="{x+9:.0f}" y="{y-5:.0f}">{len(fs_)}</text>' if len(fs_) > 1 else "")
+            a(f'<g class="chk" data-findings="{len(fs_)}"><circle class="badge-{st}" cx="{x:.0f}" cy="{y:.0f}" r="8"/>'
+              f'<text class="t-badge" x="{x:.0f}" y="{y+4:.0f}">{GLYPH[st]}</text>{count}<title>{tip}</title></g>')
         ly = L.height + 14
         if fl:
             a(f'<text class="t-band" x="12" y="{ly}">findings</text>')
@@ -643,6 +653,25 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
         a(f'<text class="t-w t-end" x="{L.width-24:.0f}" y="12">{_t(tag)}</text>')
     a('</svg>')
     return "\n".join(o)
+
+
+def _free_y(L: Layout, items, touches, x0: float, x1: float, below: float, h: float) -> float:
+    """The lowest y with y + h <= below where a label [x0, x1] × [y, y + h] clears every live row line
+    and every box, searching upwards. Labels sit in the gaps between rows, never on top of one."""
+    lines = []
+    for b in L.bands:
+        for r in b.rows:
+            lx0, lx1 = _live_span(None, L, items, touches, r)
+            if lx0 - DOT_R < x1 and lx1 + DOT_R > x0:          # a row may end on a read dot
+                lines.append(r.y)
+    boxes = [(bx.y0, bx.y1) for bx in L.boxes.values() if bx.x < x1 and bx.x + BOX_W > x0]
+    y = below - h
+    while y > 0:
+        if (all(not (y - 3 <= ly <= y + h + 3) for ly in lines)
+                and all(y + h < b0 - 1 or y > b1 + 1 for b0, b1 in boxes)):
+            return y
+        y -= 1
+    return below - h
 
 
 def _end_x(L: Layout, end: str) -> float:
@@ -779,6 +808,7 @@ svg.gateau text { fill:var(--fg); }
 .gateau .halo { paint-order:stroke; stroke:var(--bg); stroke-width:4px; stroke-linejoin:round; }
 .gateau .t-mid { text-anchor:middle; } .gateau .t-end { text-anchor:end; }
 .gateau .t-badge { font-size:10px; font-weight:700; text-anchor:middle; }
+.gateau .t-count { font-size:8.5px; font-weight:700; } .gateau text.t-count { fill:var(--muted); }
 .gateau .badge-pass { fill:var(--ok-soft); stroke:var(--ok); } .gateau .badge-fail { fill:var(--bad-soft); stroke:var(--bad); }
 .gateau .badge-unchecked { fill:var(--accent-soft); stroke:var(--accent); } .gateau .badge-info { fill:var(--soft); stroke:var(--muted); }
 .gateau text.st-pass { fill:var(--ok); } .gateau text.st-fail { fill:var(--bad); } .gateau text.st-unchecked { fill:var(--accent); }
