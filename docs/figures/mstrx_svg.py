@@ -59,9 +59,9 @@ def bus(overlay=None):
 
     # live rows
     a('<line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>')
-    a('<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="380" y2="150"/>')
-    a('<line class="lane" x1="330" y1="172" x2="380" y2="172"/>')
-    a('<line class="lane" x1="460" y1="242" x2="520" y2="242"/><line class="lane" x1="460" y1="266" x2="520" y2="266"/>')
+    a('<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="385" y2="150"/>')
+    a('<line class="lane" x1="330" y1="172" x2="385" y2="172"/>')
+    a('<line class="lane" x1="445" y1="242" x2="520" y2="242"/><line class="lane" x1="445" y1="266" x2="520" y2="266"/>')
     a('<line class="lane" x1="580" y1="350" x2="620" y2="350"/>')
     a('<line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/>')
     a('<polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>')
@@ -79,15 +79,15 @@ def bus(overlay=None):
     a('<line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/>')
     a('<line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/>')
     a('<line class="conn" x1="322" y1="158" x2="322" y2="42" marker-end="url(#m-ink)"/><text class="t-w" x="327" y="110" style="fill:var(--fg)">swap</text>', chk=True)
-    a('<line class="conn" x1="402" y1="40" x2="402" y2="156"/><circle class="dot" cx="402" cy="40" r="3.2"/>', chk=True)
+    a('<line class="conn" x1="402" y1="40" x2="402" y2="140"/><circle class="dot" cx="402" cy="40" r="3.2"/>', chk=True)
     a('<line class="conn" x1="700" y1="228" x2="700" y2="100" marker-end="url(#m-ink)"/>', chk=True)
 
     # boxes
     a('<rect class="box-opt" x="120" y="82" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="98" style="fill:var(--muted)">PM</text>')
     a('<rect class="box" x="130" y="138" width="80" height="24" rx="3"/><text class="t-box" x="170" y="154">LINK ≡ 04</text>')
     a('<rect class="box" x="240" y="158" width="90" height="26" rx="3"/><text class="t-box" x="285" y="175">FRAME</text>')
-    a('<polygon class="box route" points="380,136 460,216 460,296 380,184"/>'
-      '<text class="t-box" x="426" y="236">ROUTE</text><text class="t-sub" x="426" y="250">per s</text>', chk=True)
+    a('<polygon class="box route" points="385,144 445,128 445,298 385,282"/>'
+      '<text class="t-box" x="415" y="212">ROUTE</text><text class="t-sub" x="415" y="228">per s</text>', chk=True)
     a('<rect class="box" x="520" y="228" width="60" height="146" rx="3"/><text class="t-box" x="550" y="290">PACK</text>'
       '<text class="t-sub" x="550" y="306">×sid</text><text class="t-sub" x="550" y="320">FIFO 64</text>', chk=True)
     a('<rect class="box" x="620" y="228" width="120" height="342" rx="3"/>'
@@ -144,7 +144,7 @@ def slot_map():
     o.append('<rect class="c-str" x="420" y="110" width="60" height="40" rx="2" style="stroke:var(--accent);stroke-width:2.2"/><text class="t-cell" x="450" y="134">A · 24</text>')
     o.append('<rect class="c-str" x="480" y="110" width="60" height="40" rx="2" style="stroke:var(--accent);stroke-width:2.2"/><text class="t-cell" x="510" y="134">B · 25</text>')
     o.append('<text class="t-w t-mid" x="450" y="166" style="fill:var(--fg)">s = 0</text><text class="t-w t-mid" x="510" y="166" style="fill:var(--fg)">s = 1</text>')
-    o.append('<polygon class="box route" points="580,110 640,80 640,180 580,150"/><text class="t-sub" x="610" y="134" style="fill:var(--fg)">ROUTE</text>')
+    o.append('<polygon class="box route" points="580,112 640,96 640,164 580,148"/><text class="t-sub" x="610" y="134" style="fill:var(--fg)">ROUTE</text>')
     o.append('<line class="wire" x1="540" y1="130" x2="580" y2="130"/>')
     for i, (st, v, y) in enumerate((("A", "1 0", 96), ("B", "0 1", 164))):
         o.append(f'<line class="wire" x1="640" y1="{y}" x2="700" y2="{y}"/>'

@@ -217,7 +217,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
     <p>An invented multi-stream receiver (study 05) tested what v1.1 couldn't draw: items routed apart and merged back. That added one primitive and two attributes.</p>
   </div>
   <div class="changes">
-    <div><span class="why">new primitive 8</span><h3>Route and merge</h3><p>Route sends each item, or part of one, to one of K carriers by a selector. Merge combines K carriers into one under a policy. Both declare a granularity. Drawn as a fan and a funnel.</p></div>
+    <div><span class="why">new primitive 8</span><h3>Route and merge</h3><p>Route sends each item, or part of one, to one of K carriers by a selector. Merge combines K carriers into one under a policy. Both declare a granularity. Drawn as the hardware demux and mux symbols: a trapezoid narrow on its input side, and its mirror image.</p></div>
     <div><span class="why">carrier attribute</span><h3>Indexed carriers</h3><p>A carrier replicated by an index (<span class="mono">ssym[sid] ×4</span>), drawn as a deck. Stages and clock domains can carry the same index.</p></div>
     <div><span class="why">state attribute</span><h3>Epoch</h3><p>Double-buffered state that switches at a point defined by the flow. Every reader must switch at that point.</p></div>
   </div>
@@ -294,7 +294,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
     <div class="prim">
       <div class="prim-head"><span class="num">8</span><h3>Route and merge</h3></div>
       <p class="def">Where <em>different</em> items part ways or come together. A route sends each item, or part of one, to one of K carriers. A merge combines K carriers into one.</p>
-      <dl><dt>attributes</dt><dd>route: selector (field or state lookup) · default (where unmatched items go) · granularity (item, or along an axis). Merge: policy (round-robin, priority, ring order, by field) · granularity (beat, packet, …) · creates (the field that keeps origins apart)</dd><dt>drawn as</dt><dd>a fan widening into a deck; a funnel narrowing a deck into one band, with its policy beneath</dd></dl>
+      <dl><dt>attributes</dt><dd>route: selector (field or state lookup) · default (where unmatched items go) · granularity (item, or along an axis). Merge: policy (round-robin, priority, ring order, by field) · granularity (beat, packet, …) · creates (the field that keeps origins apart)</dd><dt>drawn as</dt><dd>a demux trapezoid (narrow side on the single input, wide side on the deck); a mux trapezoid (the mirror image), with its policy beneath</dd></dl>
       <span class="from">05 slot router, SDP merge, message ring</span>
     </div>
   </div>
@@ -320,7 +320,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
         <tr><td>gutter edge stroke</td><td>feedback kind: solid data, dashed control, dotted flow</td><td>importance</td></tr>
         <tr><td>≈ mark</td><td>a mark that simplifies the model; the caption says how</td><td>uncertainty about the design</td></tr>
         <tr><td>stub tag</td><td>a read of out-of-flow state from more than one band away</td><td>a different kind of state</td></tr>
-        <tr><td>fan / funnel</td><td>route / merge</td><td>fork or join (those are one item's fields)</td></tr>
+        <tr><td>demux / mux trapezoid</td><td>route / merge</td><td>fork or join (those are one item's fields)</td></tr>
         <tr><td>deck of bands</td><td>an indexed carrier</td><td>several unrelated carriers</td></tr>
         <tr><td>row thickness</td><td>off by default; with the cost overlay on, bits</td><td>anything when the overlay is off</td></tr>
       </tbody>

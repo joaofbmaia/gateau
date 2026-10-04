@@ -252,7 +252,7 @@ state vcpt   out-of-flow  slot → sid
 <section>
   <div class="prose">
     <h2>Bus view</h2>
-    <p>Indexed carriers (one per stream) are drawn as a deck: the band with two offset copies behind it, labelled ×4. ROUTE is a fan that widens from one carrier into a deck; a merge is a funnel that narrows a deck back into one carrier. The per-stream pipeline is collapsed, because study 04 already draws it.</p>
+    <p>Indexed carriers (one per stream) are drawn as a deck: the band with two offset copies behind it, labelled ×4. ROUTE is drawn as a demux, narrow on the side of the one carrier it reads and wide on the deck it feeds; a merge is the mirror-image mux that narrows a deck back into one carrier. The per-stream pipeline is collapsed, because study 04 already draws it.</p>
   </div>
   <figure>
     <div class="sheet"><svg class="" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver.">
@@ -294,9 +294,9 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><line class="edge" x1="225" y1="118" x2="225" y2="300"/><text class="t-w t-mid" x="225" y="120">b0</text><line class="edge" x1="345" y1="118" x2="345" y2="300"/><text class="t-w t-mid" x="345" y="120">b1</text><line class="edge" x1="470" y1="118" x2="470" y2="300"/><text class="t-w t-mid" x="470" y="120">b2</text></g>
 <line class="edge" x1="595" y1="310" x2="595" y2="378"/><text class="t-w t-mid" x="595" y="390" style="fill:var(--accent)">» b3</text>
 <line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>
-<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="380" y2="150"/>
-<line class="lane" x1="330" y1="172" x2="380" y2="172"/>
-<line class="lane" x1="460" y1="242" x2="520" y2="242"/><line class="lane" x1="460" y1="266" x2="520" y2="266"/>
+<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="385" y2="150"/>
+<line class="lane" x1="330" y1="172" x2="385" y2="172"/>
+<line class="lane" x1="445" y1="242" x2="520" y2="242"/><line class="lane" x1="445" y1="266" x2="520" y2="266"/>
 <line class="lane" x1="580" y1="350" x2="620" y2="350"/>
 <line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/>
 <polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
@@ -306,12 +306,12 @@ state vcpt   out-of-flow  slot → sid
 <line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/>
 <line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/>
 <g class="chk"><line class="conn" x1="322" y1="158" x2="322" y2="42" marker-end="url(#m-ink)"/><text class="t-w" x="327" y="110" style="fill:var(--fg)">swap</text></g>
-<g class="chk"><line class="conn" x1="402" y1="40" x2="402" y2="156"/><circle class="dot" cx="402" cy="40" r="3.2"/></g>
+<g class="chk"><line class="conn" x1="402" y1="40" x2="402" y2="140"/><circle class="dot" cx="402" cy="40" r="3.2"/></g>
 <g class="chk"><line class="conn" x1="700" y1="228" x2="700" y2="100" marker-end="url(#m-ink)"/></g>
 <rect class="box-opt" x="120" y="82" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="98" style="fill:var(--muted)">PM</text>
 <rect class="box" x="130" y="138" width="80" height="24" rx="3"/><text class="t-box" x="170" y="154">LINK ≡ 04</text>
 <rect class="box" x="240" y="158" width="90" height="26" rx="3"/><text class="t-box" x="285" y="175">FRAME</text>
-<g class="chk"><polygon class="box route" points="380,136 460,216 460,296 380,184"/><text class="t-box" x="426" y="236">ROUTE</text><text class="t-sub" x="426" y="250">per s</text></g>
+<g class="chk"><polygon class="box route" points="385,144 445,128 445,298 385,282"/><text class="t-box" x="415" y="212">ROUTE</text><text class="t-sub" x="415" y="228">per s</text></g>
 <g class="chk"><rect class="box" x="520" y="228" width="60" height="146" rx="3"/><text class="t-box" x="550" y="290">PACK</text><text class="t-sub" x="550" y="306">×sid</text><text class="t-sub" x="550" y="320">FIFO 64</text></g>
 <g class="chk"><rect class="box" x="620" y="228" width="120" height="342" rx="3"/><text class="t-box" x="680" y="300">STRM ×sid</text><text class="t-sub" x="680" y="316">PARS · MSA</text><text class="t-sub" x="680" y="330">SDP · VID</text><text class="t-sub" x="680" y="344">= study 04</text></g>
 <g class="chk"><polygon class="box merge" points="822,398 890,410 890,474 822,486"/><text class="t-box" x="856" y="446">SDPM</text></g>
@@ -327,7 +327,7 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><rect class="badge-acc" x="430" y="378" width="150" height="16" rx="8"/><text class="t-w t-acc t-mid" x="505" y="390">rigid edge: FIFO ≥ run</text></g>
 <g class="chk"><rect class="badge-ok" x="900" y="484" width="280" height="16" rx="8"/><text class="t-w t-ok t-mid" x="1040" y="496">✓ SDPM: creates sid · never splits a packet</text></g>
 </svg></div>
-    <figcaption><span class="fig-id">FIG M1</span><b>MSTRX bus view.</b> The policy maker writes the payload table's shadow copy over the message ring (the tap below <code>vcpt</code>). FRAME numbers each symbol position with its MTP slot and swaps the table's epoch when it sees ACT. ROUTE looks each slot up in <code>vcpt.active</code> and fans the symbol stream into four sparse per-stream carriers, marking which positions are valid. PACK compacts each one into a dense, elastic stream (the rigid region ends here, at <code>b3</code>). Each STRM produces SDP packets and pixels. SDPM merges the four packet carriers round-robin, one whole packet at a time, and adds <code>sid</code> so they can be told apart. MSGM merges the four MSA reports onto the ring without adding anything, which is the red badge.</figcaption>
+    <figcaption><span class="fig-id">FIG M1</span><b>MSTRX bus view.</b> The policy maker writes the payload table's shadow copy over the message ring (the tap below <code>vcpt</code>). FRAME numbers each symbol position with its MTP slot and swaps the table's epoch when it sees ACT. ROUTE looks each slot up in <code>vcpt.active</code> and splits the symbol stream into four sparse per-stream carriers, marking which positions are valid. PACK compacts each one into a dense, elastic stream (the rigid region ends here, at <code>b3</code>). Each STRM produces SDP packets and pixels. SDPM merges the four packet carriers round-robin, one whole packet at a time, and adds <code>sid</code> so they can be told apart. MSGM merges the four MSA reports onto the ring without adding anything, which is the red badge.</figcaption>
   </figure>
 </section>
 
@@ -417,7 +417,7 @@ state vcpt   out-of-flow  slot → sid
 <rect class="c-str" x="420" y="110" width="60" height="40" rx="2" style="stroke:var(--accent);stroke-width:2.2"/><text class="t-cell" x="450" y="134">A · 24</text>
 <rect class="c-str" x="480" y="110" width="60" height="40" rx="2" style="stroke:var(--accent);stroke-width:2.2"/><text class="t-cell" x="510" y="134">B · 25</text>
 <text class="t-w t-mid" x="450" y="166" style="fill:var(--fg)">s = 0</text><text class="t-w t-mid" x="510" y="166" style="fill:var(--fg)">s = 1</text>
-<polygon class="box route" points="580,110 640,80 640,180 580,150"/><text class="t-sub" x="610" y="134" style="fill:var(--fg)">ROUTE</text>
+<polygon class="box route" points="580,112 640,96 640,164 580,148"/><text class="t-sub" x="610" y="134" style="fill:var(--fg)">ROUTE</text>
 <line class="wire" x1="540" y1="130" x2="580" y2="130"/>
 <line class="wire" x1="640" y1="96" x2="700" y2="96"/><rect class="c-str" x="700" y="82" width="44" height="28" rx="2"/><text class="t-cell" x="722" y="100">A</text><text class="t-w" x="754" y="100" style="fill:var(--fg)">ssym[A].v = 1 0</text>
 <line class="wire" x1="640" y1="164" x2="700" y2="164"/><rect class="c-str" x="700" y="150" width="44" height="28" rx="2"/><text class="t-cell" x="722" y="168">B</text><text class="t-w" x="754" y="168" style="fill:var(--fg)">ssym[B].v = 0 1</text>
@@ -524,9 +524,9 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><line class="edge" x1="225" y1="118" x2="225" y2="300"/><text class="t-w t-mid" x="225" y="120">b0</text><line class="edge" x1="345" y1="118" x2="345" y2="300"/><text class="t-w t-mid" x="345" y="120">b1</text><line class="edge" x1="470" y1="118" x2="470" y2="300"/><text class="t-w t-mid" x="470" y="120">b2</text></g>
 <line class="edge" x1="595" y1="310" x2="595" y2="378"/><text class="t-w t-mid" x="595" y="390" style="fill:var(--accent)">» b3</text>
 <line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>
-<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="380" y2="150"/>
-<line class="lane" x1="330" y1="172" x2="380" y2="172"/>
-<line class="lane" x1="460" y1="242" x2="520" y2="242"/><line class="lane" x1="460" y1="266" x2="520" y2="266"/>
+<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="385" y2="150"/>
+<line class="lane" x1="330" y1="172" x2="385" y2="172"/>
+<line class="lane" x1="445" y1="242" x2="520" y2="242"/><line class="lane" x1="445" y1="266" x2="520" y2="266"/>
 <line class="lane" x1="580" y1="350" x2="620" y2="350"/>
 <line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/>
 <polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
@@ -536,12 +536,12 @@ state vcpt   out-of-flow  slot → sid
 <line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/>
 <line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/>
 <g class="chk"><line class="conn" x1="322" y1="158" x2="322" y2="42" marker-end="url(#m-ink)"/><text class="t-w" x="327" y="110" style="fill:var(--fg)">swap</text></g>
-<g class="chk"><line class="conn" x1="402" y1="40" x2="402" y2="156"/><circle class="dot" cx="402" cy="40" r="3.2"/></g>
+<g class="chk"><line class="conn" x1="402" y1="40" x2="402" y2="140"/><circle class="dot" cx="402" cy="40" r="3.2"/></g>
 <g class="chk"><line class="conn" x1="700" y1="228" x2="700" y2="100" marker-end="url(#m-ink)"/></g>
 <rect class="box-opt" x="120" y="82" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="98" style="fill:var(--muted)">PM</text>
 <rect class="box" x="130" y="138" width="80" height="24" rx="3"/><text class="t-box" x="170" y="154">LINK ≡ 04</text>
 <rect class="box" x="240" y="158" width="90" height="26" rx="3"/><text class="t-box" x="285" y="175">FRAME</text>
-<g class="chk"><polygon class="box route" points="380,136 460,216 460,296 380,184"/><text class="t-box" x="426" y="236">ROUTE</text><text class="t-sub" x="426" y="250">per s</text></g>
+<g class="chk"><polygon class="box route" points="385,144 445,128 445,298 385,282"/><text class="t-box" x="415" y="212">ROUTE</text><text class="t-sub" x="415" y="228">per s</text></g>
 <g class="chk"><rect class="box" x="520" y="228" width="60" height="146" rx="3"/><text class="t-box" x="550" y="290">PACK</text><text class="t-sub" x="550" y="306">×sid</text><text class="t-sub" x="550" y="320">FIFO 64</text></g>
 <g class="chk"><rect class="box" x="620" y="228" width="120" height="342" rx="3"/><text class="t-box" x="680" y="300">STRM ×sid</text><text class="t-sub" x="680" y="316">PARS · MSA</text><text class="t-sub" x="680" y="330">SDP · VID</text><text class="t-sub" x="680" y="344">= study 04</text></g>
 <g class="chk"><polygon class="box merge" points="822,398 890,410 890,474 822,486"/><text class="t-box" x="856" y="446">SDPM</text></g>
@@ -566,7 +566,7 @@ state vcpt   out-of-flow  slot → sid
     <h2>What this forced into the notation (v1.2)</h2>
   </div>
   <div class="changes">
-    <div><span class="why">new primitive 8</span><h3>Route and merge</h3><p>A <b>route</b> sends each item (or part of one) to one of K carriers, chosen by a selector: a field or a state lookup. A <b>merge</b> combines K carriers into one under a policy. Both declare a granularity: the item size they act on, which may be finer than the carrier's item (route along an axis) or coarser (merge whole packets). Drawn as a fan and a funnel.</p></div>
+    <div><span class="why">new primitive 8</span><h3>Route and merge</h3><p>A <b>route</b> sends each item (or part of one) to one of K carriers, chosen by a selector: a field or a state lookup. A <b>merge</b> combines K carriers into one under a policy. Both declare a granularity: the item size they act on, which may be finer than the carrier's item (route along an axis) or coarser (merge whole packets). Drawn as the hardware demux and mux symbols: a trapezoid narrow on its input side, and its mirror image.</p></div>
     <div><span class="why">carrier attribute</span><h3>Indexed carriers</h3><p>A carrier can be replicated by an index (<span class="mono">ssym[sid] ×4</span>), with one copy per stream, sharing a layout. Drawn as a deck. Stages on it are replicated by the same index (×sid). Clock domains can be indexed too (<span class="mono">vid_clk[sid]</span>), which keeps hue meaning one thing.</p></div>
     <div><span class="why">state attribute</span><h3>Epoch</h3><p>State that is double-buffered and switches at a point defined by the flow (an MTP boundary after ACT). The model declares the switch point; the check verifies that every reader switches there.</p></div>
   </div>
