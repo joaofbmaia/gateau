@@ -1,0 +1,88 @@
+# MSTRX: an INVENTED multi-stream DisplayPort receiver, in gateau notation v1.2
+# Not a real design. Written to exercise route, merge, indexed carriers and epoch state.
+# Protocol ideas follow DP 1.2+ MST loosely: 64-slot MTPs, slot 0 carries the MTP header,
+# a VC payload table maps slots to streams, and an ACT sequence makes a new table take effect.
+
+design mstrx
+  params   P_LANES = 4, P_SPL = 2, N_STR = 4
+  axes     ℓ = P_LANES, s = P_SPL, sid = N_STR
+  domains  lnk_clk (main), sdp_clk, vid_clk[sid] (one per stream), sys_clk
+  outside  PHY, PM
+
+mode training
+mode normal
+
+# ── carriers ─────────────────────────────────────────────────────────────
+carrier msg        "16-bit message"                         @ lnk_clk  ring
+carrier sym        "one symbol group per lnk_clk"           @ lnk_clk  rate fixed
+carrier ssym[sid]  "one symbol group, this stream's slots"  @ lnk_clk  indexed ×N_STR   # sparse
+carrier str[sid]   "one stream symbol group"                @ lnk_clk  indexed ×N_STR   # dense, elastic
+carrier sdpk[sid]  "SDP packet of stream sid"               @ sdp_clk  indexed ×N_STR
+carrier sdpb[sid]  "32-bit SDP beat" ⊂ sdpk[sid]            @ sdp_clk  indexed ×N_STR
+carrier sdpo       "SDP packet, all streams"                @ sdp_clk
+carrier sdpob      "32-bit SDP beat" ⊂ sdpo                 @ sdp_clk
+carrier pix[sid]   "P_PPC pixels"                           @ vid_clk[sid]  indexed ×N_STR
+
+# ── fields ───────────────────────────────────────────────────────────────
+group sym.lnk      : { k, dat, lock }                 # everything study 04's link layer delivers
+field sym.slot     : u6[s]                            # MTP slot index of each symbol position
+field ssym.lnk     : { k, dat }[ℓ,s]
+field ssym.v       : bit[s]                           # this stream owns symbol position s
+group str.tag      : { sol, eol, vid, sdp, msa, vbid }
+field sdpk.len     : u6          availability tail
+field sdpb.dat     : u32
+field sdpo.sid     : u2                               # created by the merge
+field sdpo.len     : u6          availability tail
+field sdpob.dat    : u32
+
+# ── state ────────────────────────────────────────────────────────────────
+state cfg    out-of-flow  { lanes, scrm_en, bpc[sid] }            written by CTL from msg
+state vcpt   out-of-flow  slot → sid  (64 entries)
+             epoch: shadow written by PM via msg;
+                    active ← shadow at the first MTP boundary after an ACT sequence
+state mtp    in-flow cyclic  slot counter ↻ 64, reset by MTPH      written by FRAME
+
+# ── boundaries ───────────────────────────────────────────────────────────
+boundary b0                    # link layer output (study 04's b1)
+boundary b1 = b0 + 1           # FRAME output
+boundary b2 = b1 + 1           # ROUTE output
+boundary b3                    # PACK output, per stream, elastic
+boundary b0, b1, b2  rigid
+boundary b3          elastic
+
+# ── stages ───────────────────────────────────────────────────────────────
+stage LINK   on sym;  = study 04 (TRN · PARS · SCRM), collapsed
+stage FRAME  on sym;  between b0 → b1;  reads lnk;  writes mtp;  creates slot
+             detects ACT in MTPH → vcpt epoch swap
+route ROUTE  sym → ssym[sid];  between b1 → b2
+             selector  sid = vcpt.active[slot]           per symbol position s
+             granularity  axis s                         # one item can feed two streams
+             default   slot 0 (MTPH) and unallocated → discard
+             creates ssym.v;  consumes slot
+stage PACK   ×sid;  ssym[sid] → str[sid];  between b2 → b3
+             compacts valid positions;  FIFO 64 words per stream
+stage STRM   ×sid;  on str[sid] → sdpk[sid], pix[sid]
+             = study 04 PARS · MSA · SDP · VID, per stream, collapsed
+             MSA emits attributes → msg (message ID = MSA)  # no sid in the message
+merge SDPM   sdpk[sid] → sdpo
+             policy  round-robin
+             granularity  packet (sdpk), never interleaves beats
+             creates sid
+merge MSGM   msg from STRM[0..3] → msg
+             policy  ring order
+             granularity  message
+             # creates nothing: every stream sends the same message ID
+
+# ── feedback ─────────────────────────────────────────────────────────────
+feedback flow  SDPM grant → STRM[sid].SDP              one input at a time
+feedback ctrl  PM → vcpt.shadow via msg                ALLOCATE_PAYLOAD (sideband, outside)
+feedback ctrl  STRM[sid].VID irq → PM
+
+# ── checks (derived) ─────────────────────────────────────────────────────
+check route ROUTE coverage       64 slots: 1 header + allocated + unallocated → all have a destination  ✓
+check route ROUTE granularity    axis s: each ssym[sid] item may be partly valid → PACK required       ✓
+check merge SDPM identity        creates sid                                                          ✓
+check merge SDPM atomicity       granularity packet ⊇ beat                                             ✓
+check merge MSGM identity        no sid, same message ID from 4 inputs → PM cannot tell streams apart  ✗
+check epoch vcpt                 readers: ROUTE only; swap point: MTP boundary                         ✓
+check rigid  b2 → PACK           no stall path; FIFO must cover the longest run of a stream's slots

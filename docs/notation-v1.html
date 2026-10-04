@@ -201,15 +201,27 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
 <div class="page">
 
 <header>
-  <div class="eyebrow">gateau · notation v1.1 draft</div>
+  <div class="eyebrow">gateau · notation v1.2 draft</div>
   <h1>Gateau Notation</h1>
-  <p class="lede">The consolidated set of abstractions behind studies 01–03, and a method for drawing any architecture with them. Seven primitives, four views, five derived checks, and one rule for which visual channel means what.</p>
+  <p class="lede">The consolidated set of abstractions behind studies 01–03, and a method for drawing any architecture with them. Eight primitives, four views, eight derived checks, and one rule for which visual channel means what.</p>
   <div class="meta">
     <span>consolidates: <a href="https://claude.ai/artifact/WeWk2D2etuaHL4HB6VPZ5Q">study 01</a> (DP RX) · <a href="https://claude.ai/artifact/Sh4MkSwhh6BpLXoZ5PMTzb">study 02</a> (Rocket, Gemmini, bubbletea) · <a href="https://claude.ai/artifact/NfKRW7T2NAj34TQsd6sZQN">study 03</a> (Ethernet)</span>
-    <span>applied in: <a href="https://claude.ai/artifact/DXpzvLB2dQYPmqqpW4ewVs">study 04</a> (DP RX, all views)</span>
+    <span>applied in: <a href="https://claude.ai/artifact/DXpzvLB2dQYPmqqpW4ewVs">study 04</a> (DP RX, all views) · <a href="https://claude.ai/artifact/J3FtFdFsgc54f4uSCjhbeN">study 05</a> (invented MST receiver)</span>
     <span>status: draft for review</span>
   </div>
 </header>
+
+<section>
+  <div class="prose">
+    <h2>Changes in v1.2</h2>
+    <p>An invented multi-stream receiver (study 05) tested what v1.1 couldn't draw: items routed apart and merged back. That added one primitive and two attributes.</p>
+  </div>
+  <div class="changes">
+    <div><span class="why">new primitive 8</span><h3>Route and merge</h3><p>Route sends each item, or part of one, to one of K carriers by a selector. Merge combines K carriers into one under a policy. Both declare a granularity. Drawn as a fan and a funnel.</p></div>
+    <div><span class="why">carrier attribute</span><h3>Indexed carriers</h3><p>A carrier replicated by an index (<span class="mono">ssym[sid] ×4</span>), drawn as a deck. Stages and clock domains can carry the same index.</p></div>
+    <div><span class="why">state attribute</span><h3>Epoch</h3><p>Double-buffered state that switches at a point defined by the flow. Every reader must switch at that point.</p></div>
+  </div>
+</section>
 
 <section>
   <div class="prose">
@@ -226,21 +238,21 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
 <section>
   <div class="prose">
     <h2>The model in one sentence</h2>
-    <p><b>An architecture is a set of items flowing left to right on carriers, through stages that read, write, create and consume the items' fields, across boundaries that set latency and flow control, alongside state the stages tap, with feedback running back underneath.</b></p>
-    <p>Every glyph from the three studies is either one of the seven primitives below, an attribute of one, or something computed from them. Over the three studies the glyph count grew to about thirty-five. Most of that growth came from drawing the same idea twice. A rate change in bubbletea and a header parser in Ethernet are the same thing. So are a cycle band, an enable region and a line-time region, and so are DP RX's latency badge, Gemmini's tag queue and the MAC's CRC hold.</p>
+    <p><b>An architecture is a set of items flowing left to right on carriers, through stages that read, write, create and consume the items' fields, across boundaries that set latency and flow control, alongside state the stages tap, with feedback running back underneath. Carriers can be routed into indexed copies and merged back.</b></p>
+    <p>Every glyph from the studies is either one of the eight primitives below, an attribute of one, or something computed from them. Over the three studies the glyph count grew to about thirty-five. Most of that growth came from drawing the same idea twice. A rate change in bubbletea and a header parser in Ethernet are the same thing. So are a cycle band, an enable region and a line-time region, and so are DP RX's latency badge, Gemmini's tag queue and the MAC's CRC hold.</p>
   </div>
 </section>
 
 <section>
   <div class="prose">
-    <h2>Seven primitives</h2>
+    <h2>Eight primitives</h2>
     <p>These are the things an author declares. The tag under each card says which studies forced it.</p>
   </div>
   <div class="prims">
     <div class="prim">
       <div class="prim-head"><span class="num">1</span><h3>Carrier</h3></div>
       <p class="def">A stream of <em>items</em> at one rate. An item is whatever counts as "one": a symbol pair, an instruction, a matmul row, an II-period, a packet, a beat.</p>
-      <dl><dt>attributes</dt><dd>item name · rate · parent carrier (rates nest: packet ⊃ beat, II-period ⊃ cycle)</dd><dt>drawn as</dt><dd>a horizontal band with its rate in the header; coarser carriers sit above finer ones</dd></dl>
+      <dl><dt>attributes</dt><dd>item name · rate · parent carrier (rates nest: packet ⊃ beat, II-period ⊃ cycle) · index (×K copies, one per stream)</dd><dt>drawn as</dt><dd>a horizontal band with its rate in the header; coarser carriers sit above finer ones; an indexed carrier is a deck of bands</dd></dl>
       <span class="from">01 · 03 two buses · 02 rate band, message ring</span>
     </div>
     <div class="prim">
@@ -270,7 +282,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
     <div class="prim">
       <div class="prim-head"><span class="num">6</span><h3>State</h3></div>
       <p class="def">Anything that outlives an item: register files, scoreboards, scratchpads, caches, configuration, counters.</p>
-      <dl><dt>attributes</dt><dd>taps (stage + read or write) · writer: <b>in-flow</b> (written by stages), <b>out-of-flow</b> (configuration, written outside the items) or <b>shared</b> (tapped by several carriers or directions) · cyclic (wraps every N)</dd><dt>drawn as</dt><dd>a pill above the bands, stretched from its first tap to its last</dd></dl>
+      <dl><dt>attributes</dt><dd>taps (stage + read or write) · writer: <b>in-flow</b> (written by stages), <b>out-of-flow</b> (configuration, written outside the items) or <b>shared</b> (tapped by several carriers or directions) · cyclic (wraps every N) · epoch (shadow → active at a point in the flow)</dd><dt>drawn as</dt><dd>a pill above the bands, stretched from its first tap to its last</dd></dl>
       <span class="from">02 RF, scoreboard, spad, t ↻ · 01 cfg · 03 ARP cache</span>
     </div>
     <div class="prim">
@@ -278,6 +290,12 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
       <p class="def">Any signal that goes from a later stage to an earlier one, or out of the design and back.</p>
       <dl><dt>attributes</dt><dd>kind: <b>data</b> (bypass), <b>control</b> (redirect, kill, bitslip) or <b>flow</b> (ready, credit, stall) · source and target stage · delay</dd><dt>drawn as</dt><dd>a right-to-left edge in the gutter below the bands: solid for data, dashed for control, dotted for flow</dd></dl>
       <span class="from">02 return gutter, kill · 03 tready, bitslip</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">8</span><h3>Route and merge</h3></div>
+      <p class="def">Where <em>different</em> items part ways or come together. A route sends each item, or part of one, to one of K carriers. A merge combines K carriers into one.</p>
+      <dl><dt>attributes</dt><dd>route: selector (field or state lookup) · default (where unmatched items go) · granularity (item, or along an axis). Merge: policy (round-robin, priority, ring order, by field) · granularity (beat, packet, …) · creates (the field that keeps origins apart)</dd><dt>drawn as</dt><dd>a fan widening into a deck; a funnel narrowing a deck into one band, with its policy beneath</dd></dl>
+      <span class="from">05 slot router, SDP merge, message ring</span>
     </div>
   </div>
 </section>
@@ -302,6 +320,8 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
         <tr><td>gutter edge stroke</td><td>feedback kind: solid data, dashed control, dotted flow</td><td>importance</td></tr>
         <tr><td>≈ mark</td><td>a mark that simplifies the model; the caption says how</td><td>uncertainty about the design</td></tr>
         <tr><td>stub tag</td><td>a read of out-of-flow state from more than one band away</td><td>a different kind of state</td></tr>
+        <tr><td>fan / funnel</td><td>route / merge</td><td>fork or join (those are one item's fields)</td></tr>
+        <tr><td>deck of bands</td><td>an indexed carrier</td><td>several unrelated carriers</td></tr>
         <tr><td>row thickness</td><td>off by default; with the cost overlay on, bits</td><td>anything when the overlay is off</td></tr>
       </tbody>
     </table>
@@ -323,7 +343,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
 
 <section>
   <div class="prose">
-    <h2>Five derived checks</h2>
+    <h2>Eight derived checks</h2>
     <p>These are why the primitives are worth declaring precisely: each check falls out of the model with no extra input, and each one caught something real in the studies.</p>
   </div>
   <div class="table-wrap">
@@ -334,6 +354,9 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
         <tr><td>Hazard window covered<span class="src">in-flow state</span></td><td>for each state, the span between its read and write taps; every read-after-write distance in it must have a bypass, a stall or a scoreboard</td><td>Rocket's bypass table, derived from the drawing alone</td></tr>
         <tr><td>Availability<span class="src">fields with head/tail</span></td><td>a field consumed at an item's head but created at its tail needs a buffer of one whole item</td><td>UDP checksum → 16 KiB FIFO; FCS needs none</td></tr>
         <tr><td>Rigid edges<span class="src">coupling</span></td><td>where a rigid region meets a stallable one, the stage there must drop (on input) or pre-buffer a whole item (on output)</td><td>Ethernet RX and TX frame FIFOs</td></tr>
+        <tr><td>Route coverage<span class="src">route</span></td><td>every selector value has a destination, including an explicit discard; the granularity is fine enough for the item</td><td>MSTRX: all 64 slots covered; routing must split items along s (study 05)</td></tr>
+        <tr><td>Merge identity and atomicity<span class="src">merge</span></td><td>origins can still be told apart after the merge; the granularity keeps every coarser item whole</td><td>MSTRX: SDP merge adds sid ✓; message-ring merge loses the stream ✗</td></tr>
+        <tr><td>Epoch consistency<span class="src">state with epoch</span></td><td>every reader switches at the declared point</td><td>MSTRX payload table: one reader, one swap point</td></tr>
         <tr><td>Cost<span class="src">fields × boundaries</span></td><td>bits × boundaries crossed for pipeline registers; declared depths for buffers; state sizes</td><td>DP RX lane-copied tags (36 of 121 bits); bubbletea delayers at 4× the PE array</td></tr>
       </tbody>
     </table>
@@ -470,6 +493,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
     <li><b>Name every boundary</b> and give its latency relative to another (<span class="mono">b1 = b0 + 1</span>, "variable", or "?") and its coupling: lockstep, elastic or rigid. Place each stage between two boundaries. Note clock domains. Write "?" rather than guessing; unknown latencies are where contracts hide.</li>
     <li><b>Enumerate fields per carrier.</b> For each one: type in axis terms, the stage that creates it, the stages that read and write it, the stage that consumes it, and whether it is available for the whole item, at its head, or at its tail. Group bundles.</li>
     <li><b>Find forks and joins.</b> Wherever an item's fields split and meet again, declare the join discipline (lat, fifo, key) and its parameter.</li>
+    <li><b>Find routes and merges.</b> Wherever different items part ways or share a carrier, declare the selector and default (route) or the policy and the field that keeps origins apart (merge), and the granularity of each.</li>
     <li><b>List state.</b> For each store: taps, writer kind (in-flow, out-of-flow, shared), and whether it is cyclic.</li>
     <li><b>List feedback</b>: bypasses, redirects, kills, ready/stall, and anything leaving the design (bitslip, reset requests).</li>
     <li><b>Run the five checks.</b> Every failing or undeclared one is a finding, and usually the most valuable output of the exercise.</li>
@@ -512,17 +536,18 @@ stage VID   consumes all; emits video @ vid_clk     boundary rigid → elastic v
 <section>
   <div class="prose">
     <h2>Not yet covered</h2>
-    <p>Four things showed up in the designs but were collapsed into boxes rather than drawn. They should be tested before v1 is called stable.</p>
+    <p>These showed up in the designs but are only sketched in the notation. Modes have now been tried once (study 04) and worked; the rest are untested.</p>
   </div>
   <ul class="findings">
-    <li><b>Merge and route of different items.</b> Joins re-unite parts of <em>one</em> item. Arbiters merge <em>different</em> items onto one carrier, and demuxes route items by a field (Ethernet's <span class="mono">ip_arb_mux</span> and ARP/IP split, Gemmini's issue to three pipelines). These probably need an eighth primitive with a policy attribute (priority, round-robin, by field).</li>
+    <li><b>Merge fairness.</b> v1.2 checks identity and atomicity, but not starvation: fixed priority can starve an input, and checking it needs rates the model doesn't have yet.</li>
+    <li><b>Replicas that differ.</b> An indexed carrier assumes all copies are the same. Stream 0 with audio and the rest without would need per-index exceptions.</li>
     <li><b>Modes.</b> DP RX training versus normal operation, bubbletea configuring versus computing. A likely answer is that the bus view is drawn per mode, with stages and fields marked by the modes they exist in. This hasn't been tried.</li>
     <li><b>Out-of-order completion.</b> Kill covers in-order squashing. A reorder buffer is a key join over many items at once, and the notation hasn't met one yet.</li>
     <li><b>Clock-ratio carriers.</b> Two carriers in different domains at a fixed ratio (a 2:1 gearbox, DDR) might be nested carriers rather than a CDC. This is a guess so far.</li>
   </ul>
   <div class="prose">
     <h3>Suggested next step</h3>
-    <p>Run the method by hand on the part of your DP RX controller you know best, from memory and without the code. It is the design that motivated all this, and it has the two things this draft is least sure of: packet merging (SDP and MST streams) and modes (training). If those fit without new primitives beyond merge/route, v1 is close to right.</p>
+    <p>Studies 04 and 05 covered modes and merge/route on a real and an invented DP receiver. The strongest remaining test is still your own DP RX controller, drawn from memory: it is the only design here whose behaviour someone can confirm.</p>
   </div>
   <p class="note">This page consolidates what studies 01–03 found and adds no new design reading. The worked redraw is based on the bubbletea sources read for study 02.</p>
 </section>
