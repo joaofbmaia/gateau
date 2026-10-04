@@ -5,7 +5,7 @@ facts those drawings depend on. The notation is described in
 [`docs/notation-v1.html`](docs/notation-v1.html) (v1.2); the studies that shaped it are
 `docs/notation-sketchbook*.html`.
 
-This package is step 1: the model and the checks. There is no renderer yet.
+This package holds the model, the checks, and a renderer for the bus view.
 
 ## Models
 
@@ -48,13 +48,47 @@ python -m gateau examples/dprx.py
 
 Each finding is `pass`, `fail`, `unchecked` (the model lacks the information) or `info`.
 
+## Bus view
+
+```
+python -m gateau examples/mstrx.py --html mstrx.html
+python -m gateau examples/dprx.py --svg dprx.svg --mode training
+python -m gateau examples/dprx.py --html dprx-cost.html --overlay cost
+```
+
+`gateau/render.py` lays out the bus view from the model using fixed rules. No layout is
+placed by hand.
+
+- **Columns:** one per stage, route or merge, in flow order.
+- **Bands:** rings first, then a depth-first walk of the flow, so that chains of carriers
+  stay adjacent. Children sit under their parent.
+- **Rows:** a row is live from the stage that creates it until it is consumed, or until
+  its items move to another carrier.
+- **Boxes:** a box covers the rows it writes, creates or consumes. Reads are dots on a
+  connector. Routes and merges are drawn as demux and mux trapezoids.
+- **Rigid shading:** comes from boundary couplings.
+- **State:** shown as pills above the bands. Out-of-flow reads from deep bands are drawn
+  as stubs.
+- **Feedback:** drawn in the gutter, shortest span nearest the bands.
+- **Badges:** come from the check findings.
+
+Two options change the drawing without moving the layout:
+
+- `--mode` fades whatever is inactive in that mode.
+- `--overlay cost` scales line weight by bits × copies. `--overlay checks` fades
+  everything except the badges and the findings list.
+
 ## Examples and tests
 
 - `examples/dprx.py`: Parretto's DisplayPort RX (study 04).
 - `examples/mstrx.py`: an invented multi-stream DP receiver (study 05).
+- `examples/rocket.py`: Rocket's integer pipeline, with hazard coverage per producer class (study 02).
+- `examples/ethernet.py`: verilog-ethernet's 10G MAC/IP/UDP RX and TX (study 03).
 
 The tests require each example to reproduce exactly the findings its study drew by
-hand, and give every check a passing and a failing case:
+hand, and give every check a passing and a failing case. The renderer tests check
+structure, not pixels: every item and carrier is drawn, the band order, where rows end,
+which bands are shaded, mode fading, and badges.
 
 ```
 pip install pytest

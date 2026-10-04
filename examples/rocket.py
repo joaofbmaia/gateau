@@ -44,7 +44,7 @@ def build() -> Design:
     d.boundary("bRET", after="bWB", latency=1, coupling="lockstep")
 
     d.stage("Frontend", "inst", creates=["valid", "pc", "inst", "btb", "xcpt"], note="F1 · F2 · I$ · BTB")
-    d.stage("ID", "inst", between=("bID", "bEX"), reads=["inst"], creates=["ctrl", "rs"],
+    d.stage("ID", "inst", between=("bID", "bEX"), reads=["inst"], creates=["ctrl", "rs", "cause"],
             writes=["xcpt"], state_reads=["rf", "sboard"])
     d.stage("EX", "inst", between=("bEX", "bMEM"), reads=["pc", "ctrl", "rs"], creates=["wdata"])
     d.stage("DC0", "inst", out="dmem", between=("bEX", "bMEM"), reads=["rs"], creates=["addr"])
