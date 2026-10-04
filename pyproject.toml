@@ -1,0 +1,12 @@
+[project]
+name = "gateau"
+version = "0.1.0"
+description = "A notation and checker for hardware architecture dataflow"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
