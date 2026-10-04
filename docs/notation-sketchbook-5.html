@@ -218,6 +218,12 @@ svg .c-hdr + .t-cell { fill: var(--surface); }
 svg .c-str { fill: var(--surface); stroke: var(--fg); stroke-width: 1; }
 svg .c-trl { fill: var(--soft); stroke: var(--track); stroke-width: 1; }
 svg .t-cell { font-size: 11px; text-anchor: middle; fill: var(--fg); }
+svg .off { opacity: 0.18; }
+svg .modetag { fill: var(--surface); stroke: var(--fg); stroke-width: 1; }
+svg .occ { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+svg .occ-pt { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+svg .cell-wait { fill: none; stroke: var(--track); stroke-width: 1; stroke-dasharray: 3 3; }
+svg .wire-sdp { stroke: var(--sdp); stroke-width: 1.5; fill: none; }
 svg.ov-checks > *:not(.chk):not(defs) { opacity: 0.14; }
 .prims, .changes { }
 </style>
@@ -255,8 +261,9 @@ state vcpt   out-of-flow  slot → sid
     <p>Indexed carriers (one per stream) are drawn as a deck: the band with two offset copies behind it, labelled ×4. ROUTE is drawn as a demux, narrow on the side of the one carrier it reads and wide on the deck it feeds; a merge is the mirror-image mux that narrows a deck back into one carrier. The per-stream pipeline is collapsed, because study 04 already draws it.</p>
   </div>
   <figure>
-    <div class="sheet"><svg class="" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver.">
+    <div class="sheet"><svg class="" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver, normal mode.">
 <defs><marker id="m-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="m-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="m-sdp" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-sdp"/></marker><marker id="m-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="640" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="655" style="fill:var(--fg)">mode: normal</text></g>
 <g class="chk"><rect class="store" x="300" y="22" width="440" height="18" rx="9"/><text class="t-w" x="320" y="35" style="fill:var(--fg)">vcpt · slot → sid · epoch: active ← shadow at the MTP after ACT</text></g>
 <rect class="store" x="170" y="48" width="96" height="18" rx="9"/><text class="t-w t-mid" x="218" y="61" style="fill:var(--fg)">mtp ↻ 64</text>
 <rect class="carrier" x="116" y="76" width="1072" height="36"/>
@@ -294,14 +301,14 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><line class="edge" x1="225" y1="118" x2="225" y2="300"/><text class="t-w t-mid" x="225" y="120">b0</text><line class="edge" x1="345" y1="118" x2="345" y2="300"/><text class="t-w t-mid" x="345" y="120">b1</text><line class="edge" x1="470" y1="118" x2="470" y2="300"/><text class="t-w t-mid" x="470" y="120">b2</text></g>
 <line class="edge" x1="595" y1="310" x2="595" y2="378"/><text class="t-w t-mid" x="595" y="390" style="fill:var(--accent)">» b3</text>
 <line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>
-<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="385" y2="150"/>
+<line class="lane" x1="116" y1="150" x2="130" y2="150"/>
+<line class="lane" x1="210" y1="150" x2="385" y2="150"/>
 <line class="lane" x1="330" y1="172" x2="385" y2="172"/>
 <line class="lane" x1="445" y1="242" x2="520" y2="242"/><line class="lane" x1="445" y1="266" x2="520" y2="266"/>
 <line class="lane" x1="580" y1="350" x2="620" y2="350"/>
-<line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/>
-<polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
+<line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/><polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
 <line class="lane-sdp" x1="890" y1="420" x2="1182" y2="420"/><text class="t-w" x="1150" y="415" style="fill:var(--fg)">sid</text><line class="lane-sdp" x1="890" y1="442" x2="1182" y2="442"/><polygon class="tailmark" points="902,436 908,442 902,448 896,442"/><line class="lane-sdp" x1="890" y1="464" x2="1182" y2="464" marker-end="url(#m-sdp)"/>
-<line class="lane-vid" x1="740" y1="540" x2="1176" y2="540" marker-end="url(#m-vid)"/><text class="t-w t-vid t-end" x="1170" y="532">4 outputs, one per vid_clk[sid]</text>
+<line class="lane-vid" x1="740" y1="540" x2="1176" y2="540" marker-end="url(#m-vid)"/><text class="t-w t-vid t-end" x="1170" y="526">4 outputs, one per vid_clk[sid]</text>
 <line class="conn" x1="310" y1="94" x2="310" y2="42" marker-end="url(#m-ink)"/><circle class="dot" cx="310" cy="94" r="3.2"/>
 <line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/>
 <line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/>
@@ -328,6 +335,174 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><rect class="badge-ok" x="900" y="484" width="280" height="16" rx="8"/><text class="t-w t-ok t-mid" x="1040" y="496">✓ SDPM: creates sid · never splits a packet</text></g>
 </svg></div>
     <figcaption><span class="fig-id">FIG M1</span><b>MSTRX bus view.</b> The policy maker writes the payload table's shadow copy over the message ring (the tap below <code>vcpt</code>). FRAME numbers each symbol position with its MTP slot and swaps the table's epoch when it sees ACT. ROUTE looks each slot up in <code>vcpt.active</code> and splits the symbol stream into four sparse per-stream carriers, marking which positions are valid. PACK compacts each one into a dense, elastic stream (the rigid region ends here, at <code>b3</code>). Each STRM produces SDP packets and pixels. SDPM merges the four packet carriers round-robin, one whole packet at a time, and adds <code>sid</code> so they can be told apart. MSGM merges the four MSA reports onto the ring without adding anything, which is the red badge.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Training mode</h2>
+    <p>Same layout as M1. Before the link is trained there are no MTPs, so everything MST-specific is idle and fades out. Training itself is study 04's loop, which happens inside the collapsed LINK box.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg class="" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver, training mode.">
+<defs><marker id="m-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="m-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="m-sdp" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-sdp"/></marker><marker id="m-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="640" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="655" style="fill:var(--fg)">mode: training</text></g>
+<g class="chk"><rect class="store" x="300" y="22" width="440" height="18" rx="9"/><text class="t-w" x="320" y="35" style="fill:var(--fg)">vcpt · slot → sid · epoch: active ← shadow at the MTP after ACT</text></g>
+<g class="off"><rect class="store" x="170" y="48" width="96" height="18" rx="9"/><text class="t-w t-mid" x="218" y="61" style="fill:var(--fg)">mtp ↻ 64</text></g>
+<rect class="carrier" x="116" y="76" width="1072" height="36"/>
+<rect class="band-rigid" x="116" y="124" width="1072" height="64"/>
+<rect class="deck" x="124" y="218" width="1060" height="86"/><rect class="deck" x="120" y="214" width="1060" height="86"/><rect class="rigid-solid" x="116" y="210" width="1060" height="86"/>
+<rect class="deck" x="124" y="326" width="1060" height="56"/><rect class="deck" x="120" y="322" width="1060" height="56"/><rect class="carrier-solid" x="116" y="318" width="1060" height="56"/>
+<rect class="deck" x="124" y="410" width="690" height="70"/><rect class="deck" x="120" y="406" width="690" height="70"/><rect class="carrier-solid" x="116" y="402" width="690" height="70"/>
+<rect class="carrier" x="890" y="396" width="298" height="82"/>
+<rect class="deck" x="124" y="512" width="1060" height="60"/><rect class="deck" x="120" y="508" width="1060" height="60"/><rect class="carrier-solid" x="116" y="504" width="1060" height="60"/>
+<text class="t-w t-end" x="1180" y="137" style="fill:var(--fg)">rigid</text>
+<text class="t-band" x="14" y="84">msg · lnk_clk</text>
+<text class="t-name" x="14" y="100">msg</text><text class="t-w t-end" x="110" y="100">16b</text>
+<text class="t-band" x="14" y="133">sym · lnk_clk</text>
+<text class="t-name" x="14" y="154">lnk ▸</text><text class="t-w t-end" x="110" y="154">group</text>
+<text class="t-name" x="14" y="176">slot</text><text class="t-w t-end" x="110" y="176">u6[s]</text>
+<text class="t-band" x="14" y="221">ssym[sid] ×4</text>
+<text class="t-name" x="14" y="246">lnk ▸</text><text class="t-w t-end" x="110" y="246">[ℓ,s]</text>
+<text class="t-name" x="14" y="270">v</text><text class="t-w t-end" x="110" y="270">bit[s]</text>
+<text class="t-band" x="14" y="329">str[sid] ×4</text>
+<text class="t-name" x="14" y="354">sym ▸</text><text class="t-w t-end" x="110" y="354">dense</text>
+<text class="t-band t-sdp" x="14" y="412">sdpk[sid] ×4</text>
+<text class="t-name" x="14" y="436">len ◆</text><text class="t-w t-end" x="110" y="436">u6</text>
+<text class="t-name" x="14" y="458">dat</text><text class="t-w t-end" x="110" y="458">32</text>
+<text class="t-band t-vid" x="14" y="514">pix[sid] ×4</text>
+<text class="t-name" x="14" y="544">data</text><text class="t-w t-end" x="110" y="544">PPC·3·BPC</text>
+<text class="t-band t-sdp" x="896" y="408">sdpo · all streams</text>
+<line class="track" x1="116" y1="150" x2="1176" y2="150"/>
+<line class="track" x1="116" y1="172" x2="1176" y2="172"/>
+<line class="track" x1="116" y1="242" x2="1176" y2="242"/>
+<line class="track" x1="116" y1="266" x2="1176" y2="266"/>
+<line class="track" x1="116" y1="350" x2="1176" y2="350"/>
+<line class="track" x1="116" y1="432" x2="1176" y2="432"/>
+<line class="track" x1="116" y1="454" x2="1176" y2="454"/>
+<line class="track" x1="116" y1="540" x2="1176" y2="540"/>
+<g class="chk"><line class="edge" x1="225" y1="118" x2="225" y2="300"/><text class="t-w t-mid" x="225" y="120">b0</text><line class="edge" x1="345" y1="118" x2="345" y2="300"/><text class="t-w t-mid" x="345" y="120">b1</text><line class="edge" x1="470" y1="118" x2="470" y2="300"/><text class="t-w t-mid" x="470" y="120">b2</text></g>
+<line class="edge" x1="595" y1="310" x2="595" y2="378"/><text class="t-w t-mid" x="595" y="390" style="fill:var(--accent)">» b3</text>
+<line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>
+<line class="lane" x1="116" y1="150" x2="130" y2="150"/>
+<g class="off"><line class="lane" x1="210" y1="150" x2="385" y2="150"/></g>
+<g class="off"><line class="lane" x1="330" y1="172" x2="385" y2="172"/></g>
+<g class="off"><line class="lane" x1="445" y1="242" x2="520" y2="242"/><line class="lane" x1="445" y1="266" x2="520" y2="266"/></g>
+<g class="off"><line class="lane" x1="580" y1="350" x2="620" y2="350"/></g>
+<g class="off"><line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/><polygon class="tailmark" points="752,426 758,432 752,438 746,432"/></g>
+<g class="off"><line class="lane-sdp" x1="890" y1="420" x2="1182" y2="420"/><text class="t-w" x="1150" y="415" style="fill:var(--fg)">sid</text><line class="lane-sdp" x1="890" y1="442" x2="1182" y2="442"/><polygon class="tailmark" points="902,436 908,442 902,448 896,442"/><line class="lane-sdp" x1="890" y1="464" x2="1182" y2="464" marker-end="url(#m-sdp)"/></g>
+<g class="off"><line class="lane-vid" x1="740" y1="540" x2="1176" y2="540" marker-end="url(#m-vid)"/><text class="t-w t-vid t-end" x="1170" y="526">4 outputs, one per vid_clk[sid]</text></g>
+<text class="t-w" x="600" y="204" style="fill:var(--fg)">training runs inside LINK (study 04, FIG D2); no MTPs yet</text>
+<line class="conn" x1="310" y1="94" x2="310" y2="42" marker-end="url(#m-ink)"/><circle class="dot" cx="310" cy="94" r="3.2"/>
+<g class="off"><line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/></g>
+<g class="off"><line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/></g>
+<g class="chk"><g class="off"><line class="conn" x1="322" y1="158" x2="322" y2="42" marker-end="url(#m-ink)"/><text class="t-w" x="327" y="110" style="fill:var(--fg)">swap</text></g></g>
+<g class="chk"><g class="off"><line class="conn" x1="402" y1="40" x2="402" y2="140"/><circle class="dot" cx="402" cy="40" r="3.2"/></g></g>
+<g class="chk"><g class="off"><line class="conn" x1="700" y1="228" x2="700" y2="100" marker-end="url(#m-ink)"/></g></g>
+<rect class="box-opt" x="120" y="82" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="98" style="fill:var(--muted)">PM</text>
+<rect class="box" x="130" y="138" width="80" height="24" rx="3"/><text class="t-box" x="170" y="154">LINK ≡ 04</text>
+<g class="off"><rect class="box" x="240" y="158" width="90" height="26" rx="3"/><text class="t-box" x="285" y="175">FRAME</text></g>
+<g class="chk"><g class="off"><polygon class="box route" points="385,144 445,128 445,298 385,282"/><text class="t-box" x="415" y="212">ROUTE</text><text class="t-sub" x="415" y="228">per s</text></g></g>
+<g class="chk"><g class="off"><rect class="box" x="520" y="228" width="60" height="146" rx="3"/><text class="t-box" x="550" y="290">PACK</text><text class="t-sub" x="550" y="306">×sid</text><text class="t-sub" x="550" y="320">FIFO 64</text></g></g>
+<g class="chk"><g class="off"><rect class="box" x="620" y="228" width="120" height="342" rx="3"/><text class="t-box" x="680" y="300">STRM ×sid</text><text class="t-sub" x="680" y="316">PARS · MSA</text><text class="t-sub" x="680" y="330">SDP · VID</text><text class="t-sub" x="680" y="344">= study 04</text></g></g>
+<g class="chk"><g class="off"><polygon class="box merge" points="822,398 890,410 890,474 822,486"/><text class="t-box" x="856" y="446">SDPM</text></g></g>
+<g class="off"><text class="t-sub" x="856" y="462" style="fill:var(--fg)">RR · packet</text></g>
+<g class="chk"><g class="off"><polygon class="box merge" points="700,84 730,90 730,102 700,108"/></g></g>
+<g class="off"><text class="t-w" x="736" y="110" style="fill:var(--fg)">MSGM · ring order</text></g>
+<rect class="gutter" x="116" y="604" width="880" height="86" rx="3"/><text class="t-note" x="14" y="624">gutter</text>
+<g class="off"><path class="flow" d="M856,486 L856,636 L700,636 L700,572" marker-end="url(#m-mut)"/><text class="t-w" x="712" y="630">flow · SDPM grant → one stream at a time</text></g>
+<g class="off"><path class="back-ctl" d="M650,570 L650,668 L140,668 L140,108" marker-end="url(#m-mut)"/><text class="t-w" x="300" y="663">ctrl · per-stream vblank irq → PM</text></g>
+<g class="chk"><g class="off"><rect class="badge-ok" x="760" y="22" width="270" height="18" rx="9"/><text class="t-w t-ok t-mid" x="895" y="35">✓ epoch: one reader, one swap point</text></g></g>
+<g class="chk"><g class="off"><rect class="badge-bad" x="760" y="48" width="300" height="18" rx="9"/><text class="t-w t-bad t-mid" x="910" y="61">✗ MSGM: same message ID from 4 streams, no sid</text></g></g>
+<g class="chk"><g class="off"><rect class="badge-ok" x="250" y="300" width="200" height="16" rx="8"/><text class="t-w t-ok t-mid" x="350" y="312">✓ route covers all 64 slots</text></g></g>
+<g class="chk"><g class="off"><rect class="badge-acc" x="430" y="378" width="150" height="16" rx="8"/><text class="t-w t-acc t-mid" x="505" y="390">rigid edge: FIFO ≥ run</text></g></g>
+<g class="chk"><g class="off"><rect class="badge-ok" x="900" y="484" width="280" height="16" rx="8"/><text class="t-w t-ok t-mid" x="1040" y="496">✓ SDPM: creates sid · never splits a packet</text></g></g>
+</svg></div>
+    <figcaption><span class="fig-id">FIG M2</span><b>MSTRX in training mode.</b> Only the message ring, the policy maker and LINK are active. Opening LINK gives study 04's FIG D2 (the TPS4 feedback and the pattern-select loop through the policy maker), unchanged.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Bus width: the cost overlay</h2>
+    <p>Row thickness is proportional to bits per cycle. Rows on an indexed carrier count all four copies, because all four exist in hardware.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg class="" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver, normal mode, cost overlay.">
+<defs><marker id="m-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="m-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="m-sdp" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-sdp"/></marker><marker id="m-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="640" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="655" style="fill:var(--fg)">mode: normal · cost</text></g>
+<g class="chk"><rect class="store" x="300" y="22" width="440" height="18" rx="9"/><text class="t-w" x="320" y="35" style="fill:var(--fg)">vcpt · slot → sid · epoch: active ← shadow at the MTP after ACT</text></g>
+<rect class="store" x="170" y="48" width="96" height="18" rx="9"/><text class="t-w t-mid" x="218" y="61" style="fill:var(--fg)">mtp ↻ 64</text>
+<rect class="carrier" x="116" y="76" width="1072" height="36"/>
+<rect class="band-rigid" x="116" y="124" width="1072" height="64"/>
+<rect class="deck" x="124" y="218" width="1060" height="86"/><rect class="deck" x="120" y="214" width="1060" height="86"/><rect class="rigid-solid" x="116" y="210" width="1060" height="86"/>
+<rect class="deck" x="124" y="326" width="1060" height="56"/><rect class="deck" x="120" y="322" width="1060" height="56"/><rect class="carrier-solid" x="116" y="318" width="1060" height="56"/>
+<rect class="deck" x="124" y="410" width="690" height="70"/><rect class="deck" x="120" y="406" width="690" height="70"/><rect class="carrier-solid" x="116" y="402" width="690" height="70"/>
+<rect class="carrier" x="890" y="396" width="298" height="82"/>
+<rect class="deck" x="124" y="512" width="1060" height="60"/><rect class="deck" x="120" y="508" width="1060" height="60"/><rect class="carrier-solid" x="116" y="504" width="1060" height="60"/>
+<text class="t-w t-end" x="1180" y="137" style="fill:var(--fg)">rigid</text>
+<text class="t-band" x="14" y="84">msg · lnk_clk</text>
+<text class="t-name" x="14" y="100">msg</text><text class="t-w t-end" x="110" y="100">16b</text>
+<text class="t-band" x="14" y="133">sym · lnk_clk</text>
+<text class="t-name" x="14" y="154">lnk ▸</text><text class="t-w t-end" x="110" y="154">group</text>
+<text class="t-name" x="14" y="176">slot</text><text class="t-w t-end" x="110" y="176">u6[s]</text>
+<text class="t-band" x="14" y="221">ssym[sid] ×4</text>
+<text class="t-name" x="14" y="246">lnk ▸</text><text class="t-w t-end" x="110" y="246">[ℓ,s]</text>
+<text class="t-name" x="14" y="270">v</text><text class="t-w t-end" x="110" y="270">bit[s]</text>
+<text class="t-band" x="14" y="329">str[sid] ×4</text>
+<text class="t-name" x="14" y="354">sym ▸</text><text class="t-w t-end" x="110" y="354">dense</text>
+<text class="t-band t-sdp" x="14" y="412">sdpk[sid] ×4</text>
+<text class="t-name" x="14" y="436">len ◆</text><text class="t-w t-end" x="110" y="436">u6</text>
+<text class="t-name" x="14" y="458">dat</text><text class="t-w t-end" x="110" y="458">32</text>
+<text class="t-band t-vid" x="14" y="514">pix[sid] ×4</text>
+<text class="t-name" x="14" y="544">data</text><text class="t-w t-end" x="110" y="544">PPC·3·BPC</text>
+<text class="t-band t-sdp" x="896" y="408">sdpo · all streams</text>
+<line class="track" x1="116" y1="150" x2="1176" y2="150"/>
+<line class="track" x1="116" y1="172" x2="1176" y2="172"/>
+<line class="track" x1="116" y1="242" x2="1176" y2="242"/>
+<line class="track" x1="116" y1="266" x2="1176" y2="266"/>
+<line class="track" x1="116" y1="350" x2="1176" y2="350"/>
+<line class="track" x1="116" y1="432" x2="1176" y2="432"/>
+<line class="track" x1="116" y1="454" x2="1176" y2="454"/>
+<line class="track" x1="116" y1="540" x2="1176" y2="540"/>
+<g class="chk"><line class="edge" x1="225" y1="118" x2="225" y2="300"/><text class="t-w t-mid" x="225" y="120">b0</text><line class="edge" x1="345" y1="118" x2="345" y2="300"/><text class="t-w t-mid" x="345" y="120">b1</text><line class="edge" x1="470" y1="118" x2="470" y2="300"/><text class="t-w t-mid" x="470" y="120">b2</text></g>
+<line class="edge" x1="595" y1="310" x2="595" y2="378"/><text class="t-w t-mid" x="595" y="390" style="fill:var(--accent)">» b3</text>
+<line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>
+<line class="lane" x1="116" y1="150" x2="130" y2="150" style="stroke-width:4.38"/>
+<line class="lane" x1="210" y1="150" x2="385" y2="150" style="stroke-width:4.38"/>
+<line class="lane" x1="330" y1="172" x2="385" y2="172" style="stroke-width:1.20"/>
+<line class="lane" x1="445" y1="242" x2="520" y2="242" style="stroke-width:17.28"/><line class="lane" x1="445" y1="266" x2="520" y2="266" style="stroke-width:1.20"/>
+<line class="lane" x1="580" y1="350" x2="620" y2="350" style="stroke-width:17.28"/>
+<line class="lane-sdp" x1="740" y1="432" x2="822" y2="432" style="stroke-width:1.44"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454" style="stroke-width:7.68"/><polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
+<line class="lane-sdp" x1="890" y1="420" x2="1182" y2="420" style="stroke-width:1.20"/><text class="t-w" x="1150" y="415" style="fill:var(--fg)">sid</text><line class="lane-sdp" x1="890" y1="442" x2="1182" y2="442" style="stroke-width:1.20"/><polygon class="tailmark" points="902,436 908,442 902,448 896,442"/><line class="lane-sdp" x1="890" y1="464" x2="1182" y2="464" marker-end="url(#m-sdp)" style="stroke-width:1.92"/>
+<line class="lane-vid" x1="740" y1="540" x2="1176" y2="540" marker-end="url(#m-vid)" style="stroke-width:11.52"/><text class="t-w t-vid t-end" x="1170" y="526">4 outputs, one per vid_clk[sid]</text>
+<text class="t-w" x="452" y="205" style="fill:var(--fg)">ssym: 288 b per cycle, ≤ 72 b valid</text>
+<line class="conn" x1="310" y1="94" x2="310" y2="42" marker-end="url(#m-ink)"/><circle class="dot" cx="310" cy="94" r="3.2"/>
+<line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/>
+<line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/>
+<g class="chk"><line class="conn" x1="322" y1="158" x2="322" y2="42" marker-end="url(#m-ink)"/><text class="t-w" x="327" y="110" style="fill:var(--fg)">swap</text></g>
+<g class="chk"><line class="conn" x1="402" y1="40" x2="402" y2="140"/><circle class="dot" cx="402" cy="40" r="3.2"/></g>
+<g class="chk"><line class="conn" x1="700" y1="228" x2="700" y2="100" marker-end="url(#m-ink)"/></g>
+<rect class="box-opt" x="120" y="82" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="98" style="fill:var(--muted)">PM</text>
+<rect class="box" x="130" y="138" width="80" height="24" rx="3"/><text class="t-box" x="170" y="154">LINK ≡ 04</text>
+<rect class="box" x="240" y="158" width="90" height="26" rx="3"/><text class="t-box" x="285" y="175">FRAME</text>
+<g class="chk"><polygon class="box route" points="385,144 445,128 445,298 385,282"/><text class="t-box" x="415" y="212">ROUTE</text><text class="t-sub" x="415" y="228">per s</text></g>
+<g class="chk"><rect class="box" x="520" y="228" width="60" height="146" rx="3"/><text class="t-box" x="550" y="290">PACK</text><text class="t-sub" x="550" y="306">×sid</text><text class="t-sub" x="550" y="320">FIFO 64</text></g>
+<g class="chk"><rect class="box" x="620" y="228" width="120" height="342" rx="3"/><text class="t-box" x="680" y="300">STRM ×sid</text><text class="t-sub" x="680" y="316">PARS · MSA</text><text class="t-sub" x="680" y="330">SDP · VID</text><text class="t-sub" x="680" y="344">= study 04</text></g>
+<g class="chk"><polygon class="box merge" points="822,398 890,410 890,474 822,486"/><text class="t-box" x="856" y="446">SDPM</text></g>
+<text class="t-sub" x="856" y="462" style="fill:var(--fg)">RR · packet</text>
+<g class="chk"><polygon class="box merge" points="700,84 730,90 730,102 700,108"/></g>
+<text class="t-w" x="736" y="110" style="fill:var(--fg)">MSGM · ring order</text>
+<rect class="gutter" x="116" y="604" width="880" height="86" rx="3"/><text class="t-note" x="14" y="624">gutter</text>
+<path class="flow" d="M856,486 L856,636 L700,636 L700,572" marker-end="url(#m-mut)"/><text class="t-w" x="712" y="630">flow · SDPM grant → one stream at a time</text>
+<path class="back-ctl" d="M650,570 L650,668 L140,668 L140,108" marker-end="url(#m-mut)"/><text class="t-w" x="300" y="663">ctrl · per-stream vblank irq → PM</text>
+<g class="chk"><rect class="badge-ok" x="760" y="22" width="270" height="18" rx="9"/><text class="t-w t-ok t-mid" x="895" y="35">✓ epoch: one reader, one swap point</text></g>
+<g class="chk"><rect class="badge-bad" x="760" y="48" width="300" height="18" rx="9"/><text class="t-w t-bad t-mid" x="910" y="61">✗ MSGM: same message ID from 4 streams, no sid</text></g>
+<g class="chk"><rect class="badge-ok" x="250" y="300" width="200" height="16" rx="8"/><text class="t-w t-ok t-mid" x="350" y="312">✓ route covers all 64 slots</text></g>
+<g class="chk"><rect class="badge-acc" x="430" y="378" width="150" height="16" rx="8"/><text class="t-w t-acc t-mid" x="505" y="390">rigid edge: FIFO ≥ run</text></g>
+<g class="chk"><rect class="badge-ok" x="900" y="484" width="280" height="16" rx="8"/><text class="t-w t-ok t-mid" x="1040" y="496">✓ SDPM: creates sid · never splits a packet</text></g>
+</svg></div>
+    <figcaption><span class="fig-id">FIG M3</span><b>Where the width goes.</b> The link delivers 73 bits per cycle. ROUTE copies the full 72-bit symbol group into all four per-stream carriers and marks validity, so between ROUTE and PACK the design carries 288 bits per cycle, of which at most 72 are valid. That's this architecture's equivalent of DP RX's lane-copied tags: routing before packing replicates width. Packing first (each stream computes its offsets, then routes only its own symbols) would remove the 4× fan-out at the cost of more complex PACK control. The SDP and pixel decks are also four-wide, but those are real per-stream outputs.</figcaption>
   </figure>
 </section>
 
@@ -430,7 +605,43 @@ state vcpt   out-of-flow  slot → sid
 <text class="t-note" x="900" y="126">then nothing for 20 cycles.</text>
 <text class="t-note" x="900" y="142">PACK's FIFO absorbs the burst.</text>
 </svg></div>
-    <figcaption><span class="fig-id">FIG M2</span><b>One MTP, and the cycle that splits.</b> The example allocation gives streams A–D 24, 16, 12 and 8 contiguous slots. Slots 24 and 25 arrive in the same cycle but belong to A and B, so ROUTE has to split along the s axis. That's why <code>granularity axis s</code> is part of the route's declaration, and why each stream's carrier needs a validity field and a PACK stage. A route at item granularity would be wrong for this design, and the check would say so.</figcaption>
+    <figcaption><span class="fig-id">FIG M4</span><b>One MTP, and the cycle that splits.</b> The example allocation gives streams A–D 24, 16, 12 and 8 contiguous slots. Slots 24 and 25 arrive in the same cycle but belong to A and B, so ROUTE has to split along the s axis. That's why <code>granularity axis s</code> is part of the route's declaration, and why each stream's carrier needs a validity field and a PACK stage. A route at item granularity would be wrong for this design, and the check would say so.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Axis view: route and merge as axis operations</h2>
+    <p>The slot map shows <em>which</em> slots go where. The axis view shows what route and merge do to the data's shape, and that's where the new primitive gets its clearest meaning.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg viewBox="0 0 1200 340" role="img" aria-label="Axis view of MSTRX. FRAME adds a slot index per symbol position. ROUTE introduces a new axis, sid, with a validity mask over sid and s. The sid wire passes over PACK and STRM, meaning one per stream. On the SDP branch the merge ends the sid axis: streams are serialised in time and sid survives only as a two-bit field. On the pixel branch the sid axis continues to four separate outputs.">
+<defs><marker id="ax5-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="ax5-sdp" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-sdp"/></marker></defs>
+<text class="t-name t-end" x="52" y="94">ℓ</text><line class="wire" x1="60" y1="90" x2="540" y2="90"/>
+<text class="t-name t-end" x="52" y="119">s</text><line class="wire" x1="60" y1="115" x2="540" y2="115"/>
+<text class="t-name t-end" x="52" y="144">8</text><line class="wire" x1="60" y1="140" x2="540" y2="140"/>
+<text class="t-note" x="22" y="70">dat</text>
+<rect class="box" x="130" y="104" width="60" height="22" rx="3"/><text class="t-sub" x="160" y="119" style="fill:var(--fg)">FRAME</text>
+<line class="wire" x1="190" y1="170" x2="260" y2="170"/><path class="wire" d="M175,126 C175,170 185,170 190,170"/><text class="t-w" x="200" y="186" style="fill:var(--fg)">slot · 6b per s</text>
+<polygon class="box route" points="260,96 300,84 300,196 260,184"/><text class="t-sub" x="280" y="144" style="fill:var(--fg)">ROUTE</text>
+<line class="wire" x1="300" y1="40" x2="1176" y2="40"/><path class="wire" d="M300,96 C300,60 300,40 320,40"/><text class="t-w" x="326" y="34" style="fill:var(--fg)">sid · 4 (a new axis)</text>
+<line class="wire" x1="300" y1="170" x2="400" y2="170"/><text class="t-w" x="304" y="186" style="fill:var(--fg)">v · bit[sid, s]</text>
+<text class="t-note t-mid" x="270" y="226">route: adds an axis,</text><text class="t-note t-mid" x="270" y="242">items become sparse along it</text>
+<rect class="box" x="400" y="104" width="60" height="78" rx="3"/><text class="t-sub" x="430" y="148" style="fill:var(--fg)">PACK</text>
+<line class="wire" x1="460" y1="115" x2="540" y2="115"/><text class="t-w" x="466" y="110" style="fill:var(--fg)">s′ dense</text>
+<text class="t-note t-mid" x="430" y="226">sid passes over:</text><text class="t-note t-mid" x="430" y="242">one PACK per stream</text>
+<rect class="box" x="540" y="78" width="80" height="150" rx="3"/><text class="t-sub" x="580" y="150" style="fill:var(--fg)">STRM</text>
+<text class="t-note t-mid" x="580" y="70">one per stream</text>
+<line class="wire-sdp" x1="620" y1="110" x2="760" y2="110"/><text class="t-w t-sdp" x="626" y="104">sdp beat · 32</text>
+<circle class="dot" cx="700" cy="40" r="3.4"/><path class="wire" d="M700,40 C720,40 730,70 760,78"/>
+<polygon class="box merge" points="760,66 810,78 810,122 760,134"/><text class="t-sub" x="785" y="104" style="fill:var(--fg)">SDPM</text>
+<line class="wire-sdp" x1="810" y1="88" x2="1176" y2="88"/><text class="t-w t-sdp" x="830" y="83">sid · 2b field</text>
+<line class="wire-sdp" x1="810" y1="112" x2="1176" y2="112" marker-end="url(#ax5-sdp)"/><text class="t-w t-sdp" x="830" y="127">32 · one stream at a time</text>
+<text class="t-note t-mid" x="900" y="160">merge: the sid axis ends here.</text><text class="t-note t-mid" x="900" y="176">streams take turns in time, and</text><text class="t-note t-mid" x="900" y="192">sid survives as a field</text>
+<line class="wire-vid" x1="620" y1="270" x2="1176" y2="270"/><line class="wire-vid" x1="620" y1="295" x2="1176" y2="295" marker-end="url(#ax5-vid)"/><line class="wire-vid" x1="620" y1="320" x2="1176" y2="320"/><path class="wire-vid" d="M600,228 C600,270 610,270 620,270"/><path class="wire-vid" d="M590,228 C590,295 610,295 620,295"/><path class="wire-vid" d="M580,228 C580,320 610,320 620,320"/><text class="t-w t-vid" x="640" y="265">ppc</text><text class="t-w t-vid" x="640" y="290">3</text><text class="t-w t-vid" x="640" y="315">bpc</text>
+<text class="t-note t-vid t-end" x="1170" y="258">pixels keep the sid axis: four outputs, four vid_clk</text>
+</svg></div>
+    <figcaption><span class="fig-id">FIG M5</span><b>ROUTE adds an axis; SDPM removes it.</b> ROUTE turns a stream of symbol groups into data with a new axis, <code>sid</code>, and a validity mask over (sid, s). From then on <code>sid</code> passes over PACK and STRM in NCD's broadcast notation: one copy per stream. The two outputs treat the axis differently. The SDP merge ends it: streams take turns in time, and <code>sid</code> survives only as a 2-bit field. The pixel outputs keep it as four physical ports in four clock domains. In axis terms, route is a scatter along a new axis and merge serialises an axis into time.</figcaption>
   </figure>
 </section>
 
@@ -476,7 +687,90 @@ state vcpt   out-of-flow  slot → sid
 <text class="t-note" x="14" y="250">The epoch check asks two things of every state with an epoch: who reads it, and does each reader switch at the declared point.</text>
 <text class="t-note" x="14" y="266">Here ROUTE is the only reader, and the model says it switches at the boundary, so it holds. Add a second reader (say PACK) that switches on detect, and it fails.</text>
 </svg></div>
-    <figcaption><span class="fig-id">FIG M3</span><b>Epoch of <code>vcpt</code>.</b> The new allocation is written to the shadow table in MTP n−1, ACT arrives in MTP n's header, and the active table switches at the start of MTP n+1. A router that switches at that boundary is correct. One that switched as soon as it detected ACT would route most of MTP n with the new table, sending stream B's extra slots to B before the source started sending them.</figcaption>
+    <figcaption><span class="fig-id">FIG M6</span><b>Epoch of <code>vcpt</code>.</b> The new allocation is written to the shadow table in MTP n−1, ACT arrives in MTP n's header, and the active table switches at the start of MTP n+1. A router that switches at that boundary is correct. One that switched as soon as it detected ACT would route most of MTP n with the new table, sending stream B's extra slots to B before the source started sending them.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Time view: PACK's FIFO</h2>
+    <p>The blue badge in M1 says PACK sits at a rigid edge. Its time view is a fill curve: what arrives in bursts as the stream's slots pass, minus what drains at the stream's average rate.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg viewBox="0 0 1200 300" role="img" aria-label="Line chart of PACK FIFO occupancy for stream A across one MTP: it rises to about 14 slots while stream A's 24 slots arrive in the first 12 cycles, then drains to zero by cycle 32 at the stream's average rate of 0.75 slots per cycle.">
+<rect class="band" x="120" y="40" width="338" height="200"/>
+<text class="t-w" x="126" y="54" style="fill:var(--fg)">stream A's slots arrive (24 slots, 12 cycles)</text>
+<line class="grid" x1="120" y1="240" x2="1020" y2="240"/><text class="t-w t-end" x="112" y="244">0</text>
+<line class="grid" x1="120" y1="190" x2="1020" y2="190"/><text class="t-w t-end" x="112" y="194">4</text>
+<line class="grid" x1="120" y1="140" x2="1020" y2="140"/><text class="t-w t-end" x="112" y="144">8</text>
+<line class="grid" x1="120" y1="90" x2="1020" y2="90"/><text class="t-w t-end" x="112" y="94">12</text>
+<line class="grid" x1="120" y1="40" x2="1020" y2="40"/><text class="t-w t-end" x="112" y="44">16</text>
+<text class="t-w t-mid" x="120" y="258">0</text>
+<text class="t-w t-mid" x="345" y="258">8</text>
+<text class="t-w t-mid" x="570" y="258">16</text>
+<text class="t-w t-mid" x="795" y="258">24</text>
+<text class="t-w t-mid" x="1020" y="258">32</text>
+<text class="t-w t-mid" x="570" y="276">lnk_clk cycles within one MTP</text>
+<text class="t-w" x="112" y="26" style="text-anchor:end">slots</text>
+<polyline class="occ" points="120.0,227.5 127.0,229.8 134.1,219.7 141.1,222.0 148.1,211.9 155.2,214.2 162.2,204.1 169.2,206.4 176.2,196.2 183.3,198.6 190.3,188.4 197.3,190.8 204.4,180.6 211.4,183.0 218.4,172.8 225.5,175.2 232.5,165.0 239.5,167.3 246.6,157.2 253.6,159.5 260.6,149.4 267.7,151.7 274.7,141.6 281.7,143.9 288.8,133.8 295.8,136.1 302.8,125.9 309.8,128.3 316.9,118.1 323.9,120.5 330.9,110.3 338.0,112.7 345.0,102.5 352.0,104.8 359.1,94.7 366.1,97.0 373.1,86.9 380.2,89.2 387.2,79.1 394.2,81.4 401.2,71.2 408.3,73.6 415.3,63.4 422.3,65.8 429.4,55.6 436.4,58.0 443.4,47.8 450.5,50.2 457.5,52.5 464.5,54.8 471.6,57.2 478.6,59.5 485.6,61.9 492.7,64.2 499.7,66.6 506.7,68.9 513.8,71.2 520.8,73.6 527.8,75.9 534.8,78.3 541.9,80.6 548.9,83.0 555.9,85.3 563.0,87.7 570.0,90.0 577.0,92.3 584.1,94.7 591.1,97.0 598.1,99.4 605.2,101.7 612.2,104.1 619.2,106.4 626.2,108.8 633.3,111.1 640.3,113.4 647.3,115.8 654.4,118.1 661.4,120.5 668.4,122.8 675.5,125.2 682.5,127.5 689.5,129.8 696.6,132.2 703.6,134.5 710.6,136.9 717.7,139.2 724.7,141.6 731.7,143.9 738.8,146.2 745.8,148.6 752.8,150.9 759.8,153.3 766.9,155.6 773.9,158.0 780.9,160.3 788.0,162.7 795.0,165.0 802.0,167.3 809.1,169.7 816.1,172.0 823.1,174.4 830.2,176.7 837.2,179.1 844.2,181.4 851.2,183.8 858.3,186.1 865.3,188.4 872.3,190.8 879.4,193.1 886.4,195.5 893.4,197.8 900.5,200.2 907.5,202.5 914.5,204.8 921.6,207.2 928.6,209.5 935.6,211.9 942.7,214.2 949.7,216.6 956.7,218.9 963.8,221.2 970.8,223.6 977.8,225.9 984.8,228.3 991.9,230.6 998.9,233.0 1005.9,235.3 1013.0,237.7 1020.0,240.0"><title>PACK[A] occupancy</title></polyline>
+<circle class="occ-pt" cx="443.4" cy="47.8" r="4.5"><title>peak ≈ 15.4 slots at cycle 12</title></circle>
+<text class="t-w" x="453" y="40" style="fill:var(--fg)">peak ≈ 15 slots</text>
+<text class="t-note" x="1034" y="60">capacity 64</text>
+<text class="t-note" x="1034" y="76">(off scale)</text>
+<text class="t-note" x="1034" y="110">drain: 24 slots</text>
+<text class="t-note" x="1034" y="126">per 32 cycles</text>
+<text class="t-note" x="1034" y="142">= 0.75 / cycle</text>
+</svg></div>
+    <figcaption><span class="fig-id">FIG M7</span><b>Stream A's PACK FIFO over one MTP.</b> A's 24 slots arrive in the first 12 cycles, two per cycle; downstream drains 24 slots per 32 cycles. Occupancy peaks at 15 slots, at cycle 12, and is back to zero as the next MTP starts, so the 64-entry FIFO holds with plenty of margin. That margin depends on STRM draining at the stream's average rate. If VID can't keep up, the FIFO grows every MTP, and at a rigid edge the only outcome is a drop. Hover the curve for values.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Time view: the SDP merge</h2>
+  </div>
+  <figure>
+    <div class="sheet"><svg viewBox="0 0 1200 290" role="img" aria-label="Time view of the SDP merge: packets from four streams arrive, wait, and are granted one whole packet at a time in round-robin order, so the output never interleaves beats of different packets.">
+<text class="t-w t-mid" x="229.0" y="40">0</text>
+<text class="t-w t-mid" x="287.0" y="40">1</text>
+<text class="t-w t-mid" x="345.0" y="40">2</text>
+<text class="t-w t-mid" x="403.0" y="40">3</text>
+<text class="t-w t-mid" x="461.0" y="40">4</text>
+<text class="t-w t-mid" x="519.0" y="40">5</text>
+<text class="t-w t-mid" x="577.0" y="40">6</text>
+<text class="t-w t-mid" x="635.0" y="40">7</text>
+<text class="t-w t-mid" x="693.0" y="40">8</text>
+<text class="t-w t-mid" x="751.0" y="40">9</text>
+<text class="t-w t-mid" x="809.0" y="40">10</text>
+<text class="t-w t-mid" x="867.0" y="40">11</text>
+<text class="t-w t-mid" x="925.0" y="40">12</text>
+<text class="t-w t-mid" x="983.0" y="40">13</text>
+<text class="t-w t-mid" x="1041.0" y="40">14</text>
+<text class="t-w" x="200" y="24" style="fill:var(--fg)">sdp_clk beats</text>
+<text class="t-note" x="14" y="67">stream A in</text>
+<text class="t-note" x="14" y="101">stream B in</text>
+<text class="t-note" x="14" y="135">stream C in</text>
+<text class="t-note" x="14" y="169">stream D in</text>
+<text class="t-note" x="14" y="203">SDPM out</text>
+<line class="grid" x1="200" y1="180" x2="1070" y2="180"/>
+<rect class="cell-acc" x="203" y="50" width="168" height="24" rx="2"/><text class="t-w t-mid t-acc" x="287.0" y="66">A1</text>
+<rect class="cell-ok" x="203" y="186" width="168" height="24" rx="2"/><text class="t-w t-mid t-ok" x="287.0" y="202">A1 · sid 0</text>
+<rect class="cell-wait" x="203" y="84" width="168" height="24" rx="2"/><text class="t-w t-mid" x="287.0" y="100">waits 3</text>
+<rect class="cell-acc" x="377" y="84" width="110" height="24" rx="2"/><text class="t-w t-mid t-acc" x="432.0" y="100">B1</text>
+<rect class="cell-ok" x="377" y="186" width="110" height="24" rx="2"/><text class="t-w t-mid t-ok" x="432.0" y="202">B1 · sid 1</text>
+<rect class="cell-wait" x="261" y="118" width="226" height="24" rx="2"/><text class="t-w t-mid" x="374.0" y="134">waits 4</text>
+<rect class="cell-acc" x="493" y="118" width="226" height="24" rx="2"/><text class="t-w t-mid t-acc" x="606.0" y="134">C1</text>
+<rect class="cell-ok" x="493" y="186" width="226" height="24" rx="2"/><text class="t-w t-mid t-ok" x="606.0" y="202">C1 · sid 2</text>
+<rect class="cell-wait" x="377" y="152" width="342" height="24" rx="2"/><text class="t-w t-mid" x="548.0" y="168">waits 6</text>
+<rect class="cell-acc" x="725" y="152" width="110" height="24" rx="2"/><text class="t-w t-mid t-acc" x="780.0" y="168">D1</text>
+<rect class="cell-ok" x="725" y="186" width="110" height="24" rx="2"/><text class="t-w t-mid t-ok" x="780.0" y="202">D1 · sid 3</text>
+<rect class="cell-wait" x="435" y="50" width="400" height="24" rx="2"/><text class="t-w t-mid" x="635.0" y="66">waits 7</text>
+<rect class="cell-acc" x="841" y="50" width="168" height="24" rx="2"/><text class="t-w t-mid t-acc" x="925.0" y="66">A2</text>
+<rect class="cell-ok" x="841" y="186" width="168" height="24" rx="2"/><text class="t-w t-mid t-ok" x="925.0" y="202">A2 · sid 0</text>
+<text class="t-note" x="14" y="244">Round-robin from A. Each grant lasts a whole packet, so beats of different packets never interleave (atomicity), and every output packet carries sid (identity).</text>
+<text class="t-note" x="14" y="260">The longest wait here is A2's: it arrived just after A had its turn. In the worst case an input waits for three maximum-size packets, which sets the depth each stream's SDP FIFO needs.</text>
+</svg></div>
+    <figcaption><span class="fig-id">FIG M8</span><b>Round-robin, whole packets.</b> Five example packets from four streams. Each grant lasts a full packet, so the output never interleaves two packets, and each carries <code>sid</code>. The waits are what each stream's SDP FIFO absorbs. The worst case (three maximum-size packets ahead) is what a fairness-and-depth check would compute once the model carries packet sizes and rates.</figcaption>
   </figure>
 </section>
 
@@ -485,8 +779,9 @@ state vcpt   out-of-flow  slot → sid
     <h2>Checks overlay</h2>
   </div>
   <figure>
-    <div class="sheet"><svg class="ov-checks" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver, checks overlay.">
+    <div class="sheet"><svg class="ov-checks" viewBox="0 0 1200 700" role="img" aria-label="Bus view of the invented multi-stream receiver, normal mode, checks overlay.">
 <defs><marker id="m-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="m-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="m-sdp" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-sdp"/></marker><marker id="m-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="640" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="655" style="fill:var(--fg)">mode: normal · checks</text></g>
 <g class="chk"><rect class="store" x="300" y="22" width="440" height="18" rx="9"/><text class="t-w" x="320" y="35" style="fill:var(--fg)">vcpt · slot → sid · epoch: active ← shadow at the MTP after ACT</text></g>
 <rect class="store" x="170" y="48" width="96" height="18" rx="9"/><text class="t-w t-mid" x="218" y="61" style="fill:var(--fg)">mtp ↻ 64</text>
 <rect class="carrier" x="116" y="76" width="1072" height="36"/>
@@ -524,14 +819,14 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><line class="edge" x1="225" y1="118" x2="225" y2="300"/><text class="t-w t-mid" x="225" y="120">b0</text><line class="edge" x1="345" y1="118" x2="345" y2="300"/><text class="t-w t-mid" x="345" y="120">b1</text><line class="edge" x1="470" y1="118" x2="470" y2="300"/><text class="t-w t-mid" x="470" y="120">b2</text></g>
 <line class="edge" x1="595" y1="310" x2="595" y2="378"/><text class="t-w t-mid" x="595" y="390" style="fill:var(--accent)">» b3</text>
 <line class="msg" x1="116" y1="94" x2="1176" y2="94"/><line class="msg" x1="116" y1="98" x2="1176" y2="98"/>
-<line class="lane" x1="116" y1="150" x2="130" y2="150"/><line class="lane" x1="210" y1="150" x2="385" y2="150"/>
+<line class="lane" x1="116" y1="150" x2="130" y2="150"/>
+<line class="lane" x1="210" y1="150" x2="385" y2="150"/>
 <line class="lane" x1="330" y1="172" x2="385" y2="172"/>
 <line class="lane" x1="445" y1="242" x2="520" y2="242"/><line class="lane" x1="445" y1="266" x2="520" y2="266"/>
 <line class="lane" x1="580" y1="350" x2="620" y2="350"/>
-<line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/>
-<polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
+<line class="lane-sdp" x1="740" y1="432" x2="822" y2="432"/><line class="lane-sdp" x1="740" y1="454" x2="822" y2="454"/><polygon class="tailmark" points="752,426 758,432 752,438 746,432"/>
 <line class="lane-sdp" x1="890" y1="420" x2="1182" y2="420"/><text class="t-w" x="1150" y="415" style="fill:var(--fg)">sid</text><line class="lane-sdp" x1="890" y1="442" x2="1182" y2="442"/><polygon class="tailmark" points="902,436 908,442 902,448 896,442"/><line class="lane-sdp" x1="890" y1="464" x2="1182" y2="464" marker-end="url(#m-sdp)"/>
-<line class="lane-vid" x1="740" y1="540" x2="1176" y2="540" marker-end="url(#m-vid)"/><text class="t-w t-vid t-end" x="1170" y="532">4 outputs, one per vid_clk[sid]</text>
+<line class="lane-vid" x1="740" y1="540" x2="1176" y2="540" marker-end="url(#m-vid)"/><text class="t-w t-vid t-end" x="1170" y="526">4 outputs, one per vid_clk[sid]</text>
 <line class="conn" x1="310" y1="94" x2="310" y2="42" marker-end="url(#m-ink)"/><circle class="dot" cx="310" cy="94" r="3.2"/>
 <line class="conn" x1="285" y1="150" x2="285" y2="158"/><circle class="dot" cx="285" cy="150" r="3.2"/>
 <line class="conn" x1="252" y1="158" x2="252" y2="68" marker-end="url(#m-ink)"/>
@@ -557,7 +852,7 @@ state vcpt   out-of-flow  slot → sid
 <g class="chk"><rect class="badge-acc" x="430" y="378" width="150" height="16" rx="8"/><text class="t-w t-acc t-mid" x="505" y="390">rigid edge: FIFO ≥ run</text></g>
 <g class="chk"><rect class="badge-ok" x="900" y="484" width="280" height="16" rx="8"/><text class="t-w t-ok t-mid" x="1040" y="496">✓ SDPM: creates sid · never splits a packet</text></g>
 </svg></div>
-    <figcaption><span class="fig-id">FIG M4</span><b>What the new checks found.</b> Green: ROUTE covers all 64 slots (header and unallocated slots are discarded explicitly); <code>vcpt</code> has one reader with one swap point; SDPM adds <code>sid</code> and never splits a packet. Red: MSGM merges four streams' MSA reports, which all use the same message ID, so the policy maker can't tell which stream a report came from. Blue: PACK sits at the rigid edge, so its FIFO must cover the longest run of a stream's slots (12 cycles for stream A here).</figcaption>
+    <figcaption><span class="fig-id">FIG M9</span><b>What the new checks found.</b> Green: ROUTE covers all 64 slots (header and unallocated slots are discarded explicitly); <code>vcpt</code> has one reader with one swap point; SDPM adds <code>sid</code> and never splits a packet. Red: MSGM merges four streams' MSA reports, which all use the same message ID, so the policy maker can't tell which stream a report came from. Blue: PACK sits at the rigid edge, so its FIFO must cover the longest run of a stream's slots (12 cycles for stream A here).</figcaption>
   </figure>
 </section>
 
