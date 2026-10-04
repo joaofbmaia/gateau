@@ -101,7 +101,17 @@ def _state_readers(d: Design, state: str):
 
 
 def _stage_index(d: Design, name: str) -> int:
-    return list(d.stages).index(name)
+    return d.order.index(name)
+
+
+def _distance(d: Design, reader: Stage, writer: Stage) -> int:
+    """Pipeline distance from a reading stage to a writing stage: by boundary latency when both
+    are placed between boundaries, otherwise by flow order."""
+    if reader.between and writer.between:
+        lat = _latency(d, reader.between[0], writer.between[0])
+        if lat is not None:
+            return lat
+    return _stage_index(d, writer.name) - _stage_index(d, reader.name)
 
 
 # ── lint: state that is written but never read; requirements met ─────────
@@ -179,18 +189,26 @@ def check_hazards(d: Design) -> list[Finding]:
         pairs = [(r, w) for r in readers for w in writers if _stage_index(d, w.name) > _stage_index(d, r.name)]
         if not pairs:
             continue
-        window = max(_stage_index(d, w.name) - _stage_index(d, r.name) for r, w in pairs)
-        covered = dict(st.coverage)
-        for fbk in d.feedback:
-            if fbk.kind == "data" and fbk.distance is not None:
-                covered.setdefault(fbk.distance, f"bypass from {fbk.src}")
-        missing = [k for k in range(1, window + 1) if k not in covered]
-        if missing:
-            out.append(Finding("hazard", st.name, "fail",
-                               f"window {window}; distances {missing} have no bypass, stall or scoreboard"))
-        else:
-            how = "; ".join(f"d={k}: {covered[k]}" for k in range(1, window + 1))
-            out.append(Finding("hazard", st.name, "pass", f"window {window} covered ({how})"))
+        window = max(_distance(d, r, w) for r, w in pairs)
+        by_class = st.coverage if st.coverage and all(isinstance(v, dict) for v in st.coverage.values()) \
+            else {None: dict(st.coverage)}
+        for cls, cov in by_class.items():
+            covered = dict(cov)
+            if cls is None:      # unclassified: bypass feedback edges count directly
+                for fbk in d.feedback:
+                    if fbk.kind == "data" and fbk.distance is not None:
+                        covered.setdefault(fbk.distance, f"bypass from {fbk.src}")
+            subject = st.name if cls is None else f"{st.name} ← {cls}"
+            if "*" in covered:
+                out.append(Finding("hazard", subject, "pass", f"window {window}: every distance by {covered['*']}"))
+                continue
+            missing = [k for k in range(1, window + 1) if k not in covered]
+            if missing:
+                out.append(Finding("hazard", subject, "fail",
+                                   f"window {window}; distances {missing} have no bypass, stall or scoreboard"))
+            else:
+                how = "; ".join(f"d={k}: {covered[k]}" for k in range(1, window + 1))
+                out.append(Finding("hazard", subject, "pass", f"window {window} covered ({how})"))
     return out
 
 
@@ -203,13 +221,19 @@ def check_availability(d: Design) -> list[Finding]:
             for f in d.resolve(ref, s.on):
                 if f.availability != "tail":
                     continue
-                item = d.carriers[f.carrier].item
+                item = f"{f.carrier} item"
                 upstream = [u for u in d.stages.values()
                             if _stage_index(d, u.name) <= _stage_index(d, s.name)
                             and u.buffer and u.buffer.policy == "prebuffer"]
-                if upstream:
+                buf = upstream[-1].buffer if upstream else None
+                if buf and buf.item_max is not None and buf.depth is not None and buf.item_max > buf.depth:
+                    out.append(Finding("availability", f.path, "fail",
+                                       f"tail field needed at head by {s.name}; {upstream[-1].name} holds "
+                                       f"{buf.depth} {buf.unit}s but a {item} can be {buf.item_max}"))
+                elif upstream:
+                    size = f" ({buf.depth} {buf.unit}s ≥ {buf.item_max})" if buf.item_max is not None else ""
                     out.append(Finding("availability", f.path, "pass",
-                                       f"tail field needed at head by {s.name}; {upstream[-1].name} holds a whole {item}"))
+                                       f"tail field needed at head by {s.name}; {upstream[-1].name} holds a whole {item}{size}"))
                 else:
                     out.append(Finding("availability", f.path, "fail",
                                        f"tail field needed at head by {s.name}; needs a buffer of one whole {item}"))
@@ -224,10 +248,26 @@ def check_rigid_edges(d: Design) -> list[Finding]:
         if not s.between:
             continue
         a, b = (d.boundaries[x] for x in s.between)
-        if not (a.coupling == "rigid" and b.coupling != "rigid"):
+        into_rigid = a.coupling != "rigid" and b.coupling == "rigid"
+        if not (a.coupling == "rigid" and b.coupling != "rigid") and not into_rigid:
             continue
         buf = s.buffer
-        if buf is None or buf.depth is None:
+        if into_rigid:
+            if buf is None or buf.policy != "prebuffer":
+                out.append(Finding("rigid edge", s.name, "fail",
+                                   "stallable input feeds a region that cannot pause, with no whole-item prebuffer"))
+            elif buf.item_max is not None and buf.depth is not None:
+                ok = buf.depth >= buf.item_max
+                out.append(Finding("rigid edge", s.name, "pass" if ok else "fail",
+                                   f"prebuffers a whole item: depth {buf.depth} vs largest item {buf.item_max} {buf.unit}s"))
+            else:
+                out.append(Finding("rigid edge", s.name, "unchecked", "prebuffer declared; item size not in the model"))
+            continue
+        if buf is not None and buf.policy == "drop" and buf.item_max is not None and buf.depth is not None:
+            ok = buf.depth >= buf.item_max
+            out.append(Finding("rigid edge", s.name, "pass" if ok else "fail",
+                               f"drops on overflow; holds a whole item: depth {buf.depth} vs largest item {buf.item_max} {buf.unit}s"))
+        elif buf is None or buf.depth is None:
             out.append(Finding("rigid edge", s.name, "fail", "rigid input meets a stallable output with no buffer"))
         elif buf.burst is None:
             out.append(Finding("rigid edge", s.name, "unchecked",
@@ -249,6 +289,9 @@ def check_cost(d: Design) -> list[Finding]:
             continue
         refs, axis = s.broadcast
         fs = [f for r in refs for f in d.resolve(r, s.on)]
+        if any(d.bits(f) is None for f in fs):
+            out.append(Finding("cost", f"{s.name} copies along {axis}", "unchecked", "a field width is not modelled"))
+            continue
         carried = sum(d.bits(f) for f in fs) * d.copies(s.on)
         distinct = carried // d.axes[axis]
         out.append(Finding("cost", f"{s.name} copies along {axis}", "info",
@@ -256,7 +299,7 @@ def check_cost(d: Design) -> list[Finding]:
     for r in d.routes.values():
         src_names = {f.name: f for f in d.carrier_fields(r.src)}
         data = [f for f in d.carrier_fields(r.dst) if f.name in src_names]
-        per_copy = sum(d.bits(f) for f in data)
+        per_copy = sum(d.bits(f) or 0 for f in data)
         k = d.copies(r.dst)
         out.append(Finding("cost", f"{r.name} → {r.dst}", "info",
                            f"{per_copy * k} b per item across {k} copies, at most {per_copy} b valid"))

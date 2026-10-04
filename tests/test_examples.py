@@ -66,3 +66,52 @@ def test_cli_exit_code_reports_failures(name, capsys):
     from gateau.__main__ import main
     assert main(["gateau", str(EXAMPLES / f"{name}.py")]) == 1     # both studies contain one failing check
     assert "findings" in capsys.readouterr().out
+
+
+def test_rocket_reproduces_study_02_hazard_table():
+    fs = findings("rocket")
+    assert table(fs) == {
+        ("join", "lat(WB, DC2)", "pass"),                          # R1: D$ s0→s2 rejoins WB by latency
+        ("hazard", "rf ← ALU op", "pass"),
+        ("hazard", "rf ← load word/double", "pass"),
+        ("hazard", "rf ← load byte/half", "pass"),
+        ("hazard", "rf ← mul, CSR, jalr", "pass"),
+        ("hazard", "rf ← div, D$ miss, RoCC", "pass"),
+        ("hazard", "sboard", "pass"),
+    }
+    by = {(f.check, f.subject): f.message for f in fs}
+    assert by[("hazard", "rf ← ALU op")] == ("window 3 covered (d=1: bypass mem_reg_wdata; "
+                                             "d=2: bypass wb_reg_wdata; d=3: RF write-through)")
+    assert "d=1: stall (load-use); d=2: bypass D$ s2 data" in by[("hazard", "rf ← load word/double")]
+
+
+def test_rocket_without_the_wb_bypass_fails():
+    mod = load("rocket")
+    d = mod.build()
+    del d.states["rf"].coverage["ALU op"][2]
+    fs = run_all(d, mod.OUTSIDE)
+    assert ("hazard", "rf ← ALU op", "fail") in table(fs)
+
+
+def test_ethernet_reproduces_study_03():
+    fs = findings("ethernet")
+    assert table(fs) == {
+        ("join", "lat(MAC_DLY, MAC_CRC)", "pass"),                 # E1: data held 2 blocks for the CRC verdict
+        ("join", "fifo(UDP_RX)", "unchecked"),                     # E1: header ↔ payload, one per packet
+        ("availability", "pkt_tx.checksum", "pass"),               # E3: needed before available → 16 KiB FIFO
+        ("rigid edge", "FIFO_RX", "pass"),                         # E1: rigid → elastic, drop on overflow
+        ("rigid edge", "FIFO_TX", "pass"),                         # E3: elastic → rigid, whole frame first
+    }
+
+
+@pytest.mark.parametrize("mutate, expect", [
+    (lambda d: setattr(d.stages["CSUM"], "buffer", None), ("availability", "pkt_tx.checksum", "fail")),
+    (lambda d: setattr(d.stages["CSUM"].buffer, "depth", 1024), ("availability", "pkt_tx.checksum", "fail")),
+    (lambda d: setattr(d.stages["FIFO_TX"], "buffer", None), ("rigid edge", "FIFO_TX", "fail")),
+    (lambda d: setattr(d.stages["FIFO_RX"].buffer, "depth", 1024), ("rigid edge", "FIFO_RX", "fail")),
+])
+def test_ethernet_buffer_mutations_fail(mutate, expect):
+    mod = load("ethernet")
+    d = mod.build()
+    mutate(d)
+    assert expect in table(run_all(d, mod.OUTSIDE))

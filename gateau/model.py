@@ -38,7 +38,7 @@ class Carrier:
 class Field:
     carrier: str
     name: str
-    elem_bits: int
+    elem_bits: Optional[int]              # None: width not modelled
     axes: tuple[str, ...] = ()
     availability: Availability = "whole"
     group: Optional[str] = None
@@ -72,8 +72,9 @@ class State:
     fields: tuple[str, ...] = ()          # named sub-fields, for configuration registers
     cyclic: Optional[int] = None
     epoch: Optional[Epoch] = None
-    # hazard coverage for in-flow state: distance → how it is covered ("bypass:…", "stall", "scoreboard")
-    coverage: dict[int, str] = field(default_factory=dict)
+    # hazard coverage for in-flow state. Either distance → how it is covered, or, per producer
+    # class, {class: {distance: how}}; the distance "*" covers every distance (a scoreboard).
+    coverage: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -108,6 +109,7 @@ class Buffer:
     unit: str = "item"
     policy: Optional[Literal["drop", "prebuffer", "stall"]] = None
     burst: Optional[Burst] = None
+    item_max: Optional[int] = None        # largest item the buffer must hold whole, in `unit`s
 
 
 # ── 3. stages ─────────────────────────────────────────────────────────────
@@ -221,6 +223,7 @@ class Design:
     feedback: list[Feedback] = field(default_factory=list)
     routes: dict[str, Route] = field(default_factory=dict)
     merges: dict[str, Merge] = field(default_factory=dict)
+    order: list[str] = field(default_factory=list)    # stages, routes and merges in flow order
 
     # builders ------------------------------------------------------------
     def carrier(self, name, item, domain, **kw) -> Carrier:
@@ -257,6 +260,8 @@ class Design:
         if "emits" in kw:
             kw["emits"] = tuple(e if isinstance(e, Emit) else Emit(e) for e in kw["emits"])
         s = self.stages[name] = Stage(name, on, **kw)
+        if name not in self.order:
+            self.order.append(name)
         return s
 
     def join(self, name, kind, branches, **kw) -> Join:
@@ -278,15 +283,21 @@ class Design:
             if k in kw:
                 kw[k] = tuple(kw[k])
         r = self.routes[name] = Route(name, src, dst, selector, **kw)
+        if name not in self.order:
+            self.order.append(name)
         return r
 
     def merge(self, name, inputs, dst, policy, granularity, creates=()) -> Merge:
         m = self.merges[name] = Merge(name, tuple(inputs), dst, policy, granularity, tuple(creates))
+        if name not in self.order:
+            self.order.append(name)
         return m
 
     # queries -------------------------------------------------------------
-    def bits(self, f: Field) -> int:
-        """Bits of one field per item, including its own axes."""
+    def bits(self, f: Field) -> Optional[int]:
+        """Bits of one field per item, including its own axes (None if the width isn't modelled)."""
+        if f.elem_bits is None:
+            return None
         return f.elem_bits * prod(self.axes[a] for a in f.axes)
 
     def copies(self, carrier: str) -> int:
