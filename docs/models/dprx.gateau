@@ -1,4 +1,4 @@
-# Parretto DisplayPort RX (prt_dprx_top) in gateau notation v1.0
+# Parretto DisplayPort RX (prt_dprx_top) in gateau notation v1.1
 # Modelled by hand from gateware/src/rx/*.sv. Structure only; no code reproduced.
 # Defaults: P_LANES = 4, P_SPL = 2, P_PPC = 2, P_BPC = 8, P_SDP and P_MST set.
 
@@ -38,6 +38,10 @@ state ila      in-flow      per-lane interlane-align lock           written by T
 state msa_ram  in-flow      32 × u8                                 written by MSA
 state vcfg     out-of-flow  { hwidth, … }                           written by VID from msg (vid_clk)
 
+# ── boundaries (named; stages sit between them) ──────────────────────────
+boundary b0                    # TRN output, lanes aligned
+boundary b1 = b0 + 1           # PARS and SCRM outputs
+
 # ── stages, in flow order ────────────────────────────────────────────────
 stage CTL   on msg;  writes cfg
 
@@ -48,15 +52,16 @@ stage TRN   ×ℓ  on sym
 
 fork  raw = { sym.k, sym.dat }
 
-stage PARS  on sym;  reads raw[ℓ = 0];  creates tag.*                  latency 1
+stage PARS  on sym;  between b0 → b1;  reads raw[ℓ = 0];  creates tag.*
             requires ila (lanes aligned, so lane 0 stands for all)
             writes lock := cfg.lnk_en
-stage SCRM  ×ℓ  on sym;  writes k, dat (descramble)                   latency 1
+stage SCRM  ×ℓ  on sym;  between b0 → b1;  writes k, dat (descramble)
             writes lock := ∧ℓ over cfg.lanes;  reads cfg.mst_en
             enable tied to 1                                            # cfg.scrm_en not read
 stage TAGB  on sym;  broadcast tag.*: bit[s] → bit[ℓ,s]                # lane-0 tags copied to every lane
 
-join  lat(PARS, SCRM)              # stated in pars.sv:1394 and scrm.sv:128 comments
+join  lat(PARS, SCRM)              # by construction: both b0 → b1
+                                   # RTL evidence: comments at pars.sv:1394, scrm.sv:128
 
 stage MSA   on sym;  reads k, dat, tag.msa;  consumes tag.msa;  writes msa_ram
             emits attributes → msg;  reads cfg.lanes
@@ -74,9 +79,9 @@ stage VID   on sym → pix
             vmap: reshape stripes → pix.data;  reads cfg.bpc, vcfg
             creates pix.data, pix.sof, pix.eol
 
-# ── boundaries ───────────────────────────────────────────────────────────
+# ── coupling and domains ─────────────────────────────────────────────────
 boundary PHY  → TRN        rigid                # the link cannot be stalled
-boundary TRN  → PARS|SCRM  rigid  latency ?
+boundary b0, b1            rigid
 boundary *    → VID.fifo   rigid
 boundary VID.fifo → out    elastic (VID_RDY_IN)  @ vid_clk
 boundary SDP.fifo → out    @ sdp_clk
@@ -89,7 +94,7 @@ feedback ctrl  PM → CTL, TRN via msg             cfg and cfg_tps (the training
 feedback ctrl  VID.irq  → PM                     stable-video detection
 
 # ── checks (derived) ─────────────────────────────────────────────────────
-check join lat(PARS, SCRM)       declared 1 = 1     holds only by comment; no assertion in RTL
+check join lat(PARS, SCRM)       structural (b0 → b1)   RTL agreement held only by comment
 check index raw[ℓ = 0]           requires ila       holds if TRN alignment is locked first
 check state cfg.scrm_en          written, never read            → flag
 check rigid  * → VID.fifo        no stall path into the link    → depth must cover the clock-rate gap

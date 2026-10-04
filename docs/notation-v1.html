@@ -201,14 +201,27 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
 <div class="page">
 
 <header>
-  <div class="eyebrow">gateau · notation v1.0 draft</div>
+  <div class="eyebrow">gateau · notation v1.1 draft</div>
   <h1>Gateau Notation</h1>
   <p class="lede">The consolidated set of abstractions behind studies 01–03, and a method for drawing any architecture with them. Seven primitives, four views, five derived checks, and one rule for which visual channel means what.</p>
   <div class="meta">
     <span>consolidates: <a href="https://claude.ai/artifact/WeWk2D2etuaHL4HB6VPZ5Q">study 01</a> (DP RX) · <a href="https://claude.ai/artifact/Sh4MkSwhh6BpLXoZ5PMTzb">study 02</a> (Rocket, Gemmini, bubbletea) · <a href="https://claude.ai/artifact/NfKRW7T2NAj34TQsd6sZQN">study 03</a> (Ethernet)</span>
+    <span>applied in: <a href="https://claude.ai/artifact/DXpzvLB2dQYPmqqpW4ewVs">study 04</a> (DP RX, all views)</span>
     <span>status: draft for review</span>
   </div>
 </header>
+
+<section>
+  <div class="prose">
+    <h2>Changes in v1.1</h2>
+    <p>Drawing the DP RX model (study 04) exposed three gaps. All three are now part of the notation.</p>
+  </div>
+  <div class="changes">
+    <div><span class="why">grammar</span><h3>Boundaries are named</h3><p>Boundaries get names (<span class="mono">b0</span>, <span class="mono">b1 = b0 + 1</span>), and stages are placed <em>between</em> them instead of carrying their own latency. Two branches between the same pair of boundaries are equal-latency by construction, so a lat join becomes a structural fact of the model. What remains to check is whether the RTL agrees with the declared boundary latencies.</p></div>
+    <div><span class="why">layout</span><h3>Stubs for distant state</h3><p>A read of out-of-flow state whose tap would cross more than one carrier band is drawn as a stub: a short tap ending in a labelled tag (<span class="mono">cfg.bpc · vcfg</span>). Reads that cross at most one band stay as full taps.</p></div>
+    <div><span class="why">honesty</span><h3>The ≈ marker</h3><p>Any mark that drops detail present in the model carries ≈, with the omission stated in the caption. A diagram can simplify, but it must say where.</p></div>
+  </div>
+</section>
 
 <section>
   <div class="prose">
@@ -245,7 +258,7 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
     <div class="prim">
       <div class="prim-head"><span class="num">4</span><h3>Boundary</h3></div>
       <p class="def">The edge between two consecutive stages. It holds the timing of the design: how long, and who can stop whom.</p>
-      <dl><dt>attributes</dt><dd>latency (cycles, or "variable") · coupling: <b>lockstep</b> (shared enable), <b>elastic</b> (valid/ready) or <b>rigid</b> (cannot stall) · clock domain on each side</dd><dt>drawn as</dt><dd>a dashed vertical with its latency on top; » marks elastic; a gray region marks rigid; colour changes at a domain crossing</dd></dl>
+      <dl><dt>attributes</dt><dd>name · latency relative to another boundary (cycles, "variable" or "?") · coupling: <b>lockstep</b> (shared enable), <b>elastic</b> (valid/ready) or <b>rigid</b> (cannot stall) · clock domain on each side</dd><dt>drawn as</dt><dd>a dashed vertical labelled with its name and latency; stages sit between two of them; » marks elastic; a gray region marks rigid; colour changes at a domain crossing</dd></dl>
       <span class="from">01 cycle band, CDC · 02 register prefixes, » , fire · 03 line time</span>
     </div>
     <div class="prim">
@@ -287,6 +300,8 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
         <tr><td>hue</td><td>clock domain (ink = the main domain)</td><td>carrier, emphasis, or kind</td></tr>
         <tr><td>badge</td><td>a checkable contract, coloured by its result: green holds, red fails, blue declared but unchecked</td><td>notes or labels</td></tr>
         <tr><td>gutter edge stroke</td><td>feedback kind: solid data, dashed control, dotted flow</td><td>importance</td></tr>
+        <tr><td>≈ mark</td><td>a mark that simplifies the model; the caption says how</td><td>uncertainty about the design</td></tr>
+        <tr><td>stub tag</td><td>a read of out-of-flow state from more than one band away</td><td>a different kind of state</td></tr>
         <tr><td>row thickness</td><td>off by default; with the cost overlay on, bits</td><td>anything when the overlay is off</td></tr>
       </tbody>
     </table>
@@ -452,13 +467,13 @@ svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; 
   <ol class="method">
     <li><b>Name the item.</b> What is "one thing" moving through the design? If there is more than one answer at different rates (packet and beat, II-period and cycle, matmul and row), each answer is a carrier. Nest them coarse above fine.</li>
     <li><b>List the stages in flow order</b> along each carrier. Mark stages that span two carriers as transfers.</li>
-    <li><b>Mark every boundary</b> with its latency (number, "variable", or "?") and its coupling: lockstep, elastic or rigid. Note clock domains. Write "?" rather than guessing; unknown latencies are where contracts hide.</li>
+    <li><b>Name every boundary</b> and give its latency relative to another (<span class="mono">b1 = b0 + 1</span>, "variable", or "?") and its coupling: lockstep, elastic or rigid. Place each stage between two boundaries. Note clock domains. Write "?" rather than guessing; unknown latencies are where contracts hide.</li>
     <li><b>Enumerate fields per carrier.</b> For each one: type in axis terms, the stage that creates it, the stages that read and write it, the stage that consumes it, and whether it is available for the whole item, at its head, or at its tail. Group bundles.</li>
     <li><b>Find forks and joins.</b> Wherever an item's fields split and meet again, declare the join discipline (lat, fifo, key) and its parameter.</li>
     <li><b>List state.</b> For each store: taps, writer kind (in-flow, out-of-flow, shared), and whether it is cyclic.</li>
     <li><b>List feedback</b>: bypasses, redirects, kills, ready/stall, and anything leaving the design (bitslip, reset requests).</li>
     <li><b>Run the five checks.</b> Every failing or undeclared one is a finding, and usually the most valuable output of the exercise.</li>
-    <li><b>Lay out</b> by these rules: carriers coarse to fine, top to bottom; rows inside a carrier ordered by the stage that creates them; state above, ordered by span with the shortest nearest the bands; gutter edges ordered by span with the shortest nearest the bands; at most about twelve rows per view, collapsing groups and closing boxes to stay under it.</li>
+    <li><b>Lay out</b> by these rules: carriers coarse to fine, top to bottom; rows inside a carrier ordered by the stage that creates them; state above, ordered by span with the shortest nearest the bands; gutter edges ordered by span with the shortest nearest the bands; at most about twelve rows per view, collapsing groups and closing boxes to stay under it; any out-of-flow read crossing more than one band becomes a stub; any simplification gets ≈.</li>
     <li><b>Zoom where shapes change.</b> Every stage that reshapes, permutes, skews or realigns a field gets an axis view. Every join with a non-trivial discipline gets a time view.</li>
   </ol>
 </section>
@@ -475,18 +490,22 @@ field sym.k, sym.dat : bit[ℓ,s], u8[ℓ,s]
 field sym.lock       : bit
 group sym.tag        : {sol, eol, vid, sdp, msa, vbid} : bit[ℓ,s]
 
-state cfg  out-of-flow {lanes, scrm_en, mst_en, bpc}   written by CTL from msg
+state cfg  out-of-flow {lnk_en, lanes, scrm_en, mst_en, bpc}   written by CTL from msg
+state ila  in-flow     lanes aligned                           written by TRN
 
-stage TRN   writes lock; writes k, dat;           taps msg
+boundary b0                        # TRN output
+boundary b1 = b0 + 1
+
+stage TRN   ×ℓ; writes k, dat; writes ila;        taps msg
 fork  raw  = {k, dat}
-stage PARS  reads raw[ℓ = 0]; creates tag.*        latency 1
-stage SCRM  ×ℓ; writes k, dat; writes lock = ∧ℓ   latency 1; reads cfg
-join  lat(PARS, SCRM)                              # check: 1 == 1 ✓
+stage PARS  between b0 → b1; reads raw[ℓ = 0]; creates tag.*; requires ila
+stage SCRM  between b0 → b1; ×ℓ; writes k, dat; creates lock = ∧ℓ; reads cfg
+join  lat(PARS, SCRM)                              # by construction: both b0 → b1
 stage MSA   reads k, dat, tag.msa; consumes tag.msa; emits msg
 stage SDP   if P_SDP; reads k, dat, tag.sdp; consumes tag.sdp; emits sdp_out @ sdp_clk
 stage VID   consumes all; emits video @ vid_clk     boundary rigid → elastic via FIFO</code></pre>
   <div class="prose">
-    <p>Around fifteen lines hold everything FIG B of study 01 shows, plus the check that study 01 could only state in prose.</p>
+    <p>About twenty lines hold everything FIG B of study 01 shows, plus the check that study 01 could only state in prose. The full model, with modes, carriers and checks, is <span class="mono">docs/models/dprx.gateau</span>.</p>
   </div>
 </section>
 

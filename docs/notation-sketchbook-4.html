@@ -187,15 +187,18 @@ svg .tailmark { fill: var(--sdp); }
 svg .modetag { fill: var(--surface); stroke: var(--fg); stroke-width: 1; }
 svg .off { opacity: 0.18; }
 svg .hot { stroke-width: 2.2; }
+svg .stub { fill: var(--soft); stroke: var(--fg); stroke-width: 1; }
+svg .t-stub { font-size: 9px; text-anchor: middle; fill: var(--fg); }
+svg.ov-checks > *:not(.chk):not(defs) { opacity: 0.14; }
 </style>
 <div class="page">
 <header>
   <div class="eyebrow">gateau · notation study 04</div>
   <h1>Gateau Notation Sketchbook IV</h1>
-  <p class="lede">The DP RX text model from <span class="mono">docs/models/dprx.gateau</span>, drawn under v1 rules. One layout, two modes. Every mark on the page corresponds to a line of the model, and the table at the end gives the mapping.</p>
+  <p class="lede">The DP RX text model from <span class="mono">docs/models/dprx.gateau</span>, drawn under v1 rules. All four views: the bus view in two modes, the axis view, the time view, and the cost and checks overlays. Every mark corresponds to a line of the model; the table near the end gives the mapping.</p>
   <div class="meta">
     <span>model: <span class="mono">dprx.gateau</span> (Parretto <span class="mono">prt_dprx_top</span>)</span>
-    <span>notation: <a href="https://claude.ai/artifact/1j8SAPsZDvH7A9VSGyexUj">Gateau Notation v1.0</a></span>
+    <span>notation: <a href="https://claude.ai/artifact/1j8SAPsZDvH7A9VSGyexUj">Gateau Notation v1.1</a></span>
     <span>status: drawn by hand from the model</span>
   </div>
 </header>
@@ -206,14 +209,14 @@ svg .hot { stroke-width: 2.2; }
     <p>Four carriers, top to bottom: the message ring, the symbol stream, SDP packets and pixels. The symbol band is shaded because the link can't be stalled. State sits above as pills. The only feedback in this mode is the vblank interrupt to the policy maker.</p>
   </div>
   <figure>
-    <div class="sheet"><svg viewBox="0 0 1200 660" role="img" aria-label="DP RX bus view, normal mode.">
-<defs><marker id="dn-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="dn-vid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="dn-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
-<rect class="modetag" x="1040" y="586" width="148" height="22" rx="11"/><text class="t-w t-mid" x="1114" y="601" style="fill:var(--fg)">mode: normal</text>
-<rect class="store" x="170" y="22" width="870" height="18" rx="9"/><text class="t-w" x="230" y="35" style="fill:var(--fg)">cfg · out-of-flow {lnk_en, lanes, scrm_en, mst_en, bpc}</text>
-<g><rect class="store" x="215" y="48" width="70" height="18" rx="9"/><text class="t-w t-mid" x="250" y="61" style="fill:var(--fg)">cfg_tps</text></g>
-<rect class="store" x="262" y="74" width="150" height="18" rx="9"/><text class="t-w" x="300" y="87" style="fill:var(--fg)">ila · lanes aligned</text>
+    <div class="sheet"><svg class="" viewBox="0 0 1200 660" role="img" aria-label="DP RX bus view, normal mode.">
+<defs><marker id="nn-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="nn-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="nn-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="586" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="601" style="fill:var(--fg)">mode: normal</text></g>
+<g class="chk"><rect class="store" x="170" y="22" width="490" height="18" rx="9"/><text class="t-w" x="196" y="35" style="fill:var(--fg)">cfg · {lnk_en, lanes, scrm_en, mst_en, bpc}</text></g>
+<rect class="store" x="215" y="48" width="70" height="18" rx="9"/><text class="t-w t-mid" x="250" y="61" style="fill:var(--fg)">cfg_tps</text>
+<g class="chk"><rect class="store" x="262" y="74" width="150" height="18" rx="9"/><text class="t-w" x="300" y="87" style="fill:var(--fg)">ila · lanes aligned</text></g>
 <g><rect class="store" x="620" y="74" width="100" height="18" rx="9"/><text class="t-w t-mid" x="696" y="87" style="fill:var(--fg)">msa_ram</text></g>
-<g><rect class="store-vid" x="880" y="48" width="160" height="18" rx="9"/><text class="t-w t-vid" x="940" y="61">vcfg · vid_clk</text></g>
+<g><rect class="store-vid" x="880" y="48" width="130" height="18" rx="9"/><text class="t-w t-vid" x="912" y="61">vcfg · vid_clk</text></g>
 <rect class="carrier" x="116" y="122" width="1072" height="46"/>
 <rect class="band-rigid" x="116" y="186" width="744" height="226"/>
 <rect class="carrier" x="860" y="186" width="328" height="226"/>
@@ -249,35 +252,42 @@ svg .hot { stroke-width: 2.2; }
 <line class="track" x1="116" y1="472" x2="1188" y2="472"/>
 <line class="track" x1="116" y1="492" x2="1188" y2="492"/>
 <line class="track" x1="116" y1="540" x2="1188" y2="540"/>
-<line class="edge" x1="335" y1="186" x2="335" y2="412"/><line class="edge" x1="540" y1="186" x2="540" y2="412"/><text class="t-w t-mid" x="540" y="182">+1</text>
+<g class="chk"><line class="edge" x1="335" y1="186" x2="335" y2="412"/><line class="edge" x1="540" y1="186" x2="540" y2="412"/><text class="t-w t-mid" x="335" y="182">b0</text><text class="t-w t-mid" x="540" y="182">b1 = b0 + 1</text></g>
 <line class="msg" x1="116" y1="143" x2="1176" y2="143"/><line class="msg" x1="116" y1="147" x2="1176" y2="147"/>
 <line class="lane" x1="116" y1="236" x2="860" y2="236"/><line class="lane" x1="116" y1="264" x2="860" y2="264"/>
-<line class="lane" x1="520" y1="208" x2="860" y2="208"/>
+<line class="lane" x1="520" y1="208" x2="860" y2="208"/><text class="t-w" x="524" y="203" style="fill:var(--fg)">≈</text>
 <g><line class="lane" x1="420" y1="298" x2="860" y2="298"/><line class="lane" x1="420" y1="318" x2="860" y2="318"/><line class="lane" x1="420" y1="338" x2="860" y2="338"/><line class="lane" x1="420" y1="358" x2="720" y2="358"/><line class="lane" x1="420" y1="378" x2="620" y2="378"/><line class="lane" x1="420" y1="398" x2="860" y2="398"/></g>
-<g><line class="lane-sdp" x1="790" y1="472" x2="1182" y2="472"/><polygon class="tailmark" points="802,466 808,472 802,478 796,472"/><line class="lane-sdp" x1="790" y1="492" x2="1182" y2="492"/><line class="lane-vid" x1="930" y1="540" x2="980" y2="540"/><line class="lane-vid" x1="1050" y1="540" x2="1180" y2="540" marker-end="url(#dn-vid)"/><text class="t-w t-vid t-mid" x="1115" y="532">» VID_RDY</text></g>
-<line class="conn" x1="185" y1="135" x2="185" y2="42" marker-end="url(#dn-ink)"/>
-<line class="conn" x1="245" y1="222" x2="245" y2="68" marker-end="url(#dn-ink)"/>
-<line class="conn" x1="275" y1="222" x2="275" y2="94" marker-end="url(#dn-ink)"/>
-<g><line class="conn" x1="405" y1="92" x2="405" y2="288"/><line class="conn" x1="385" y1="236" x2="385" y2="288"/><text class="t-w" x="352" y="252" style="fill:var(--fg)">ℓ=0</text></g>
+<g><line class="lane-sdp" x1="790" y1="472" x2="1182" y2="472"/><polygon class="tailmark" points="802,466 808,472 802,478 796,472"/><line class="lane-sdp" x1="790" y1="492" x2="1182" y2="492"/><line class="lane-vid" x1="930" y1="540" x2="980" y2="540"/><line class="lane-vid" x1="1050" y1="540" x2="1180" y2="540" marker-end="url(#nn-vid)"/><text class="t-w t-vid t-mid" x="1115" y="532">» VID_RDY</text></g>
+<line class="conn" x1="185" y1="135" x2="185" y2="42" marker-end="url(#nn-ink)"/>
+<line class="conn" x1="245" y1="222" x2="245" y2="68" marker-end="url(#nn-ink)"/>
+<g class="chk"><line class="conn" x1="275" y1="222" x2="275" y2="94" marker-end="url(#nn-ink)"/></g>
+<g class="chk"><g><line class="conn" x1="405" y1="92" x2="405" y2="288"/><circle class="dot" cx="405" cy="92" r="3.2"/></g></g>
+<g><line class="conn" x1="385" y1="236" x2="385" y2="288"/><text class="t-w" x="352" y="252" style="fill:var(--fg)">ℓ=0</text></g>
 <line class="conn" x1="485" y1="40" x2="485" y2="196"/>
-<g><line class="conn" x1="640" y1="40" x2="640" y2="368"/><line class="conn" x1="670" y1="368" x2="670" y2="94" marker-end="url(#dn-ink)"/><line class="conn" x1="685" y1="368" x2="685" y2="150" marker-end="url(#dn-ink)"/><line class="conn" x1="740" y1="236" x2="740" y2="348"/><line class="conn" x1="775" y1="348" x2="775" y2="150" marker-end="url(#dn-ink)"/><line class="conn" x1="900" y1="196" x2="900" y2="68" marker-end="url(#dn-ink)"/><line class="conn" x1="1000" y1="40" x2="1000" y2="528"/><line class="conn" x1="1030" y1="66" x2="1030" y2="528"/></g>
-<rect class="gutter" x="116" y="578" width="910" height="74" rx="3"/><text class="t-note" x="14" y="598">gutter</text>
-<g><path class="back-ctl" d="M895,560 L895,600 L139,600 L139,159" marker-end="url(#dn-mut)"/><text class="t-w" x="450" y="595">ctrl · end-of-vblank irq → PM (stable video)</text></g>
-<g class="off"><path class="back" style="stroke:var(--fg)" d="M490,278 L490,630 L255,630 L255,280" marker-end="url(#dn-ink)"/><text class="t-w" x="510" y="626" style="fill:var(--fg)">data · descrambled TPS4 → TRN.chk</text></g>
+<g><line class="conn" x1="640" y1="40" x2="640" y2="368"/><circle class="dot" cx="640" cy="40" r="3.2"/><line class="conn" x1="670" y1="368" x2="670" y2="94" marker-end="url(#nn-ink)"/><line class="conn" x1="685" y1="368" x2="685" y2="150" marker-end="url(#nn-ink)"/><line class="conn" x1="740" y1="236" x2="740" y2="348"/><line class="conn" x1="775" y1="348" x2="775" y2="150" marker-end="url(#nn-ink)"/><line class="conn" x1="900" y1="196" x2="900" y2="68" marker-end="url(#nn-ink)"/><line class="conn" x1="1015" y1="528" x2="1015" y2="512"/><rect class="stub" x="972" y="499" width="86" height="13" rx="6"/><text class="t-stub" x="1015" y="509">cfg.bpc · vcfg</text></g>
+<rect class="gutter" x="116" y="578" width="880" height="74" rx="3"/><text class="t-note" x="14" y="598">gutter</text>
+<g><path class="back-ctl" d="M895,560 L895,600 L139,600 L139,159" marker-end="url(#nn-mut)"/><text class="t-w" x="450" y="595">ctrl · end-of-vblank irq → PM (stable video)</text></g>
+<g class="off"><path class="back" style="stroke:var(--fg)" d="M490,278 L490,630 L255,630 L255,280" marker-end="url(#nn-ink)"/><text class="t-w" x="510" y="626" style="fill:var(--fg)">data · descrambled TPS4 → TRN.chk</text></g>
 <rect class="box-opt" x="120" y="133" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="149" style="fill:var(--muted)">PM</text>
 <rect class="box" x="168" y="135" width="36" height="20" rx="3"/><text class="t-sub" x="186" y="149" style="fill:var(--fg)">CTL</text>
-<rect class="box" x="215" y="222" width="80" height="56" rx="3"/><text class="t-box" x="255" y="246">TRN ×ℓ</text><text class="t-sub" x="255" y="262">ila</text>
-<g><rect class="box" x="350" y="288" width="70" height="120" rx="3"/><text class="t-box" x="385" y="352">PARS</text></g>
-<rect class="box" x="450" y="196" width="70" height="82" rx="3"/><text class="t-box" x="485" y="236">SCRM ×ℓ</text><text class="t-sub" x="485" y="252">∧ → lock</text>
-<g><rect class="box" x="555" y="288" width="30" height="120" rx="3"/><text class="t-sub" x="570" y="352" style="fill:var(--fg)">Δℓ</text><rect class="box" x="620" y="368" width="70" height="20" rx="3"/><text class="t-box" x="655" y="382">MSA</text><rect class="box-opt" x="720" y="348" width="70" height="152" rx="3"/><text class="t-box" x="755" y="416">SDP</text><text class="t-sub" x="755" y="432">FIFO 32</text><text class="t-sub" x="755" y="446">+ len 8</text><rect class="fill-box" x="860" y="196" width="70" height="320"/><rect class="fill-vid-soft" x="860" y="516" width="70" height="44"/><rect class="outline" x="860" y="196" width="70" height="364" rx="3"/><text class="t-box" x="895" y="300">VID</text><text class="t-sub" x="895" y="316">lclk · lmap</text><text class="t-sub" x="895" y="542" style="fill:var(--fg)">fifo 64</text><rect class="box-vid" x="980" y="528" width="70" height="24" rx="3"/><text class="t-box t-vid" x="1015" y="544">vmap</text></g>
+<g class="chk"><rect class="box" x="215" y="222" width="80" height="56" rx="3"/><text class="t-box" x="255" y="246">TRN ×ℓ</text><text class="t-sub" x="255" y="262">ila</text></g>
+<g class="chk"><g><rect class="box" x="350" y="288" width="70" height="120" rx="3"/><text class="t-box" x="385" y="352">PARS</text></g></g>
+<g class="chk"><rect class="box" x="450" y="196" width="70" height="82" rx="3"/><text class="t-box" x="485" y="236">SCRM ×ℓ</text><text class="t-sub" x="485" y="252">∧ → lock</text></g>
+<g><rect class="box" x="555" y="288" width="30" height="120" rx="3"/><text class="t-sub" x="570" y="352" style="fill:var(--fg)">Δℓ</text><rect class="box" x="620" y="368" width="70" height="20" rx="3"/><text class="t-box" x="655" y="382">MSA</text></g>
+<g class="chk"><g><rect class="box-opt" x="720" y="348" width="70" height="152" rx="3"/><text class="t-box" x="755" y="416">SDP</text><text class="t-sub" x="755" y="432">FIFO 32</text><text class="t-sub" x="755" y="446">+ len 8</text></g></g>
+<g class="chk"><g><rect class="fill-box" x="860" y="196" width="70" height="320"/><rect class="fill-vid-soft" x="860" y="516" width="70" height="44"/><rect class="outline" x="860" y="196" width="70" height="364" rx="3"/><text class="t-box" x="895" y="300">VID</text><text class="t-sub" x="895" y="316">lclk · lmap</text><text class="t-sub" x="895" y="542" style="fill:var(--fg)">fifo 64</text></g></g>
+<g><rect class="box-vid" x="980" y="528" width="70" height="24" rx="3"/><text class="t-box t-vid" x="1015" y="544">vmap</text></g>
 <circle class="dot" cx="245" cy="145" r="3.2"/>
 <circle class="dot" cx="485" cy="40" r="3.2"/>
-<g><circle class="dot" cx="405" cy="92" r="3.2"/><circle class="dot" cx="385" cy="236" r="3.2"/><circle class="dot" cx="385" cy="264" r="3.2"/><circle class="dot" cx="640" cy="40" r="3.2"/><circle class="dot" cx="640" cy="236" r="3.2"/><circle class="dot" cx="640" cy="264" r="3.2"/><circle class="dot" cx="740" cy="236" r="3.2"/><circle class="dot" cx="740" cy="264" r="3.2"/><circle class="dot" cx="900" cy="145" r="3.2"/><circle class="dot" cx="1000" cy="40" r="3.2"/><circle class="dot" cx="1030" cy="66" r="3.2"/></g>
-<circle class="dot" cx="320" cy="236" r="3.2"/><circle class="dot" cx="320" cy="264" r="3.2"/>
-<rect class="badge-bad" x="430" y="98" width="172" height="18" rx="9"/><text class="t-w t-bad t-mid" x="516" y="111">⚑ cfg.scrm_en never read</text>
-<g><rect class="badge-acc" x="300" y="418" width="250" height="18" rx="9"/><text class="t-w t-acc t-mid" x="425" y="431">⟂ lat(PARS, SCRM) 1 = 1 · by comment</text><rect class="badge-acc" x="940" y="430" width="160" height="16" rx="8"/><text class="t-w t-acc t-mid" x="1020" y="442">⟂ fifo(data, len)</text><rect class="badge-acc" x="740" y="562" width="290" height="16" rx="8"/><text class="t-w t-acc t-mid" x="885" y="574">rigid edge: 64 words vs vid_clk ratio ?</text></g>
+<circle class="dot" cx="320" cy="236" r="3.2"/>
+<circle class="dot" cx="320" cy="264" r="3.2"/>
+<g><circle class="dot" cx="385" cy="236" r="3.2"/><circle class="dot" cx="385" cy="264" r="3.2"/><circle class="dot" cx="640" cy="236" r="3.2"/><circle class="dot" cx="640" cy="264" r="3.2"/><circle class="dot" cx="740" cy="236" r="3.2"/><circle class="dot" cx="740" cy="264" r="3.2"/><circle class="dot" cx="900" cy="145" r="3.2"/></g>
+<g class="chk"><rect class="badge-bad" x="300" y="98" width="172" height="18" rx="9"/><text class="t-w t-bad t-mid" x="386" y="111">⚑ cfg.scrm_en never read</text></g>
+<g class="chk"><g><rect class="badge-acc" x="300" y="418" width="260" height="18" rx="9"/><text class="t-w t-acc t-mid" x="430" y="431">⟂ lat by construction: both b0 → b1</text></g></g>
+<g class="chk"><g><rect class="badge-acc" x="940" y="430" width="160" height="16" rx="8"/><text class="t-w t-acc t-mid" x="1020" y="442">⟂ fifo(data, len)</text></g></g>
+<g class="chk"><g><rect class="badge-acc" x="700" y="562" width="290" height="16" rx="8"/><text class="t-w t-acc t-mid" x="845" y="574">rigid edge: 64 words vs vid_clk ratio ?</text></g></g>
 </svg></div>
-    <figcaption><span class="fig-id">FIG D1</span><b>DP RX in normal mode.</b> PARS reads lane 0 of <code>k</code> and <code>dat</code> and creates the six tag rows. It can do that only because <code>ila</code> says the lanes are aligned, which is the read tap from the <code>ila</code> pill. SCRM rewrites the data and creates <code>lock</code> in the same cycle, and Δℓ copies the tags to every lane. MSA and SDP each consume one tag and emit to other carriers: MSA to the message ring and <code>msa_ram</code>, SDP down to its own packet carrier in <code>sdp_clk</code>, where the length is a tail field (◆). VID consumes the rest of the symbol stream and hands off through its FIFO to <code>vid_clk</code>. Badges: red = a check that fails, blue = declared but not verifiable from the RTL.</figcaption>
+    <figcaption><span class="fig-id">FIG D1</span><b>DP RX in normal mode.</b> PARS reads lane 0 of <code>k</code> and <code>dat</code> and creates the six tag rows. It can do that only because <code>ila</code> says the lanes are aligned, which is the read tap from the <code>ila</code> pill. SCRM rewrites the data and creates <code>lock</code> in the same cycle, and Δℓ copies the tags to every lane. MSA and SDP each consume one tag and emit to other carriers: MSA to the message ring and <code>msa_ram</code>, SDP down to its own packet carrier in <code>sdp_clk</code>, where the length is a tail field (◆). VID consumes the rest of the symbol stream and hands off through its FIFO to <code>vid_clk</code>. PARS and SCRM both sit between the named boundaries <code>b0</code> and <code>b1</code>, so their join is equal-latency by construction. vmap's configuration reads are short stubs instead of lines across three bands. The <b>≈</b> on <code>lock</code> marks a simplification: in the RTL, lock passes through PARS before SCRM overwrites it. Badges: red = a check that fails, blue = declared but not verifiable from the RTL.</figcaption>
   </figure>
 </section>
 
@@ -287,14 +297,14 @@ svg .hot { stroke-width: 2.2; }
     <p>Same layout, same positions; only what is active changes. During training there's no main-stream content, so the tag rows, MSA, SDP and VID fade out. What remains is TRN checking patterns, SCRM descrambling for TPS4, and the message ring carrying pattern select in and status out. The loop runs through firmware: PM writes <code>cfg_tps</code> via a message, TRN reports matches back over the ring, and PM decides the next step.</p>
   </div>
   <figure>
-    <div class="sheet"><svg viewBox="0 0 1200 660" role="img" aria-label="DP RX bus view, training mode.">
-<defs><marker id="dt-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="dt-vid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="dt-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
-<rect class="modetag" x="1040" y="586" width="148" height="22" rx="11"/><text class="t-w t-mid" x="1114" y="601" style="fill:var(--fg)">mode: training</text>
-<rect class="store" x="170" y="22" width="870" height="18" rx="9"/><text class="t-w" x="230" y="35" style="fill:var(--fg)">cfg · out-of-flow {lnk_en, lanes, scrm_en, mst_en, bpc}</text>
-<g><rect class="store" x="215" y="48" width="70" height="18" rx="9"/><text class="t-w t-mid" x="250" y="61" style="fill:var(--fg)">cfg_tps</text></g>
-<rect class="store" x="262" y="74" width="150" height="18" rx="9"/><text class="t-w" x="300" y="87" style="fill:var(--fg)">ila · lanes aligned</text>
+    <div class="sheet"><svg class="" viewBox="0 0 1200 660" role="img" aria-label="DP RX bus view, training mode.">
+<defs><marker id="tn-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="tn-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="tn-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="586" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="601" style="fill:var(--fg)">mode: training</text></g>
+<g class="chk"><rect class="store" x="170" y="22" width="490" height="18" rx="9"/><text class="t-w" x="196" y="35" style="fill:var(--fg)">cfg · {lnk_en, lanes, scrm_en, mst_en, bpc}</text></g>
+<rect class="store" x="215" y="48" width="70" height="18" rx="9"/><text class="t-w t-mid" x="250" y="61" style="fill:var(--fg)">cfg_tps</text>
+<g class="chk"><rect class="store" x="262" y="74" width="150" height="18" rx="9"/><text class="t-w" x="300" y="87" style="fill:var(--fg)">ila · lanes aligned</text></g>
 <g class="off"><rect class="store" x="620" y="74" width="100" height="18" rx="9"/><text class="t-w t-mid" x="696" y="87" style="fill:var(--fg)">msa_ram</text></g>
-<g class="off"><rect class="store-vid" x="880" y="48" width="160" height="18" rx="9"/><text class="t-w t-vid" x="940" y="61">vcfg · vid_clk</text></g>
+<g class="off"><rect class="store-vid" x="880" y="48" width="130" height="18" rx="9"/><text class="t-w t-vid" x="912" y="61">vcfg · vid_clk</text></g>
 <rect class="carrier" x="116" y="122" width="1072" height="46"/>
 <rect class="band-rigid" x="116" y="186" width="744" height="226"/>
 <rect class="carrier" x="860" y="186" width="328" height="226"/>
@@ -330,35 +340,354 @@ svg .hot { stroke-width: 2.2; }
 <line class="track" x1="116" y1="472" x2="1188" y2="472"/>
 <line class="track" x1="116" y1="492" x2="1188" y2="492"/>
 <line class="track" x1="116" y1="540" x2="1188" y2="540"/>
-<line class="edge" x1="335" y1="186" x2="335" y2="412"/><line class="edge" x1="540" y1="186" x2="540" y2="412"/><text class="t-w t-mid" x="540" y="182">+1</text>
+<g class="chk"><line class="edge" x1="335" y1="186" x2="335" y2="412"/><line class="edge" x1="540" y1="186" x2="540" y2="412"/><text class="t-w t-mid" x="335" y="182">b0</text><text class="t-w t-mid" x="540" y="182">b1 = b0 + 1</text></g>
 <line class="msg" x1="116" y1="143" x2="1176" y2="143"/><line class="msg" x1="116" y1="147" x2="1176" y2="147"/>
 <line class="lane" x1="116" y1="236" x2="860" y2="236"/><line class="lane" x1="116" y1="264" x2="860" y2="264"/>
-<line class="lane" x1="520" y1="208" x2="860" y2="208"/>
+<line class="lane" x1="520" y1="208" x2="860" y2="208"/><text class="t-w" x="524" y="203" style="fill:var(--fg)">≈</text>
 <g class="off"><line class="lane" x1="420" y1="298" x2="860" y2="298"/><line class="lane" x1="420" y1="318" x2="860" y2="318"/><line class="lane" x1="420" y1="338" x2="860" y2="338"/><line class="lane" x1="420" y1="358" x2="720" y2="358"/><line class="lane" x1="420" y1="378" x2="620" y2="378"/><line class="lane" x1="420" y1="398" x2="860" y2="398"/></g>
-<g class="off"><line class="lane-sdp" x1="790" y1="472" x2="1182" y2="472"/><polygon class="tailmark" points="802,466 808,472 802,478 796,472"/><line class="lane-sdp" x1="790" y1="492" x2="1182" y2="492"/><line class="lane-vid" x1="930" y1="540" x2="980" y2="540"/><line class="lane-vid" x1="1050" y1="540" x2="1180" y2="540" marker-end="url(#dt-vid)"/><text class="t-w t-vid t-mid" x="1115" y="532">» VID_RDY</text></g>
-<line class="conn" x1="185" y1="135" x2="185" y2="42" marker-end="url(#dt-ink)"/>
-<line class="conn" x1="245" y1="222" x2="245" y2="68" marker-end="url(#dt-ink)"/>
-<line class="conn" x1="275" y1="222" x2="275" y2="94" marker-end="url(#dt-ink)"/>
-<g class="off"><line class="conn" x1="405" y1="92" x2="405" y2="288"/><line class="conn" x1="385" y1="236" x2="385" y2="288"/><text class="t-w" x="352" y="252" style="fill:var(--fg)">ℓ=0</text></g>
+<g class="off"><line class="lane-sdp" x1="790" y1="472" x2="1182" y2="472"/><polygon class="tailmark" points="802,466 808,472 802,478 796,472"/><line class="lane-sdp" x1="790" y1="492" x2="1182" y2="492"/><line class="lane-vid" x1="930" y1="540" x2="980" y2="540"/><line class="lane-vid" x1="1050" y1="540" x2="1180" y2="540" marker-end="url(#tn-vid)"/><text class="t-w t-vid t-mid" x="1115" y="532">» VID_RDY</text></g>
+<line class="conn" x1="185" y1="135" x2="185" y2="42" marker-end="url(#tn-ink)"/>
+<line class="conn" x1="245" y1="222" x2="245" y2="68" marker-end="url(#tn-ink)"/>
+<g class="chk"><line class="conn" x1="275" y1="222" x2="275" y2="94" marker-end="url(#tn-ink)"/></g>
+<g class="chk"><g class="off"><line class="conn" x1="405" y1="92" x2="405" y2="288"/><circle class="dot" cx="405" cy="92" r="3.2"/></g></g>
+<g class="off"><line class="conn" x1="385" y1="236" x2="385" y2="288"/><text class="t-w" x="352" y="252" style="fill:var(--fg)">ℓ=0</text></g>
 <line class="conn" x1="485" y1="40" x2="485" y2="196"/>
-<g class="off"><line class="conn" x1="640" y1="40" x2="640" y2="368"/><line class="conn" x1="670" y1="368" x2="670" y2="94" marker-end="url(#dt-ink)"/><line class="conn" x1="685" y1="368" x2="685" y2="150" marker-end="url(#dt-ink)"/><line class="conn" x1="740" y1="236" x2="740" y2="348"/><line class="conn" x1="775" y1="348" x2="775" y2="150" marker-end="url(#dt-ink)"/><line class="conn" x1="900" y1="196" x2="900" y2="68" marker-end="url(#dt-ink)"/><line class="conn" x1="1000" y1="40" x2="1000" y2="528"/><line class="conn" x1="1030" y1="66" x2="1030" y2="528"/></g>
-<rect class="gutter" x="116" y="578" width="910" height="74" rx="3"/><text class="t-note" x="14" y="598">gutter</text>
-<g class="off"><path class="back-ctl" d="M895,560 L895,600 L139,600 L139,159" marker-end="url(#dt-mut)"/><text class="t-w" x="450" y="595">ctrl · end-of-vblank irq → PM (stable video)</text></g>
-<g><path class="back" style="stroke:var(--fg)" d="M490,278 L490,630 L255,630 L255,280" marker-end="url(#dt-ink)"/><text class="t-w" x="510" y="626" style="fill:var(--fg)">data · descrambled TPS4 → TRN.chk</text></g>
+<g class="off"><line class="conn" x1="640" y1="40" x2="640" y2="368"/><circle class="dot" cx="640" cy="40" r="3.2"/><line class="conn" x1="670" y1="368" x2="670" y2="94" marker-end="url(#tn-ink)"/><line class="conn" x1="685" y1="368" x2="685" y2="150" marker-end="url(#tn-ink)"/><line class="conn" x1="740" y1="236" x2="740" y2="348"/><line class="conn" x1="775" y1="348" x2="775" y2="150" marker-end="url(#tn-ink)"/><line class="conn" x1="900" y1="196" x2="900" y2="68" marker-end="url(#tn-ink)"/><line class="conn" x1="1015" y1="528" x2="1015" y2="512"/><rect class="stub" x="972" y="499" width="86" height="13" rx="6"/><text class="t-stub" x="1015" y="509">cfg.bpc · vcfg</text></g>
+<rect class="gutter" x="116" y="578" width="880" height="74" rx="3"/><text class="t-note" x="14" y="598">gutter</text>
+<g class="off"><path class="back-ctl" d="M895,560 L895,600 L139,600 L139,159" marker-end="url(#tn-mut)"/><text class="t-w" x="450" y="595">ctrl · end-of-vblank irq → PM (stable video)</text></g>
+<g><path class="back" style="stroke:var(--fg)" d="M490,278 L490,630 L255,630 L255,280" marker-end="url(#tn-ink)"/><text class="t-w" x="510" y="626" style="fill:var(--fg)">data · descrambled TPS4 → TRN.chk</text></g>
 <rect class="box-opt" x="120" y="133" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="149" style="fill:var(--muted)">PM</text>
 <rect class="box" x="168" y="135" width="36" height="20" rx="3"/><text class="t-sub" x="186" y="149" style="fill:var(--fg)">CTL</text>
-<rect class="box hot" x="215" y="222" width="80" height="56" rx="3"/><text class="t-box" x="255" y="246">TRN ×ℓ</text><text class="t-sub" x="255" y="262">chk · ila</text>
-<g class="off"><rect class="box" x="350" y="288" width="70" height="120" rx="3"/><text class="t-box" x="385" y="352">PARS</text></g>
-<rect class="box" x="450" y="196" width="70" height="82" rx="3"/><text class="t-box" x="485" y="236">SCRM ×ℓ</text><text class="t-sub" x="485" y="252">∧ → lock</text>
-<g class="off"><rect class="box" x="555" y="288" width="30" height="120" rx="3"/><text class="t-sub" x="570" y="352" style="fill:var(--fg)">Δℓ</text><rect class="box" x="620" y="368" width="70" height="20" rx="3"/><text class="t-box" x="655" y="382">MSA</text><rect class="box-opt" x="720" y="348" width="70" height="152" rx="3"/><text class="t-box" x="755" y="416">SDP</text><text class="t-sub" x="755" y="432">FIFO 32</text><text class="t-sub" x="755" y="446">+ len 8</text><rect class="fill-box" x="860" y="196" width="70" height="320"/><rect class="fill-vid-soft" x="860" y="516" width="70" height="44"/><rect class="outline" x="860" y="196" width="70" height="364" rx="3"/><text class="t-box" x="895" y="300">VID</text><text class="t-sub" x="895" y="316">lclk · lmap</text><text class="t-sub" x="895" y="542" style="fill:var(--fg)">fifo 64</text><rect class="box-vid" x="980" y="528" width="70" height="24" rx="3"/><text class="t-box t-vid" x="1015" y="544">vmap</text></g>
+<g class="chk"><rect class="box hot" x="215" y="222" width="80" height="56" rx="3"/><text class="t-box" x="255" y="246">TRN ×ℓ</text><text class="t-sub" x="255" y="262">chk · ila</text></g>
+<g class="chk"><g class="off"><rect class="box" x="350" y="288" width="70" height="120" rx="3"/><text class="t-box" x="385" y="352">PARS</text></g></g>
+<g class="chk"><rect class="box" x="450" y="196" width="70" height="82" rx="3"/><text class="t-box" x="485" y="236">SCRM ×ℓ</text><text class="t-sub" x="485" y="252">∧ → lock</text></g>
+<g class="off"><rect class="box" x="555" y="288" width="30" height="120" rx="3"/><text class="t-sub" x="570" y="352" style="fill:var(--fg)">Δℓ</text><rect class="box" x="620" y="368" width="70" height="20" rx="3"/><text class="t-box" x="655" y="382">MSA</text></g>
+<g class="chk"><g class="off"><rect class="box-opt" x="720" y="348" width="70" height="152" rx="3"/><text class="t-box" x="755" y="416">SDP</text><text class="t-sub" x="755" y="432">FIFO 32</text><text class="t-sub" x="755" y="446">+ len 8</text></g></g>
+<g class="chk"><g class="off"><rect class="fill-box" x="860" y="196" width="70" height="320"/><rect class="fill-vid-soft" x="860" y="516" width="70" height="44"/><rect class="outline" x="860" y="196" width="70" height="364" rx="3"/><text class="t-box" x="895" y="300">VID</text><text class="t-sub" x="895" y="316">lclk · lmap</text><text class="t-sub" x="895" y="542" style="fill:var(--fg)">fifo 64</text></g></g>
+<g class="off"><rect class="box-vid" x="980" y="528" width="70" height="24" rx="3"/><text class="t-box t-vid" x="1015" y="544">vmap</text></g>
 <circle class="dot" cx="245" cy="145" r="3.2"/>
 <circle class="dot" cx="485" cy="40" r="3.2"/>
-<g class="off"><circle class="dot" cx="405" cy="92" r="3.2"/><circle class="dot" cx="385" cy="236" r="3.2"/><circle class="dot" cx="385" cy="264" r="3.2"/><circle class="dot" cx="640" cy="40" r="3.2"/><circle class="dot" cx="640" cy="236" r="3.2"/><circle class="dot" cx="640" cy="264" r="3.2"/><circle class="dot" cx="740" cy="236" r="3.2"/><circle class="dot" cx="740" cy="264" r="3.2"/><circle class="dot" cx="900" cy="145" r="3.2"/><circle class="dot" cx="1000" cy="40" r="3.2"/><circle class="dot" cx="1030" cy="66" r="3.2"/></g>
-<circle class="dot" cx="320" cy="236" r="3.2"/><circle class="dot" cx="320" cy="264" r="3.2"/>
-<rect class="badge-bad" x="430" y="98" width="172" height="18" rx="9"/><text class="t-w t-bad t-mid" x="516" y="111">⚑ cfg.scrm_en never read</text>
-<g class="off"><rect class="badge-acc" x="300" y="418" width="250" height="18" rx="9"/><text class="t-w t-acc t-mid" x="425" y="431">⟂ lat(PARS, SCRM) 1 = 1 · by comment</text><rect class="badge-acc" x="940" y="430" width="160" height="16" rx="8"/><text class="t-w t-acc t-mid" x="1020" y="442">⟂ fifo(data, len)</text><rect class="badge-acc" x="740" y="562" width="290" height="16" rx="8"/><text class="t-w t-acc t-mid" x="885" y="574">rigid edge: 64 words vs vid_clk ratio ?</text></g>
+<circle class="dot" cx="320" cy="236" r="3.2"/>
+<circle class="dot" cx="320" cy="264" r="3.2"/>
+<g class="off"><circle class="dot" cx="385" cy="236" r="3.2"/><circle class="dot" cx="385" cy="264" r="3.2"/><circle class="dot" cx="640" cy="236" r="3.2"/><circle class="dot" cx="640" cy="264" r="3.2"/><circle class="dot" cx="740" cy="236" r="3.2"/><circle class="dot" cx="740" cy="264" r="3.2"/><circle class="dot" cx="900" cy="145" r="3.2"/></g>
+<g class="chk"><rect class="badge-bad" x="300" y="98" width="172" height="18" rx="9"/><text class="t-w t-bad t-mid" x="386" y="111">⚑ cfg.scrm_en never read</text></g>
+<g class="chk"><g class="off"><rect class="badge-acc" x="300" y="418" width="260" height="18" rx="9"/><text class="t-w t-acc t-mid" x="430" y="431">⟂ lat by construction: both b0 → b1</text></g></g>
+<g class="chk"><g class="off"><rect class="badge-acc" x="940" y="430" width="160" height="16" rx="8"/><text class="t-w t-acc t-mid" x="1020" y="442">⟂ fifo(data, len)</text></g></g>
+<g class="chk"><g class="off"><rect class="badge-acc" x="700" y="562" width="290" height="16" rx="8"/><text class="t-w t-acc t-mid" x="845" y="574">rigid edge: 64 words vs vid_clk ratio ?</text></g></g>
 </svg></div>
     <figcaption><span class="fig-id">FIG D2</span><b>DP RX in training mode.</b> The new edge is a data feedback in the gutter: during TPS4, TRN's checker reads SCRM's descrambled output, a stage later in the flow. The other half of the training loop has no gutter edge, because it travels on the message carrier: status out of TRN, pattern select back in through <code>cfg_tps</code>. Keeping the layout fixed across modes lets you compare the two figures by flipping between them.</figcaption>
+  </figure>
+</section>
+
+
+<section>
+  <div class="prose">
+    <h2>Axis view</h2>
+    <p>Opened from the symbol band. The lane and symbol axes become wires, and the operators that act on them get NCD's glyphs. Here the bus view's Δℓ box and the VID box get their explanation.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg viewBox="0 0 1200 330" role="img" aria-label="Axis view of the DP RX symbol path. The lane axis passes over TRN and SCRM, meaning one per lane. TRN deskews each lane by a delay set from the alignment state. The data forks; PARS takes lane 0 only and its tags are copied back across the lane axis. SCRM's per-lane lock is reduced with AND. VID reshapes lanes and symbols into FIFO stripes, crosses into the video clock domain, and reshapes into pixels.">
+  <defs><marker id="ax-vid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker></defs>
+  <text class="t-note" x="22" y="40">dat</text>
+  <text class="t-name t-end" x="52" y="64">ℓ</text><text class="t-name t-end" x="52" y="89">s</text><text class="t-name t-end" x="52" y="114">8</text>
+  <line class="wire" x1="60" y1="60" x2="640" y2="60"/>
+  <line class="wire" x1="60" y1="85" x2="640" y2="85"/>
+  <line class="wire" x1="60" y1="110" x2="640" y2="110"/>
+
+  <rect class="box" x="120" y="72" width="70" height="50" rx="3"/><text class="t-box" x="155" y="94">TRN</text>
+  <polyline class="conn" points="134,116 134,110 146,110 146,104 158,104 158,98" />
+  <text class="t-sub" x="172" y="114" style="fill:var(--fg)">?</text>
+  <text class="t-note t-mid" x="140" y="28">ℓ passes over: one per lane</text>
+  <text class="t-note t-mid" x="155" y="146">deskew by ila</text>
+
+  <path class="wire" d="M230,60 C270,60 270,190 300,190"/>
+  <path class="wire" d="M230,85 C270,85 270,215 330,215"/>
+  <path class="wire" d="M230,110 C270,110 270,240 330,240"/>
+  <circle class="dot" cx="230" cy="60" r="3.4"/><circle class="dot" cx="230" cy="85" r="3.4"/><circle class="dot" cx="230" cy="110" r="3.4"/>
+  <text class="t-note t-mid" x="230" y="44">fork</text>
+
+  <polygon class="box" points="298,182 320,182 328,190 320,198 298,198"/><text class="t-sub" x="311" y="194" style="fill:var(--fg)">0</text>
+  <text class="t-note t-mid" x="311" y="276">index ℓ = 0</text>
+  <rect class="box" x="330" y="202" width="60" height="50" rx="3"/><text class="t-box" x="360" y="232">PARS</text>
+  <line class="wire" x1="390" y1="215" x2="640" y2="215"/><text class="t-w" x="396" y="210" style="fill:var(--fg)">s</text>
+  <line class="wire" x1="390" y1="240" x2="640" y2="240"/><text class="t-w" x="396" y="235" style="fill:var(--fg)">6 tags</text>
+  <circle class="dot" cx="440" cy="215" r="3.4"/>
+  <path class="wire" d="M440,215 C458,215 460,190 480,190 L640,190"/><text class="t-w" x="486" y="185" style="fill:var(--fg)">ℓ</text>
+  <text class="t-note t-mid" x="460" y="276">Δℓ: copy to every lane</text>
+
+  <rect class="box" x="330" y="72" width="60" height="50" rx="3"/><text class="t-box" x="360" y="101">SCRM</text>
+  <path class="wire" d="M375,122 C375,150 385,150 400,150 L440,150"/><text class="t-w" x="404" y="145" style="fill:var(--fg)">ℓ</text>
+  <polygon class="box" points="440,141 460,150 440,159"/>
+  <line class="wire" x1="460" y1="150" x2="640" y2="150"/><text class="t-w" x="466" y="145" style="fill:var(--fg)">lock</text>
+  <text class="t-note" x="466" y="170">∧ over cfg.lanes</text>
+
+  <rect class="badge-acc" x="500" y="96" width="132" height="34" rx="9"/>
+  <text class="t-w t-acc t-mid" x="566" y="110">⟂ zip on ℓ, s</text>
+  <text class="t-w t-acc t-mid" x="566" y="124">both b0 → b1</text>
+
+  <rect class="bar" x="640" y="48" width="8" height="204"/>
+  <text class="t-note t-mid" x="644" y="38">lmap</text>
+  <line class="wire" x1="648" y1="95" x2="760" y2="95"/><text class="t-w" x="654" y="90" style="fill:var(--fg)">stripe 4</text>
+  <line class="wire" x1="648" y1="120" x2="760" y2="120"/><text class="t-w" x="654" y="115" style="fill:var(--fg)">segment 4</text>
+  <line class="wire" x1="648" y1="145" x2="760" y2="145"/><text class="t-w" x="654" y="140" style="fill:var(--fg)">9 b</text>
+  <text class="t-note t-mid" x="660" y="276">reshape ℓ·s → stripes × segments</text>
+
+  <rect class="fill-box" x="760" y="82" width="25" height="76"/><rect class="fill-vid-soft" x="785" y="82" width="25" height="76"/><rect class="outline" x="760" y="82" width="50" height="76" rx="2"/>
+  <text class="t-sub" x="785" y="124" style="fill:var(--fg)">FIFO</text><text class="t-sub" x="785" y="138" style="fill:var(--fg)">64</text>
+  <line class="wire-vid" x1="810" y1="95" x2="900" y2="95"/>
+  <line class="wire-vid" x1="810" y1="120" x2="900" y2="120"/>
+  <line class="wire-vid" x1="810" y1="145" x2="900" y2="145"/>
+  <text class="t-note t-mid" x="830" y="296">hue change = lnk_clk → vid_clk</text>
+
+  <rect class="bar-vid" x="900" y="78" width="8" height="84"/>
+  <text class="t-note t-vid t-mid" x="904" y="70">vmap</text>
+  <line class="wire-vid" x1="908" y1="95" x2="1176" y2="95"/><text class="t-w t-vid" x="914" y="90">ppc</text>
+  <line class="wire-vid" x1="908" y1="120" x2="1176" y2="120" marker-end="url(#ax-vid)"/><text class="t-w t-vid" x="914" y="115">3</text>
+  <line class="wire-vid" x1="908" y1="145" x2="1176" y2="145"/><text class="t-w t-vid" x="914" y="140">bpc</text>
+  <text class="t-note t-mid" x="1030" y="276">reshape → pixels, reads cfg.bpc</text>
+</svg></div>
+    <figcaption><span class="fig-id">FIG D3</span><b>The symbol path by axes.</b> ℓ passes over TRN and SCRM: one per lane. TRN removes each lane's skew by a delay set from <code>ila</code> (the staircase with "?", because the delay is found at run time). The data forks: PARS takes index ℓ = 0 and its tags are copied back across ℓ. SCRM's per-lane lock is reduced with AND. The badge is the join from the bus view, now visible as two tuples that share the ℓ and s axes. On the right, two reshapes around the FIFO, and the hue change is the clock crossing. The stripe/segment split is as parameterised in <code>prt_dprx_vid.sv</code>; I haven't traced lmap's exact permutation.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Time view</h2>
+    <p>Opened from a boundary or a join. Two are worth having for this design: the alignment TRN performs, which PARS depends on, and the join at <code>b1</code>.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg viewBox="0 0 1200 290" role="img" aria-label="Two time views. Left: a blanking-start symbol arrives on four lanes at different cycles and leaves all four lanes in the same cycle after interlane alignment. Right: with both PARS and SCRM one cycle after b0, each joined word pairs data with its own tags; if SCRM took two cycles, every pairing would shift by one symbol.">
+<text class="t-name" x="10" y="20" style="font-weight:600">Interlane alignment (TRN.ila)</text>
+<text class="t-w t-mid" x="143.0" y="40">c0</text>
+<text class="t-w t-mid" x="209.0" y="40">c1</text>
+<text class="t-w t-mid" x="275.0" y="40">c2</text>
+<text class="t-w t-mid" x="341.0" y="40">c3</text>
+<text class="t-w t-mid" x="407.0" y="40">c4</text>
+<text class="t-w t-mid" x="473.0" y="40">c5</text>
+<text class="t-note" x="10" y="65">lane 0 in</text>
+<text class="t-note" x="10" y="93">lane 1 in</text>
+<text class="t-note" x="10" y="121">lane 2 in</text>
+<text class="t-note" x="10" y="149">lane 3 in</text>
+<text class="t-note" x="10" y="177">lane 0 out</text>
+<text class="t-note" x="10" y="205">lane 1 out</text>
+<text class="t-note" x="10" y="233">lane 2 out</text>
+<text class="t-note" x="10" y="261">lane 3 out</text>
+<rect class="cell-acc" x="246" y="48" width="58" height="22" rx="2"/><text class="t-w t-mid t-acc" x="275.0" y="63">BS</text>
+<rect class="cell-acc" x="180" y="76" width="58" height="22" rx="2"/><text class="t-w t-mid t-acc" x="209.0" y="91">BS</text>
+<rect class="cell-acc" x="312" y="104" width="58" height="22" rx="2"/><text class="t-w t-mid t-acc" x="341.0" y="119">BS</text>
+<rect class="cell-acc" x="246" y="132" width="58" height="22" rx="2"/><text class="t-w t-mid t-acc" x="275.0" y="147">BS</text>
+<rect class="cell-ok" x="378" y="160" width="58" height="22" rx="2"/><text class="t-w t-mid t-ok" x="407.0" y="175">BS</text>
+<rect class="cell-ok" x="378" y="188" width="58" height="22" rx="2"/><text class="t-w t-mid t-ok" x="407.0" y="203">BS</text>
+<rect class="cell-ok" x="378" y="216" width="58" height="22" rx="2"/><text class="t-w t-mid t-ok" x="407.0" y="231">BS</text>
+<rect class="cell-ok" x="378" y="244" width="58" height="22" rx="2"/><text class="t-w t-mid t-ok" x="407.0" y="259">BS</text>
+<text class="t-name" x="630" y="20" style="font-weight:600">The join at b1 (PARS ∥ SCRM)</text>
+<text class="t-w t-mid" x="782.0" y="40">c0</text>
+<text class="t-w t-mid" x="866.0" y="40">c1</text>
+<text class="t-w t-mid" x="950.0" y="40">c2</text>
+<text class="t-w t-mid" x="1034.0" y="40">c3</text>
+<text class="t-w t-mid" x="1118.0" y="40">c4</text>
+<text class="t-note" x="630" y="65">TRN out (b0)</text>
+<text class="t-note" x="630" y="95">PARS tags</text>
+<text class="t-note" x="630" y="125">SCRM dat</text>
+<text class="t-note" x="630" y="155">joined at b1</text>
+<text class="t-note" x="630" y="185">if SCRM were +2</text>
+<rect class="cell" x="744" y="48" width="76" height="22" rx="2"/><text class="t-w t-mid" x="782.0" y="63" style="fill:var(--fg)">D0</text>
+<rect class="cell" x="828" y="48" width="76" height="22" rx="2"/><text class="t-w t-mid" x="866.0" y="63" style="fill:var(--fg)">D1</text>
+<rect class="cell" x="912" y="48" width="76" height="22" rx="2"/><text class="t-w t-mid" x="950.0" y="63" style="fill:var(--fg)">D2</text>
+<rect class="cell" x="996" y="48" width="76" height="22" rx="2"/><text class="t-w t-mid" x="1034.0" y="63" style="fill:var(--fg)">D3</text>
+<rect class="cell" x="1080" y="48" width="76" height="22" rx="2"/><text class="t-w t-mid" x="1118.0" y="63" style="fill:var(--fg)">D4</text>
+<rect class="cell-acc" x="828" y="78" width="76" height="22" rx="2"/><text class="t-w t-mid t-acc" x="866.0" y="93">T0</text>
+<rect class="cell-acc" x="912" y="78" width="76" height="22" rx="2"/><text class="t-w t-mid t-acc" x="950.0" y="93">T1</text>
+<rect class="cell-acc" x="996" y="78" width="76" height="22" rx="2"/><text class="t-w t-mid t-acc" x="1034.0" y="93">T2</text>
+<rect class="cell-acc" x="1080" y="78" width="76" height="22" rx="2"/><text class="t-w t-mid t-acc" x="1118.0" y="93">T3</text>
+<rect class="cell" x="828" y="108" width="76" height="22" rx="2"/><text class="t-w t-mid" x="866.0" y="123" style="fill:var(--fg)">D0′</text>
+<rect class="cell" x="912" y="108" width="76" height="22" rx="2"/><text class="t-w t-mid" x="950.0" y="123" style="fill:var(--fg)">D1′</text>
+<rect class="cell" x="996" y="108" width="76" height="22" rx="2"/><text class="t-w t-mid" x="1034.0" y="123" style="fill:var(--fg)">D2′</text>
+<rect class="cell" x="1080" y="108" width="76" height="22" rx="2"/><text class="t-w t-mid" x="1118.0" y="123" style="fill:var(--fg)">D3′</text>
+<rect class="cell-ok" x="828" y="138" width="76" height="22" rx="2"/><text class="t-w t-mid t-ok" x="866.0" y="153">D0′·T0</text>
+<rect class="cell-ok" x="912" y="138" width="76" height="22" rx="2"/><text class="t-w t-mid t-ok" x="950.0" y="153">D1′·T1</text>
+<rect class="cell-ok" x="996" y="138" width="76" height="22" rx="2"/><text class="t-w t-mid t-ok" x="1034.0" y="153">D2′·T2</text>
+<rect class="cell-ok" x="1080" y="138" width="76" height="22" rx="2"/><text class="t-w t-mid t-ok" x="1118.0" y="153">D3′·T3</text>
+<rect class="cell-bad" x="828" y="168" width="76" height="22" rx="2"/><text class="t-w t-mid t-bad" x="866.0" y="183">?·T0</text>
+<rect class="cell-bad" x="912" y="168" width="76" height="22" rx="2"/><text class="t-w t-mid t-bad" x="950.0" y="183">D0′·T1</text>
+<rect class="cell-bad" x="996" y="168" width="76" height="22" rx="2"/><text class="t-w t-mid t-bad" x="1034.0" y="183">D1′·T2</text>
+<rect class="cell-bad" x="1080" y="168" width="76" height="22" rx="2"/><text class="t-w t-mid t-bad" x="1118.0" y="183">D2′·T3</text>
+  <text class="t-note" x="10" y="282">skew values are illustrative</text>
+  <text class="t-note" x="630" y="210">This row is why "both b0 → b1" matters: one extra register in SCRM</text>
+  <text class="t-note" x="630" y="226">and every word carries the next word's tags. Nothing in the RTL</text>
+  <text class="t-note" x="630" y="242">checks it; the model now states it as a boundary, so a tool can.</text>
+</svg></div>
+    <figcaption><span class="fig-id">FIG D4</span><b>Two cycle grids.</b> Left: the same blanking-start symbol arrives on each lane in a different cycle and leaves all four in one cycle. That's the guarantee <code>ila</code> represents, and the reason PARS can look at lane 0 alone. Right: the join at <code>b1</code>, where both branches take one cycle and every joined word carries its own tags. The red row is what one extra register in SCRM would do.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Overlays</h2>
+    <p>Overlays change what the bus view emphasises without moving anything. Two are shown here; the third (clock-domain hue) is always on.</p>
+  </div>
+  <figure>
+    <div class="sheet"><svg class="" viewBox="0 0 1200 660" role="img" aria-label="DP RX bus view, normal mode, cost overlay.">
+<defs><marker id="nc-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="nc-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="nc-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="586" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="601" style="fill:var(--fg)">mode: normal · cost</text></g>
+<g class="chk"><rect class="store" x="170" y="22" width="490" height="18" rx="9"/><text class="t-w" x="196" y="35" style="fill:var(--fg)">cfg · {lnk_en, lanes, scrm_en, mst_en, bpc}</text></g>
+<rect class="store" x="215" y="48" width="70" height="18" rx="9"/><text class="t-w t-mid" x="250" y="61" style="fill:var(--fg)">cfg_tps</text>
+<g class="chk"><rect class="store" x="262" y="74" width="150" height="18" rx="9"/><text class="t-w" x="300" y="87" style="fill:var(--fg)">ila · lanes aligned</text></g>
+<g><rect class="store" x="620" y="74" width="100" height="18" rx="9"/><text class="t-w t-mid" x="696" y="87" style="fill:var(--fg)">msa_ram</text></g>
+<g><rect class="store-vid" x="880" y="48" width="130" height="18" rx="9"/><text class="t-w t-vid" x="912" y="61">vcfg · vid_clk</text></g>
+<rect class="carrier" x="116" y="122" width="1072" height="46"/>
+<rect class="band-rigid" x="116" y="186" width="744" height="226"/>
+<rect class="carrier" x="860" y="186" width="328" height="226"/>
+<rect class="carrier" x="116" y="448" width="1072" height="56"/>
+<rect class="carrier" x="116" y="516" width="1072" height="44"/>
+<text class="t-w" x="122" y="199" style="fill:var(--fg)">rigid: the link cannot stall</text>
+<text class="t-band" x="14" y="132">msg · lnk_clk</text>
+<text class="t-name" x="14" y="149">msg</text><text class="t-w t-end" x="110" y="149">16b ring</text>
+<text class="t-band" x="14" y="196">sym · lnk_clk</text>
+<text class="t-name" x="14" y="212">lock</text><text class="t-w t-end" x="110" y="212">1 b</text>
+<text class="t-name" x="14" y="240">k</text><text class="t-w t-end" x="110" y="240">8 b</text>
+<text class="t-name" x="14" y="268">dat</text><text class="t-w t-end" x="110" y="268">64 b</text>
+<text class="t-tag" x="14" y="302">sol</text><text class="t-w t-end" x="110" y="302">8 b</text>
+<text class="t-tag" x="14" y="322">eol</text><text class="t-w t-end" x="110" y="322">8 b</text>
+<text class="t-tag" x="14" y="342">vid</text><text class="t-w t-end" x="110" y="342">8 b</text>
+<text class="t-tag" x="14" y="362">sdp</text><text class="t-w t-end" x="110" y="362">8 b</text>
+<text class="t-tag" x="14" y="382">msa</text><text class="t-w t-end" x="110" y="382">8 b</text>
+<text class="t-tag" x="14" y="402">vbid</text><text class="t-w t-end" x="110" y="402">8 b</text>
+<text class="t-band t-sdp" x="14" y="458">sdpk ⊃ sdpb · sdp_clk</text>
+<text class="t-name" x="14" y="476">len ◆</text><text class="t-w t-end" x="110" y="476">6 b</text>
+<text class="t-name" x="14" y="496">dat</text><text class="t-w t-end" x="110" y="496">32 b</text>
+<text class="t-band t-vid" x="14" y="526">pix · vid_clk</text>
+<text class="t-name" x="14" y="544">data</text><text class="t-w t-end" x="110" y="544">48 b</text>
+<line class="track" x1="116" y1="208" x2="1188" y2="208"/>
+<line class="track" x1="116" y1="236" x2="1188" y2="236"/>
+<line class="track" x1="116" y1="264" x2="1188" y2="264"/>
+<line class="track" x1="116" y1="298" x2="1188" y2="298"/>
+<line class="track" x1="116" y1="318" x2="1188" y2="318"/>
+<line class="track" x1="116" y1="338" x2="1188" y2="338"/>
+<line class="track" x1="116" y1="358" x2="1188" y2="358"/>
+<line class="track" x1="116" y1="378" x2="1188" y2="378"/>
+<line class="track" x1="116" y1="398" x2="1188" y2="398"/>
+<line class="track" x1="116" y1="472" x2="1188" y2="472"/>
+<line class="track" x1="116" y1="492" x2="1188" y2="492"/>
+<line class="track" x1="116" y1="540" x2="1188" y2="540"/>
+<g class="chk"><line class="edge" x1="335" y1="186" x2="335" y2="412"/><line class="edge" x1="540" y1="186" x2="540" y2="412"/><text class="t-w t-mid" x="335" y="182">b0</text><text class="t-w t-mid" x="540" y="182">b1 = b0 + 1</text></g>
+<line class="msg" x1="116" y1="143" x2="1176" y2="143"/><line class="msg" x1="116" y1="147" x2="1176" y2="147"/>
+<line class="lane" x1="116" y1="236" x2="860" y2="236" style="stroke-width:1.28"/><line class="lane" x1="116" y1="264" x2="860" y2="264" style="stroke-width:10.24"/>
+<line class="lane" x1="520" y1="208" x2="860" y2="208" style="stroke-width:1.20"/><text class="t-w" x="524" y="203" style="fill:var(--fg)">≈</text>
+<g><line class="lane" x1="420" y1="298" x2="860" y2="298" style="stroke-width:1.28"/><line class="lane" x1="420" y1="318" x2="860" y2="318" style="stroke-width:1.28"/><line class="lane" x1="420" y1="338" x2="860" y2="338" style="stroke-width:1.28"/><line class="lane" x1="420" y1="358" x2="720" y2="358" style="stroke-width:1.28"/><line class="lane" x1="420" y1="378" x2="620" y2="378" style="stroke-width:1.28"/><line class="lane" x1="420" y1="398" x2="860" y2="398" style="stroke-width:1.28"/></g>
+<g><text class="t-w" x="596" y="292" style="fill:var(--fg)">48 b carried · 12 b distinct (Δℓ copies)</text></g>
+<g><line class="lane-sdp" x1="790" y1="472" x2="1182" y2="472" style="stroke-width:1.20"/><polygon class="tailmark" points="802,466 808,472 802,478 796,472"/><line class="lane-sdp" x1="790" y1="492" x2="1182" y2="492" style="stroke-width:5.12"/><line class="lane-vid" x1="930" y1="540" x2="980" y2="540" style="stroke-width:7.68"/><line class="lane-vid" x1="1050" y1="540" x2="1180" y2="540" marker-end="url(#nc-vid)" style="stroke-width:7.68"/><text class="t-w t-vid t-mid" x="1115" y="532">» VID_RDY</text></g>
+<line class="conn" x1="185" y1="135" x2="185" y2="42" marker-end="url(#nc-ink)"/>
+<line class="conn" x1="245" y1="222" x2="245" y2="68" marker-end="url(#nc-ink)"/>
+<g class="chk"><line class="conn" x1="275" y1="222" x2="275" y2="94" marker-end="url(#nc-ink)"/></g>
+<g class="chk"><g><line class="conn" x1="405" y1="92" x2="405" y2="288"/><circle class="dot" cx="405" cy="92" r="3.2"/></g></g>
+<g><line class="conn" x1="385" y1="236" x2="385" y2="288"/><text class="t-w" x="352" y="252" style="fill:var(--fg)">ℓ=0</text></g>
+<line class="conn" x1="485" y1="40" x2="485" y2="196"/>
+<g><line class="conn" x1="640" y1="40" x2="640" y2="368"/><circle class="dot" cx="640" cy="40" r="3.2"/><line class="conn" x1="670" y1="368" x2="670" y2="94" marker-end="url(#nc-ink)"/><line class="conn" x1="685" y1="368" x2="685" y2="150" marker-end="url(#nc-ink)"/><line class="conn" x1="740" y1="236" x2="740" y2="348"/><line class="conn" x1="775" y1="348" x2="775" y2="150" marker-end="url(#nc-ink)"/><line class="conn" x1="900" y1="196" x2="900" y2="68" marker-end="url(#nc-ink)"/><line class="conn" x1="1015" y1="528" x2="1015" y2="512"/><rect class="stub" x="972" y="499" width="86" height="13" rx="6"/><text class="t-stub" x="1015" y="509">cfg.bpc · vcfg</text></g>
+<rect class="gutter" x="116" y="578" width="880" height="74" rx="3"/><text class="t-note" x="14" y="598">gutter</text>
+<g><path class="back-ctl" d="M895,560 L895,600 L139,600 L139,159" marker-end="url(#nc-mut)"/><text class="t-w" x="450" y="595">ctrl · end-of-vblank irq → PM (stable video)</text></g>
+<g class="off"><path class="back" style="stroke:var(--fg)" d="M490,278 L490,630 L255,630 L255,280" marker-end="url(#nc-ink)"/><text class="t-w" x="510" y="626" style="fill:var(--fg)">data · descrambled TPS4 → TRN.chk</text></g>
+<rect class="box-opt" x="120" y="133" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="149" style="fill:var(--muted)">PM</text>
+<rect class="box" x="168" y="135" width="36" height="20" rx="3"/><text class="t-sub" x="186" y="149" style="fill:var(--fg)">CTL</text>
+<g class="chk"><rect class="box" x="215" y="222" width="80" height="56" rx="3"/><text class="t-box" x="255" y="246">TRN ×ℓ</text><text class="t-sub" x="255" y="262">ila</text></g>
+<g class="chk"><g><rect class="box" x="350" y="288" width="70" height="120" rx="3"/><text class="t-box" x="385" y="352">PARS</text></g></g>
+<g class="chk"><rect class="box" x="450" y="196" width="70" height="82" rx="3"/><text class="t-box" x="485" y="236">SCRM ×ℓ</text><text class="t-sub" x="485" y="252">∧ → lock</text></g>
+<g><rect class="box" x="555" y="288" width="30" height="120" rx="3"/><text class="t-sub" x="570" y="352" style="fill:var(--fg)">Δℓ</text><rect class="box" x="620" y="368" width="70" height="20" rx="3"/><text class="t-box" x="655" y="382">MSA</text></g>
+<g class="chk"><g><rect class="box-opt" x="720" y="348" width="70" height="152" rx="3"/><text class="t-box" x="755" y="416">SDP</text><text class="t-sub" x="755" y="432">FIFO 32</text><text class="t-sub" x="755" y="446">+ len 8</text></g></g>
+<g class="chk"><g><rect class="fill-box" x="860" y="196" width="70" height="320"/><rect class="fill-vid-soft" x="860" y="516" width="70" height="44"/><rect class="outline" x="860" y="196" width="70" height="364" rx="3"/><text class="t-box" x="895" y="300">VID</text><text class="t-sub" x="895" y="316">lclk · lmap</text><text class="t-sub" x="895" y="542" style="fill:var(--fg)">fifo 64</text></g></g>
+<g><rect class="box-vid" x="980" y="528" width="70" height="24" rx="3"/><text class="t-box t-vid" x="1015" y="544">vmap</text></g>
+<circle class="dot" cx="245" cy="145" r="3.2"/>
+<circle class="dot" cx="485" cy="40" r="3.2"/>
+<circle class="dot" cx="320" cy="236" r="3.2"/>
+<circle class="dot" cx="320" cy="264" r="3.2"/>
+<g><circle class="dot" cx="385" cy="236" r="3.2"/><circle class="dot" cx="385" cy="264" r="3.2"/><circle class="dot" cx="640" cy="236" r="3.2"/><circle class="dot" cx="640" cy="264" r="3.2"/><circle class="dot" cx="740" cy="236" r="3.2"/><circle class="dot" cx="740" cy="264" r="3.2"/><circle class="dot" cx="900" cy="145" r="3.2"/></g>
+<g class="chk"><rect class="badge-bad" x="300" y="98" width="172" height="18" rx="9"/><text class="t-w t-bad t-mid" x="386" y="111">⚑ cfg.scrm_en never read</text></g>
+<g class="chk"><g><rect class="badge-acc" x="300" y="418" width="260" height="18" rx="9"/><text class="t-w t-acc t-mid" x="430" y="431">⟂ lat by construction: both b0 → b1</text></g></g>
+<g class="chk"><g><rect class="badge-acc" x="940" y="430" width="160" height="16" rx="8"/><text class="t-w t-acc t-mid" x="1020" y="442">⟂ fifo(data, len)</text></g></g>
+<g class="chk"><g><rect class="badge-acc" x="700" y="562" width="290" height="16" rx="8"/><text class="t-w t-acc t-mid" x="845" y="574">rigid edge: 64 words vs vid_clk ratio ?</text></g></g>
+</svg></div>
+    <figcaption><span class="fig-id">FIG D5</span><b>Cost overlay.</b> Row thickness is proportional to bits per item at P_LANES = 4, P_SPL = 2. <code>dat</code> dominates the symbol band, but the six tag rows together carry 48 bits per symbol group, of which 12 are distinct: the rest are Δℓ's lane copies, registered again in MSA, SDP and VID.</figcaption>
+  </figure>
+  <figure>
+    <div class="sheet"><svg class="ov-checks" viewBox="0 0 1200 660" role="img" aria-label="DP RX bus view, normal mode, checks overlay.">
+<defs><marker id="nc-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker><marker id="nc-vid" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-vid"/></marker><marker id="nc-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker></defs>
+<g class="chk"><rect class="modetag" x="1010" y="586" width="178" height="22" rx="11"/><text class="t-w t-mid" x="1099" y="601" style="fill:var(--fg)">mode: normal · checks</text></g>
+<g class="chk"><rect class="store" x="170" y="22" width="490" height="18" rx="9"/><text class="t-w" x="196" y="35" style="fill:var(--fg)">cfg · {lnk_en, lanes, scrm_en, mst_en, bpc}</text></g>
+<rect class="store" x="215" y="48" width="70" height="18" rx="9"/><text class="t-w t-mid" x="250" y="61" style="fill:var(--fg)">cfg_tps</text>
+<g class="chk"><rect class="store" x="262" y="74" width="150" height="18" rx="9"/><text class="t-w" x="300" y="87" style="fill:var(--fg)">ila · lanes aligned</text></g>
+<g><rect class="store" x="620" y="74" width="100" height="18" rx="9"/><text class="t-w t-mid" x="696" y="87" style="fill:var(--fg)">msa_ram</text></g>
+<g><rect class="store-vid" x="880" y="48" width="130" height="18" rx="9"/><text class="t-w t-vid" x="912" y="61">vcfg · vid_clk</text></g>
+<rect class="carrier" x="116" y="122" width="1072" height="46"/>
+<rect class="band-rigid" x="116" y="186" width="744" height="226"/>
+<rect class="carrier" x="860" y="186" width="328" height="226"/>
+<rect class="carrier" x="116" y="448" width="1072" height="56"/>
+<rect class="carrier" x="116" y="516" width="1072" height="44"/>
+<text class="t-w" x="122" y="199" style="fill:var(--fg)">rigid: the link cannot stall</text>
+<text class="t-band" x="14" y="132">msg · lnk_clk</text>
+<text class="t-name" x="14" y="149">msg</text><text class="t-w t-end" x="110" y="149">16b ring</text>
+<text class="t-band" x="14" y="196">sym · lnk_clk</text>
+<text class="t-name" x="14" y="212">lock</text><text class="t-w t-end" x="110" y="212">1</text>
+<text class="t-name" x="14" y="240">k</text><text class="t-w t-end" x="110" y="240">ℓ·s</text>
+<text class="t-name" x="14" y="268">dat</text><text class="t-w t-end" x="110" y="268">ℓ·s·8</text>
+<text class="t-tag" x="14" y="302">sol</text><text class="t-w t-end" x="110" y="302">ℓ·s</text>
+<text class="t-tag" x="14" y="322">eol</text><text class="t-w t-end" x="110" y="322">ℓ·s</text>
+<text class="t-tag" x="14" y="342">vid</text><text class="t-w t-end" x="110" y="342">ℓ·s</text>
+<text class="t-tag" x="14" y="362">sdp</text><text class="t-w t-end" x="110" y="362">ℓ·s</text>
+<text class="t-tag" x="14" y="382">msa</text><text class="t-w t-end" x="110" y="382">ℓ·s</text>
+<text class="t-tag" x="14" y="402">vbid</text><text class="t-w t-end" x="110" y="402">ℓ·s</text>
+<text class="t-band t-sdp" x="14" y="458">sdpk ⊃ sdpb · sdp_clk</text>
+<text class="t-name" x="14" y="476">len ◆</text><text class="t-w t-end" x="110" y="476">u6</text>
+<text class="t-name" x="14" y="496">dat</text><text class="t-w t-end" x="110" y="496">32</text>
+<text class="t-band t-vid" x="14" y="526">pix · vid_clk</text>
+<text class="t-name" x="14" y="544">data</text><text class="t-w t-end" x="110" y="544">PPC·3·BPC</text>
+<line class="track" x1="116" y1="208" x2="1188" y2="208"/>
+<line class="track" x1="116" y1="236" x2="1188" y2="236"/>
+<line class="track" x1="116" y1="264" x2="1188" y2="264"/>
+<line class="track" x1="116" y1="298" x2="1188" y2="298"/>
+<line class="track" x1="116" y1="318" x2="1188" y2="318"/>
+<line class="track" x1="116" y1="338" x2="1188" y2="338"/>
+<line class="track" x1="116" y1="358" x2="1188" y2="358"/>
+<line class="track" x1="116" y1="378" x2="1188" y2="378"/>
+<line class="track" x1="116" y1="398" x2="1188" y2="398"/>
+<line class="track" x1="116" y1="472" x2="1188" y2="472"/>
+<line class="track" x1="116" y1="492" x2="1188" y2="492"/>
+<line class="track" x1="116" y1="540" x2="1188" y2="540"/>
+<g class="chk"><line class="edge" x1="335" y1="186" x2="335" y2="412"/><line class="edge" x1="540" y1="186" x2="540" y2="412"/><text class="t-w t-mid" x="335" y="182">b0</text><text class="t-w t-mid" x="540" y="182">b1 = b0 + 1</text></g>
+<line class="msg" x1="116" y1="143" x2="1176" y2="143"/><line class="msg" x1="116" y1="147" x2="1176" y2="147"/>
+<line class="lane" x1="116" y1="236" x2="860" y2="236"/><line class="lane" x1="116" y1="264" x2="860" y2="264"/>
+<line class="lane" x1="520" y1="208" x2="860" y2="208"/><text class="t-w" x="524" y="203" style="fill:var(--fg)">≈</text>
+<g><line class="lane" x1="420" y1="298" x2="860" y2="298"/><line class="lane" x1="420" y1="318" x2="860" y2="318"/><line class="lane" x1="420" y1="338" x2="860" y2="338"/><line class="lane" x1="420" y1="358" x2="720" y2="358"/><line class="lane" x1="420" y1="378" x2="620" y2="378"/><line class="lane" x1="420" y1="398" x2="860" y2="398"/></g>
+<g><line class="lane-sdp" x1="790" y1="472" x2="1182" y2="472"/><polygon class="tailmark" points="802,466 808,472 802,478 796,472"/><line class="lane-sdp" x1="790" y1="492" x2="1182" y2="492"/><line class="lane-vid" x1="930" y1="540" x2="980" y2="540"/><line class="lane-vid" x1="1050" y1="540" x2="1180" y2="540" marker-end="url(#nc-vid)"/><text class="t-w t-vid t-mid" x="1115" y="532">» VID_RDY</text></g>
+<line class="conn" x1="185" y1="135" x2="185" y2="42" marker-end="url(#nc-ink)"/>
+<line class="conn" x1="245" y1="222" x2="245" y2="68" marker-end="url(#nc-ink)"/>
+<g class="chk"><line class="conn" x1="275" y1="222" x2="275" y2="94" marker-end="url(#nc-ink)"/></g>
+<g class="chk"><g><line class="conn" x1="405" y1="92" x2="405" y2="288"/><circle class="dot" cx="405" cy="92" r="3.2"/></g></g>
+<g><line class="conn" x1="385" y1="236" x2="385" y2="288"/><text class="t-w" x="352" y="252" style="fill:var(--fg)">ℓ=0</text></g>
+<line class="conn" x1="485" y1="40" x2="485" y2="196"/>
+<g><line class="conn" x1="640" y1="40" x2="640" y2="368"/><circle class="dot" cx="640" cy="40" r="3.2"/><line class="conn" x1="670" y1="368" x2="670" y2="94" marker-end="url(#nc-ink)"/><line class="conn" x1="685" y1="368" x2="685" y2="150" marker-end="url(#nc-ink)"/><line class="conn" x1="740" y1="236" x2="740" y2="348"/><line class="conn" x1="775" y1="348" x2="775" y2="150" marker-end="url(#nc-ink)"/><line class="conn" x1="900" y1="196" x2="900" y2="68" marker-end="url(#nc-ink)"/><line class="conn" x1="1015" y1="528" x2="1015" y2="512"/><rect class="stub" x="972" y="499" width="86" height="13" rx="6"/><text class="t-stub" x="1015" y="509">cfg.bpc · vcfg</text></g>
+<rect class="gutter" x="116" y="578" width="880" height="74" rx="3"/><text class="t-note" x="14" y="598">gutter</text>
+<g><path class="back-ctl" d="M895,560 L895,600 L139,600 L139,159" marker-end="url(#nc-mut)"/><text class="t-w" x="450" y="595">ctrl · end-of-vblank irq → PM (stable video)</text></g>
+<g class="off"><path class="back" style="stroke:var(--fg)" d="M490,278 L490,630 L255,630 L255,280" marker-end="url(#nc-ink)"/><text class="t-w" x="510" y="626" style="fill:var(--fg)">data · descrambled TPS4 → TRN.chk</text></g>
+<rect class="box-opt" x="120" y="133" width="40" height="24" rx="3"/><text class="t-sub" x="140" y="149" style="fill:var(--muted)">PM</text>
+<rect class="box" x="168" y="135" width="36" height="20" rx="3"/><text class="t-sub" x="186" y="149" style="fill:var(--fg)">CTL</text>
+<g class="chk"><rect class="box" x="215" y="222" width="80" height="56" rx="3"/><text class="t-box" x="255" y="246">TRN ×ℓ</text><text class="t-sub" x="255" y="262">ila</text></g>
+<g class="chk"><g><rect class="box" x="350" y="288" width="70" height="120" rx="3"/><text class="t-box" x="385" y="352">PARS</text></g></g>
+<g class="chk"><rect class="box" x="450" y="196" width="70" height="82" rx="3"/><text class="t-box" x="485" y="236">SCRM ×ℓ</text><text class="t-sub" x="485" y="252">∧ → lock</text></g>
+<g><rect class="box" x="555" y="288" width="30" height="120" rx="3"/><text class="t-sub" x="570" y="352" style="fill:var(--fg)">Δℓ</text><rect class="box" x="620" y="368" width="70" height="20" rx="3"/><text class="t-box" x="655" y="382">MSA</text></g>
+<g class="chk"><g><rect class="box-opt" x="720" y="348" width="70" height="152" rx="3"/><text class="t-box" x="755" y="416">SDP</text><text class="t-sub" x="755" y="432">FIFO 32</text><text class="t-sub" x="755" y="446">+ len 8</text></g></g>
+<g class="chk"><g><rect class="fill-box" x="860" y="196" width="70" height="320"/><rect class="fill-vid-soft" x="860" y="516" width="70" height="44"/><rect class="outline" x="860" y="196" width="70" height="364" rx="3"/><text class="t-box" x="895" y="300">VID</text><text class="t-sub" x="895" y="316">lclk · lmap</text><text class="t-sub" x="895" y="542" style="fill:var(--fg)">fifo 64</text></g></g>
+<g><rect class="box-vid" x="980" y="528" width="70" height="24" rx="3"/><text class="t-box t-vid" x="1015" y="544">vmap</text></g>
+<circle class="dot" cx="245" cy="145" r="3.2"/>
+<circle class="dot" cx="485" cy="40" r="3.2"/>
+<circle class="dot" cx="320" cy="236" r="3.2"/>
+<circle class="dot" cx="320" cy="264" r="3.2"/>
+<g><circle class="dot" cx="385" cy="236" r="3.2"/><circle class="dot" cx="385" cy="264" r="3.2"/><circle class="dot" cx="640" cy="236" r="3.2"/><circle class="dot" cx="640" cy="264" r="3.2"/><circle class="dot" cx="740" cy="236" r="3.2"/><circle class="dot" cx="740" cy="264" r="3.2"/><circle class="dot" cx="900" cy="145" r="3.2"/></g>
+<g class="chk"><rect class="badge-bad" x="300" y="98" width="172" height="18" rx="9"/><text class="t-w t-bad t-mid" x="386" y="111">⚑ cfg.scrm_en never read</text></g>
+<g class="chk"><g><rect class="badge-acc" x="300" y="418" width="260" height="18" rx="9"/><text class="t-w t-acc t-mid" x="430" y="431">⟂ lat by construction: both b0 → b1</text></g></g>
+<g class="chk"><g><rect class="badge-acc" x="940" y="430" width="160" height="16" rx="8"/><text class="t-w t-acc t-mid" x="1020" y="442">⟂ fifo(data, len)</text></g></g>
+<g class="chk"><g><rect class="badge-acc" x="700" y="562" width="290" height="16" rx="8"/><text class="t-w t-acc t-mid" x="845" y="574">rigid edge: 64 words vs vid_clk ratio ?</text></g></g>
+</svg></div>
+    <figcaption><span class="fig-id">FIG D6</span><b>Checks overlay.</b> Everything fades except the checks and the marks they're about: the scrambler-enable bit nobody reads, the join that holds by construction in the model and by comment in the RTL, the alignment PARS depends on, the in-order SDP length pairing, and the rigid edge into the video FIFO. This is the view to open in a design review.</figcaption>
   </figure>
 </section>
 
@@ -382,7 +711,9 @@ svg .hot { stroke-width: 2.2; }
         <tr><td><span class="mono">×ℓ</span>, <span class="mono">if P_SDP</span></td><td>"×ℓ" in the box; a dashed outline</td><td>TRN, SCRM; SDP</td></tr>
         <tr><td><span class="mono">emits → msg</span></td><td>an arrow into the target carrier's row</td><td>MSA and SDP arrows up to the ring</td></tr>
         <tr><td><span class="mono">requires ila</span></td><td>a read tap on the state it depends on</td><td>dot under <span class="mono">ila</span>, line down to PARS</td></tr>
-        <tr><td><span class="mono">latency 1</span></td><td>a dashed boundary labelled with the latency</td><td><span class="mono">+1</span> above the PARS / SCRM band</td></tr>
+        <tr><td><span class="mono">boundary b1 = b0 + 1</span>, <span class="mono">stage … between b0 → b1</span></td><td>named dashed edges; stages placed between them</td><td><span class="mono">b0</span>, <span class="mono">b1</span> around PARS and SCRM</td></tr>
+        <tr><td>a read of out-of-flow state across &gt; 1 band</td><td>a stub: a short tap ending in a labelled tag</td><td><span class="mono">cfg.bpc · vcfg</span> above vmap</td></tr>
+        <tr><td>(drawing decision)</td><td>≈ where a mark simplifies the model</td><td>on <span class="mono">lock</span></td></tr>
         <tr><td><span class="mono">boundary … rigid</span></td><td>gray band fill</td><td>the whole symbol band up to VID</td></tr>
         <tr><td><span class="mono">join lat / fifo</span></td><td>a ⟂ badge, coloured by check result</td><td>blue under PARS / SCRM and at SDP</td></tr>
         <tr><td><span class="mono">feedback ctrl / data</span></td><td>a gutter edge, dashed for control, solid for data</td><td>vblank irq (D1); TPS4 (D2)</td></tr>
@@ -395,13 +726,13 @@ svg .hot { stroke-width: 2.2; }
 
 <section>
   <div class="prose">
-    <h2>What drawing it taught</h2>
+    <h2>What drawing it taught (now applied in v1.1)</h2>
   </div>
   <ul class="findings">
-    <li><b>The text was missing one thing the picture needed: where the edges sit.</b> The model says "PARS latency 1" and "SCRM latency 1", but to draw the band I had to decide that both start at the same boundary. That fact is implicit in the fork. The grammar should probably state boundaries by name and attach stages to them, rather than give each stage its own latency.</li>
-    <li><b>The picture was missing one thing the text has: lock's history.</b> In the RTL, <span class="mono">lock</span> passes through PARS (set from <span class="mono">cfg.lnk_en</span>) and is then overwritten by SCRM. Drawing it from SCRM onward is cleaner but loses that. It's a fair simplification, but the tool should say when it makes one.</li>
+    <li><b>The text was missing one thing the picture needed: where the edges sit.</b> The model says "PARS latency 1" and "SCRM latency 1", but to draw the band I had to decide that both start at the same boundary. That fact is implicit in the fork. v1.1 now names boundaries and places stages between them (FIG D1 shows <code>b0</code> and <code>b1</code>).</li>
+    <li><b>The picture was missing one thing the text has: lock's history.</b> In the RTL, <span class="mono">lock</span> passes through PARS (set from <span class="mono">cfg.lnk_en</span>) and is then overwritten by SCRM. Drawing it from SCRM onward is cleaner but loses that. v1.1 adds the ≈ marker for exactly this.</li>
     <li><b>Modes work as a pair of figures with a fixed layout.</b> Fading rather than removing keeps every mark in the same place, so the two figures can be compared by flipping between them. A third mode would cost nothing new.</li>
-    <li><b>Long read taps are the main source of clutter.</b> The lines from <span class="mono">cfg</span> and <span class="mono">vcfg</span> down to vmap cross every band. A layout rule could put out-of-flow state next to its heaviest reader instead of always on top, or replace long taps with a short labelled stub ("reads cfg.bpc").</li>
+    <li><b>Long read taps are the main source of clutter.</b> The lines from <span class="mono">cfg</span> and <span class="mono">vcfg</span> down to vmap cross every band. v1.1 turns any out-of-flow read that would cross more than one band into a stub.</li>
   </ul>
   <p class="note">Drawn by hand from <span class="mono">docs/models/dprx.gateau</span>, which was modelled from Parretto's source-available DisplayPort RTL. The figures model structure only, and no code is reproduced. Simplifications: PARS's write of <span class="mono">lock</span>, the VID vbid output, the AUX/HPD side of the PM, and MST (which this core reduces to an enable bit) are not drawn.</p>
 </section>
