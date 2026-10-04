@@ -1,0 +1,511 @@
+<title>Gateau Notation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column for prose, figures break out to full width; datasheet-like, ink on cool paper. */
+:root {
+  --bg: #F3F5F7;
+  --surface: #FFFFFF;
+  --fg: #18212B;
+  --muted: #5E6B78;
+  --rule: #CBD3DB;
+  --track: #B3BDC8;
+  --box: #FFFFFF;
+  --soft: #E4E9EE;
+  --accent: #2F5BD3;
+  --accent-soft: #E2E9FB;
+  --vid: #B5560B;
+  --vid-soft: #F6E3D2;
+  --sdp: #7B3FB5;
+  --ok: #2D7A4B;
+  --ok-soft: #DDF0E4;
+  --bad: #C0312B;
+  --bad-soft: #F8DEDC;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1318; --surface: #151C23; --fg: #E4E9EF; --muted: #93A1AF; --rule: #2B3540; --track: #3E4A57;
+    --box: #18212A; --soft: #24303B; --accent: #7C9DFF; --accent-soft: #1D2A4A; --vid: #F0A25A; --vid-soft: #3A2817;
+    --sdp: #C49AF5; --ok: #62C98C; --ok-soft: #173326; --bad: #FF7A72; --bad-soft: #3D1D1B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1318; --surface: #151C23; --fg: #E4E9EF; --muted: #93A1AF; --rule: #2B3540; --track: #3E4A57;
+  --box: #18212A; --soft: #24303B; --accent: #7C9DFF; --accent-soft: #1D2A4A; --vid: #F0A25A; --vid-soft: #3A2817;
+  --sdp: #C49AF5; --ok: #62C98C; --ok-soft: #173326; --bad: #FF7A72; --bad-soft: #3D1D1B; color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+.page { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 48px 96px; display: flex; flex-direction: column; gap: 56px; }
+.prose { max-width: 68ch; display: flex; flex-direction: column; gap: 14px; }
+.prose p { margin: 0; }
+h1, h2, h3 { font-family: var(--display); font-stretch: 85%; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(34px, 5vw, 54px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 28px; font-weight: 700; }
+h3 { font-size: 19px; font-weight: 700; font-stretch: 90%; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 20px; line-height: 1.5; max-width: 62ch; margin: 0; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 20px; }
+header { display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid var(--rule); padding-bottom: 32px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+
+figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.sheet { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; overflow-x: auto; }
+.sheet svg { display: block; width: 100%; height: auto; min-width: 880px; }
+figcaption { font-size: 15px; color: var(--muted); max-width: 80ch; }
+figcaption b { color: var(--fg); font-weight: 600; }
+.fig-id { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.06em; margin-right: 8px; }
+
+/* SVG vocabulary, styled from page tokens */
+svg text { font-family: var(--mono); fill: var(--fg); }
+svg .t-name { font-size: 12.5px; }
+svg .t-w { font-size: 10.5px; fill: var(--muted); }
+svg .t-box { font-size: 12.5px; font-weight: 600; text-anchor: middle; }
+svg .t-sub { font-size: 10px; fill: var(--muted); text-anchor: middle; }
+svg .t-note { font-size: 10.5px; fill: var(--muted); }
+svg .t-acc { fill: var(--accent); }
+svg .t-vid { fill: var(--vid); }
+svg .t-sdp { fill: var(--sdp); }
+svg .t-ok { fill: var(--ok); }
+svg .t-bad { fill: var(--bad); }
+svg .t-mid { text-anchor: middle; }
+svg .t-end { text-anchor: end; }
+svg .track { stroke: var(--track); stroke-width: 1; stroke-dasharray: 2 4; fill: none; }
+svg .lane { stroke: var(--fg); stroke-width: 2; fill: none; }
+svg .lane-vid { stroke: var(--vid); stroke-width: 2; fill: none; }
+svg .lane-sdp { stroke: var(--sdp); stroke-width: 2; fill: none; }
+svg .wire { stroke: var(--fg); stroke-width: 1.5; fill: none; }
+svg .wire-vid { stroke: var(--vid); stroke-width: 1.5; fill: none; }
+svg .cfg { stroke: var(--fg); stroke-width: 1.6; stroke-dasharray: 1.5 3.5; fill: none; }
+svg .msg { stroke: var(--fg); stroke-width: 1.1; fill: none; }
+svg .conn { stroke: var(--fg); stroke-width: 1.2; fill: none; }
+svg .box { fill: var(--box); stroke: var(--fg); stroke-width: 1.2; }
+svg .box-opt { fill: var(--box); stroke: var(--fg); stroke-width: 1.2; stroke-dasharray: 4 3; }
+svg .box-vid { fill: var(--box); stroke: var(--vid); stroke-width: 1.4; }
+svg .fill-vid-soft { fill: var(--vid-soft); }
+svg .fill-box { fill: var(--box); }
+svg .outline { fill: none; stroke: var(--fg); stroke-width: 1.2; }
+svg .dot { fill: var(--fg); }
+svg .odot { fill: var(--box); stroke: var(--fg); stroke-width: 1.4; }
+svg .band { fill: var(--accent-soft); }
+svg .slice { stroke: var(--accent); stroke-width: 1.3; stroke-dasharray: 5 4; }
+svg .acc-line { stroke: var(--accent); stroke-width: 1.4; fill: none; stroke-dasharray: 3 3; }
+svg .badge-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 1; }
+svg .cell { fill: var(--box); stroke: var(--rule); stroke-width: 1; }
+svg .cell-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1; }
+svg .cell-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 1; }
+svg .cell-bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 1.2; }
+svg .grid { stroke: var(--rule); stroke-width: 1; }
+svg .bar { fill: var(--fg); }
+svg .bar-vid { fill: var(--vid); }
+svg .f-dat { fill: var(--soft); stroke: var(--track); stroke-width: 1; }
+svg .f-k { fill: var(--track); }
+svg .f-lock { fill: var(--fg); }
+svg .f-tag { fill: var(--accent); }
+svg .f-dup { fill: url(#d-hatch); }
+svg .f-vid { fill: var(--vid-soft); stroke: var(--vid); stroke-width: 1; }
+svg .hatch-bg { fill: var(--accent-soft); }
+svg .hatch-line { stroke: var(--accent); stroke-width: 1.4; }
+svg .arrow-ink { fill: var(--fg); }
+svg .arrow-vid { fill: var(--vid); }
+svg .arrow-sdp { fill: var(--sdp); }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; min-width: 12ch; }
+td .src { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+
+.glyphs { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.glyph { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.glyph svg { width: 100%; height: auto; max-width: 200px; display: block; aspect-ratio: 160 / 56; }
+.glyph h3 { font-size: 15.5px; }
+.glyph p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.45; }
+.glyph .from { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.04em; }
+
+.verdict { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.verdict > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.verdict .role { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.role.primary { color: var(--ok); }
+.role.overlay { color: var(--accent); }
+.role.zoom { color: var(--vid); }
+.verdict p { margin: 0; font-size: 15px; }
+ol.questions { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 12px; max-width: 72ch; }
+ol.questions li::marker { font-family: var(--mono); color: var(--accent); }
+.note { font-size: 14px; color: var(--muted); max-width: 80ch; border-top: 1px solid var(--rule); padding-top: 16px; }
+@media (max-width: 600px) { body { font-size: 16px; } .page { padding-block: 32px 64px; gap: 44px; } }
+</style>
+<style>
+svg .store { fill: var(--soft); stroke: var(--fg); stroke-width: 1; }
+svg .back { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+svg .back-ctl { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 3; fill: none; }
+svg .kill { stroke: var(--bad); stroke-width: 2; }
+svg .slot { stroke: var(--track); stroke-width: 1; }
+svg .edge { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+svg .gutter { fill: var(--bg); stroke: var(--rule); stroke-width: 1; }
+svg .pe { fill: var(--box); stroke: var(--track); stroke-width: 1; }
+svg .pe-on { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+svg .reg { fill: var(--box); stroke: var(--fg); stroke-width: 1; }
+svg .badge-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1; }
+svg .barv { fill: var(--accent); }
+svg .barm { fill: var(--track); }
+svg .t-big { font-size: 18px; font-weight: 600; text-anchor: middle; }
+svg .t-head { font-size: 12px; font-weight: 600; fill: var(--muted); text-anchor: middle; letter-spacing: 0.06em; }
+svg .arrow-acc { fill: var(--accent); }
+svg .arrow-muted { fill: var(--muted); }
+.changes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.changes > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.changes h3 { font-size: 16px; }
+.changes p { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.5; }
+.changes .why { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.04em; }
+.design-head { display: flex; flex-direction: column; gap: 6px; border-top: 2px solid var(--fg); padding-top: 18px; }
+.design-head .eyebrow { color: var(--accent); }
+.findings { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; max-width: 74ch; }
+.findings li { font-size: 16px; }
+td.c-ok { background: var(--ok-soft); color: var(--ok); font-family: var(--mono); font-size: 13px; }
+td.c-stall { background: var(--bad-soft); color: var(--bad); font-family: var(--mono); font-size: 13px; }
+td.c-rf { background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-size: 13px; }
+td.c-sb { background: var(--soft); color: var(--fg); font-family: var(--mono); font-size: 13px; }
+</style>
+
+<style>
+.prims { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
+.prim { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.prim-head { display: flex; align-items: baseline; gap: 10px; }
+.prim-head h3 { font-size: 20px; }
+.num { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+.prim .def { margin: 0; font-size: 15.5px; line-height: 1.5; }
+.prim dl { margin: 0; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.prim dd + dt { margin-top: 8px; }
+.prim dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.prim dd { margin: 0; color: var(--fg); min-width: 0; }
+.prim .from { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.03em; margin-top: auto; }
+td.k-keep, td.k-merge, td.k-move, td.k-drop { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
+td.k-keep { color: var(--ok); } td.k-merge { color: var(--accent); } td.k-move { color: var(--vid); } td.k-drop { color: var(--bad); }
+ol.method { margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 12px; max-width: 76ch; }
+ol.method li { font-size: 16.5px; }
+ol.method li::marker { font-family: var(--mono); color: var(--accent); }
+pre.code { margin: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--fg); }
+svg .carrier { fill: var(--soft); opacity: 0.6; }
+svg .lockstep { fill: none; stroke: var(--fg); stroke-width: 1.2; stroke-dasharray: 2 0; }
+svg .flow { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 1.5 3.5; fill: none; }
+</style>
+<div class="page">
+
+<header>
+  <div class="eyebrow">gateau · notation v1.0 draft</div>
+  <h1>Gateau Notation</h1>
+  <p class="lede">The consolidated set of abstractions behind studies 01–03, and a method for drawing any architecture with them. Seven primitives, four views, five derived checks, and one rule for which visual channel means what.</p>
+  <div class="meta">
+    <span>consolidates: <a href="https://claude.ai/artifact/WeWk2D2etuaHL4HB6VPZ5Q">study 01</a> (DP RX) · <a href="https://claude.ai/artifact/Sh4MkSwhh6BpLXoZ5PMTzb">study 02</a> (Rocket, Gemmini, bubbletea) · <a href="https://claude.ai/artifact/NfKRW7T2NAj34TQsd6sZQN">study 03</a> (Ethernet)</span>
+    <span>status: draft for review</span>
+  </div>
+</header>
+
+<section>
+  <div class="prose">
+    <h2>The model in one sentence</h2>
+    <p><b>An architecture is a set of items flowing left to right on carriers, through stages that read, write, create and consume the items' fields, across boundaries that set latency and flow control, alongside state the stages tap, with feedback running back underneath.</b></p>
+    <p>Every glyph from the three studies is either one of the seven primitives below, an attribute of one, or something computed from them. Over the three studies the glyph count grew to about thirty-five. Most of that growth came from drawing the same idea twice. A rate change in bubbletea and a header parser in Ethernet are the same thing. So are a cycle band, an enable region and a line-time region, and so are DP RX's latency badge, Gemmini's tag queue and the MAC's CRC hold.</p>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Seven primitives</h2>
+    <p>These are the things an author declares. The tag under each card says which studies forced it.</p>
+  </div>
+  <div class="prims">
+    <div class="prim">
+      <div class="prim-head"><span class="num">1</span><h3>Carrier</h3></div>
+      <p class="def">A stream of <em>items</em> at one rate. An item is whatever counts as "one": a symbol pair, an instruction, a matmul row, an II-period, a packet, a beat.</p>
+      <dl><dt>attributes</dt><dd>item name · rate · parent carrier (rates nest: packet ⊃ beat, II-period ⊃ cycle)</dd><dt>drawn as</dt><dd>a horizontal band with its rate in the header; coarser carriers sit above finer ones</dd></dl>
+      <span class="from">01 · 03 two buses · 02 rate band, message ring</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">2</span><h3>Field</h3></div>
+      <p class="def">A named value carried by every item of a carrier, between the stage that creates it and the stage that consumes it.</p>
+      <dl><dt>attributes</dt><dd>type = axes × element width (<span class="mono">u8[ℓ,s]</span>) · group (bundle) · availability (whole item, head, or tail)</dd><dt>drawn as</dt><dd>a row in its carrier's band: solid where live, a faint track where empty, ◆ where a tail field becomes valid</dd></dl>
+      <span class="from">01 rows, widths · 02 groups · 03 tail fields</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">3</span><h3>Stage</h3></div>
+      <p class="def">An operator on items. Its relation to each field is one of four: <b>reads</b>, <b>writes</b>, <b>creates</b>, <b>consumes</b>. A stage spanning two carriers <b>transfers</b> values between them.</p>
+      <dl><dt>attributes</dt><dd>field relations · replication (×ℓ) · condition (exists if a parameter is set) · contents (a sub-architecture to zoom into)</dd><dt>drawn as</dt><dd>a box over the rows it writes, dots on rows it reads, rows starting or ending at its edges; tall boxes for transfers</dd></dl>
+      <span class="from">01 · 02 · 03 parse / serialise</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">4</span><h3>Boundary</h3></div>
+      <p class="def">The edge between two consecutive stages. It holds the timing of the design: how long, and who can stop whom.</p>
+      <dl><dt>attributes</dt><dd>latency (cycles, or "variable") · coupling: <b>lockstep</b> (shared enable), <b>elastic</b> (valid/ready) or <b>rigid</b> (cannot stall) · clock domain on each side</dd><dt>drawn as</dt><dd>a dashed vertical with its latency on top; » marks elastic; a gray region marks rigid; colour changes at a domain crossing</dd></dl>
+      <span class="from">01 cycle band, CDC · 02 register prefixes, » , fire · 03 line time</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">5</span><h3>Fork and join</h3></div>
+      <p class="def">Where one item's fields take different paths and later have to meet again. Every join declares how the parts find each other.</p>
+      <dl><dt>attributes</dt><dd>join discipline: <b>lat</b> (equal latency), <b>fifo</b> (parked, in order) or <b>key</b> (parked, matched by ID) · its parameter (latency, depth, or key field)</dd><dt>drawn as</dt><dd>a copy dot at the fork; a ⟂ badge at the join naming discipline and parameter</dd></dl>
+      <span class="from">01 aligned badge · 02 tagq, cntl_q, D$ rejoin · 03 CRC hold, header↔payload</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">6</span><h3>State</h3></div>
+      <p class="def">Anything that outlives an item: register files, scoreboards, scratchpads, caches, configuration, counters.</p>
+      <dl><dt>attributes</dt><dd>taps (stage + read or write) · writer: <b>in-flow</b> (written by stages), <b>out-of-flow</b> (configuration, written outside the items) or <b>shared</b> (tapped by several carriers or directions) · cyclic (wraps every N)</dd><dt>drawn as</dt><dd>a pill above the bands, stretched from its first tap to its last</dd></dl>
+      <span class="from">02 RF, scoreboard, spad, t ↻ · 01 cfg · 03 ARP cache</span>
+    </div>
+    <div class="prim">
+      <div class="prim-head"><span class="num">7</span><h3>Feedback</h3></div>
+      <p class="def">Any signal that goes from a later stage to an earlier one, or out of the design and back.</p>
+      <dl><dt>attributes</dt><dd>kind: <b>data</b> (bypass), <b>control</b> (redirect, kill, bitslip) or <b>flow</b> (ready, credit, stall) · source and target stage · delay</dd><dt>drawn as</dt><dd>a right-to-left edge in the gutter below the bands: solid for data, dashed for control, dotted for flow</dd></dl>
+      <span class="from">02 return gutter, kill · 03 tready, bitslip</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>One channel, one meaning</h2>
+    <p>The studies reused the same visual channel for unrelated things. For example, dashes meant five different things and blue meant four. The fix is to give each visual channel exactly one job. When something new needs drawing, it gets an attribute of an existing primitive and a channel nobody is using, not a new glyph.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Channel</th><th>Means</th><th>Never means</th></tr></thead>
+      <tbody>
+        <tr><td>x position</td><td>flow order of stages</td><td>time to scale (that is the time view's job)</td></tr>
+        <tr><td>y position</td><td>carrier band, then field row inside it; state above, feedback below</td><td>importance or grouping by module</td></tr>
+        <tr><td>row stroke</td><td>solid = live value; faint track = empty position</td><td>configuration (which is state, not a row)</td></tr>
+        <tr><td>vertical dashed line</td><td>a boundary</td><td>anything else</td></tr>
+        <tr><td>box outline</td><td>solid = always present; dashed = conditional on a parameter</td><td>timing</td></tr>
+        <tr><td>region fill</td><td>coupling: gray = rigid; outlined bracket = lockstep group</td><td>rate (rate is a carrier band)</td></tr>
+        <tr><td>hue</td><td>clock domain (ink = the main domain)</td><td>carrier, emphasis, or kind</td></tr>
+        <tr><td>badge</td><td>a checkable contract, coloured by its result: green holds, red fails, blue declared but unchecked</td><td>notes or labels</td></tr>
+        <tr><td>gutter edge stroke</td><td>feedback kind: solid data, dashed control, dotted flow</td><td>importance</td></tr>
+        <tr><td>row thickness</td><td>off by default; with the cost overlay on, bits</td><td>anything when the overlay is off</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Four views of one model</h2>
+    <p>Following tsncd, views are renderings of one model rather than separate drawings to keep in sync. The bus view is the map; the others are reached from it.</p>
+  </div>
+  <div class="verdict">
+    <div><span class="role primary">primary</span><h3>Bus view</h3><p>Carriers as bands, stages as boxes, state on top, feedback in the gutter. Every design gets one. Collapsed groups and closed boxes keep it under about a dozen rows.</p></div>
+    <div><span class="role zoom">zoom into a field or stage</span><h3>Axis view</h3><p>A field's axes drawn as wires, with NCD's operators: broadcast, index, copy, reduce, reshape, permute, skew, realign. The byte map (axis = byte position folded into beats) and space-time frames (axes = PE grid × modulo time) are two layouts of this one view.</p></div>
+    <div><span class="role overlay">zoom into a boundary or join</span><h3>Time view</h3><p>A cycle grid of items × cycles around one join or region. It is the picture for a contract: aligned versus skewed, a FIFO filling, a stall propagating.</p></div>
+    <div><span class="role overlay">overlay on the bus view</span><h3>Overlays</h3><p>Contracts (badges with results), cost (row thickness = bits, buffers as bars) and domains (hue). Each can be switched on or off without changing the layout.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Five derived checks</h2>
+    <p>These are why the primitives are worth declaring precisely: each check falls out of the model with no extra input, and each one caught something real in the studies.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Check</th><th>Computed from</th><th>Found in the studies</th></tr></thead>
+      <tbody>
+        <tr><td>Join holds<span class="src">every ⟂</span></td><td>lat: path latencies are equal · fifo: depth ≥ other path latency + 1 · key: the key is unique among items in flight</td><td>DP RX parser ∥ scrambler kept by two comments; Gemmini's <span class="mono">matmul_id + (OS ? 3 : 2)</span>; bubbletea's fixed delay set by the bitstream; the Ethernet MAC's 2-block CRC hold</td></tr>
+        <tr><td>Hazard window covered<span class="src">in-flow state</span></td><td>for each state, the span between its read and write taps; every read-after-write distance in it must have a bypass, a stall or a scoreboard</td><td>Rocket's bypass table, derived from the drawing alone</td></tr>
+        <tr><td>Availability<span class="src">fields with head/tail</span></td><td>a field consumed at an item's head but created at its tail needs a buffer of one whole item</td><td>UDP checksum → 16 KiB FIFO; FCS needs none</td></tr>
+        <tr><td>Rigid edges<span class="src">coupling</span></td><td>where a rigid region meets a stallable one, the stage there must drop (on input) or pre-buffer a whole item (on output)</td><td>Ethernet RX and TX frame FIFOs</td></tr>
+        <tr><td>Cost<span class="src">fields × boundaries</span></td><td>bits × boundaries crossed for pipeline registers; declared depths for buffers; state sizes</td><td>DP RX lane-copied tags (36 of 121 bits); bubbletea delayers at 4× the PE array</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>What happened to every glyph</h2>
+    <p>This is the consolidation itself. Each glyph from v0.1–v0.3 either survives as a primitive's rendering, becomes an attribute, merges with another, or goes.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>v0.x glyph</th><th>v1</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>live row, empty track, width label, group row</td><td>Field</td><td class="k-keep">kept</td></tr>
+        <tr><td>read dot, write box, produce/consume edges, replication ×ℓ, optional box</td><td>Stage relations and attributes</td><td class="k-keep">kept</td></tr>
+        <tr><td>two buses (packet / beat)</td><td>Carriers with nested rates</td><td class="k-merge">generalised</td></tr>
+        <tr><td>rate band, II:1 / 1:II boxes</td><td>Two carriers; II:1 and 1:II are transfer stages</td><td class="k-merge">merged with parse / serialise</td></tr>
+        <tr><td>parse / serialise box</td><td>Transfer stage between carriers</td><td class="k-merge">merged with rate change</td></tr>
+        <tr><td>cycle band, register edge labels</td><td>Boundary latency</td><td class="k-merge">merged</td></tr>
+        <tr><td>» elastic, fire enable row, line-time region</td><td>Boundary coupling: elastic, lockstep, rigid</td><td class="k-merge">merged into one attribute</td></tr>
+        <tr><td>⟂ aligned badge, ⟂ lat, ⟂ fifo, ⟂ key</td><td>Join discipline</td><td class="k-keep">kept, now always checked</td></tr>
+        <tr><td>tail field ◆, needed-before-available badge</td><td>Field availability + the availability check</td><td class="k-merge">badge is now derived, not drawn</td></tr>
+        <tr><td>state pill, store span</td><td>State</td><td class="k-keep">kept</td></tr>
+        <tr><td>cfg dotted row, cyclic t ↻ row</td><td>State (out-of-flow; cyclic)</td><td class="k-move">moved from rows to state</td></tr>
+        <tr><td>message ring double line</td><td>A carrier of its own (items = messages)</td><td class="k-move">moved to a carrier</td></tr>
+        <tr><td>return gutter, back-edge, kill ✕</td><td>Feedback (data, control)</td><td class="k-merge">kill is a control feedback</td></tr>
+        <tr><td>tready / ready edges</td><td>Feedback (flow)</td><td class="k-keep">kept, new dotted style</td></tr>
+        <tr><td>clock-domain colour, CDC FIFO</td><td>Boundary domains</td><td class="k-keep">kept</td></tr>
+        <tr><td>index, copy, broadcast, reduce, reshape, skew, realign</td><td>Axis view operators</td><td class="k-keep">kept, axis view only</td></tr>
+        <tr><td>byte map, space-time frames</td><td>Axis view layouts</td><td class="k-merge">merged into the axis view</td></tr>
+        <tr><td>blue packet bus, blue cycle band, blue back-edges</td><td>—</td><td class="k-drop">dropped: hue is only for clock domains</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Worked redraw: bubbletea in v1</h2>
+    <p>Study 02 drew bubbletea with a shaded rate band and <code>fire</code>, <code>t</code> and <code>cfg</code> as rows. Under v1, the two rates are two carriers, and the remap and collect steps become transfers between them, exactly as Ethernet's parsers are. Configuration and the modulo counter move up to state, and <code>fire</code> becomes a lockstep group fed by flow feedback. Nothing new had to be invented: the same seven primitives cover a CGRA's streaming stage and a packet parser.</p>
+  </div>
+  <figure>
+    <div class="sheet">
+      <svg viewBox="0 0 1200 455" role="img" aria-label="bubbletea's streaming stage in v1 notation. Two carrier bands: per II period on top, per fired cycle below. Streams move through the streaming engine and Beneš remapper on the top band, transfer down to the cycle band at II:1, pass the load delays, mesh and store delays in lockstep, transfer back up at 1:II, and leave through the store remapper and streaming engine. Configuration and the modulo counter are state above. Load valid and store ready return through the gutter as flow feedback to the lockstep group.">
+        <defs>
+          <marker id="w-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-ink"/></marker>
+          <marker id="w-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-muted"/></marker>
+        </defs>
+        <rect class="store" x="150" y="24" width="1000" height="20" rx="10"/>
+        <text class="t-w" x="166" y="38" style="fill:var(--fg)">cfg · out-of-flow (bitstream)</text>
+        <rect class="store" x="390" y="54" width="530" height="20" rx="10"/>
+        <text class="t-w" x="406" y="68" style="fill:var(--fg)">t ↻ · cyclic, mod II</text>
+
+        <rect class="carrier" x="116" y="96" width="1072" height="66"/>
+        <text class="t-note" x="14" y="112" style="fill:var(--fg)">carrier</text>
+        <text class="t-name" x="14" y="132">II-period</text>
+        <text class="t-w" x="14" y="148">4×32 | II×16</text>
+        <rect class="carrier" x="116" y="188" width="1072" height="70"/>
+        <text class="t-note" x="14" y="204" style="fill:var(--fg)">carrier</text>
+        <text class="t-name" x="14" y="224">cycle</text>
+        <text class="t-w" x="14" y="240">frame [16]</text>
+
+        <line class="track" x1="116" y1="130" x2="1188" y2="130"/>
+        <line class="track" x1="116" y1="224" x2="1188" y2="224"/>
+
+        <line class="lane" x1="116" y1="130" x2="150" y2="130"/>
+        <line class="lane" x1="240" y1="130" x2="270" y2="130"/>
+        <line class="lane" x1="360" y1="130" x2="395" y2="130"/>
+        <line class="lane" x1="440" y1="224" x2="470" y2="224"/>
+        <line class="lane" x1="540" y1="224" x2="580" y2="224"/>
+        <line class="lane" x1="700" y1="224" x2="740" y2="224"/>
+        <line class="lane" x1="810" y1="224" x2="860" y2="224"/>
+        <line class="lane" x1="910" y1="130" x2="940" y2="130"/>
+        <line class="lane" x1="1030" y1="130" x2="1060" y2="130"/>
+        <line class="lane" x1="1150" y1="130" x2="1182" y2="130" marker-end="url(#w-ink)"/>
+        
+        <line class="edge" x1="255" y1="90" x2="255" y2="166"/><text class="t-w t-mid" x="255" y="88">»</text>
+        <line class="edge" x1="378" y1="90" x2="378" y2="166"/><text class="t-w t-mid" x="378" y="88">» 1</text>
+        <line class="edge" x1="925" y1="90" x2="925" y2="166"/><text class="t-w t-mid" x="925" y="88">»</text>
+        <line class="edge" x1="1045" y1="90" x2="1045" y2="166"/><text class="t-w t-mid" x="1045" y="88">» 1</text>
+        <line class="edge" x1="560" y1="200" x2="560" y2="250"/>
+        <line class="edge" x1="720" y1="200" x2="720" y2="250"/>
+
+        <line class="conn" x1="195" y1="44" x2="195" y2="118"/><circle class="dot" cx="195" cy="44" r="3.2"/>
+        <line class="conn" x1="315" y1="44" x2="315" y2="118"/><circle class="dot" cx="315" cy="44" r="3.2"/>
+        <line class="conn" x1="415" y1="74" x2="415" y2="118"/><circle class="dot" cx="415" cy="74" r="3.2"/>
+        <line class="conn" x1="495" y1="44" x2="495" y2="212"/><circle class="dot" cx="495" cy="44" r="3.2"/><circle class="dot" cx="495" cy="74" r="3.2"/>
+        <line class="conn" x1="640" y1="44" x2="640" y2="206"/><circle class="dot" cx="640" cy="44" r="3.2"/><circle class="dot" cx="640" cy="74" r="3.2"/>
+        <line class="conn" x1="775" y1="44" x2="775" y2="212"/><circle class="dot" cx="775" cy="44" r="3.2"/><circle class="dot" cx="775" cy="74" r="3.2"/>
+        <line class="conn" x1="885" y1="74" x2="885" y2="118"/><circle class="dot" cx="885" cy="74" r="3.2"/>
+        <line class="conn" x1="985" y1="44" x2="985" y2="118"/><circle class="dot" cx="985" cy="44" r="3.2"/>
+        <line class="conn" x1="1105" y1="44" x2="1105" y2="118"/><circle class="dot" cx="1105" cy="44" r="3.2"/>
+
+        <rect class="box" x="150" y="118" width="90" height="24" rx="3"/><text class="t-box" x="195" y="134">SE load</text>
+        <rect class="box" x="270" y="118" width="90" height="24" rx="3"/><text class="t-box" x="315" y="134">Beneš</text>
+        <rect class="box" x="395" y="118" width="45" height="118" rx="3"/><text class="t-box" x="417" y="162">II:1</text>
+        <path class="conn" d="M417,170 L417,206" marker-end="url(#w-ink)"/>
+        <rect class="box" x="470" y="212" width="70" height="24" rx="3"/><text class="t-box" x="505" y="228">Δ load</text>
+        <rect class="box" x="580" y="206" width="120" height="36" rx="3"/><text class="t-box" x="640" y="228">Mesh 4×4</text>
+        <rect class="box" x="740" y="212" width="70" height="24" rx="3"/><text class="t-box" x="775" y="228">Δ store</text>
+        <rect class="box" x="860" y="118" width="50" height="118" rx="3"/><text class="t-box" x="885" y="162">1:II</text>
+        <path class="conn" d="M885,206 L885,172" marker-end="url(#w-ink)"/>
+        <rect class="box" x="940" y="118" width="90" height="24" rx="3"/><text class="t-box" x="985" y="134">Beneš</text>
+        <rect class="box" x="1060" y="118" width="90" height="24" rx="3"/><text class="t-box" x="1105" y="134">SE store</text>
+
+        <rect class="lockstep" x="388" y="198" width="530" height="54" rx="4"/>
+        <text class="t-w" x="392" y="270" style="fill:var(--fg)">lockstep group · one enable (fire)</text>
+        <rect class="badge-acc" x="830" y="166" width="230" height="18" rx="9"/>
+        <text class="t-w t-acc t-mid" x="945" y="179">⟂ lat = cfg.storeStreamsFixedDelay</text>
+
+        <rect class="gutter" x="116" y="292" width="1072" height="150" rx="3"/>
+        <text class="t-note" x="14" y="312">gutter</text>
+        <path class="flow" d="M985,142 L985,330 L652,330 L652,254" marker-end="url(#w-mut)"/>
+        <text class="t-w" x="700" y="325">flow · store side ready (or still in fixed delay)</text>
+        <path class="flow" d="M315,142 L315,360 L628,360 L628,254" marker-end="url(#w-mut)"/>
+        <text class="t-w" x="330" y="355">flow · remapped streams valid (or done)</text>
+        <text class="t-note" x="130" y="410">The same layout draws Ethernet receive: packet carrier on top, beat carrier below, and the parsers as tall transfer stages from beat to packet.</text>
+      </svg>
+    </div>
+    <figcaption><span class="fig-id">FIG V1</span><b>bubbletea under v1.</b> Two carriers: the II-period on top (one set of streams per II cycles), the fired cycle below (one 16-port frame). <code>II:1</code> and <code>1:II</code> are transfer stages, the same kind of box as Ethernet's parsers. <code>cfg</code> and <code>t</code> are state, tapped by dots. <code>fire</code> is no longer a row: the outlined group says those stages move in lockstep, and the two dotted gutter edges are the flow feedback that drives it. The store-side join is a ⟂ lat badge in blue, meaning declared but unchecked, because its value comes from the bitstream.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>The method</h2>
+    <p>The order matters: most bad architecture diagrams start by drawing boxes. This method starts by deciding what flows.</p>
+  </div>
+  <ol class="method">
+    <li><b>Name the item.</b> What is "one thing" moving through the design? If there is more than one answer at different rates (packet and beat, II-period and cycle, matmul and row), each answer is a carrier. Nest them coarse above fine.</li>
+    <li><b>List the stages in flow order</b> along each carrier. Mark stages that span two carriers as transfers.</li>
+    <li><b>Mark every boundary</b> with its latency (number, "variable", or "?") and its coupling: lockstep, elastic or rigid. Note clock domains. Write "?" rather than guessing; unknown latencies are where contracts hide.</li>
+    <li><b>Enumerate fields per carrier.</b> For each one: type in axis terms, the stage that creates it, the stages that read and write it, the stage that consumes it, and whether it is available for the whole item, at its head, or at its tail. Group bundles.</li>
+    <li><b>Find forks and joins.</b> Wherever an item's fields split and meet again, declare the join discipline (lat, fifo, key) and its parameter.</li>
+    <li><b>List state.</b> For each store: taps, writer kind (in-flow, out-of-flow, shared), and whether it is cyclic.</li>
+    <li><b>List feedback</b>: bypasses, redirects, kills, ready/stall, and anything leaving the design (bitslip, reset requests).</li>
+    <li><b>Run the five checks.</b> Every failing or undeclared one is a finding, and usually the most valuable output of the exercise.</li>
+    <li><b>Lay out</b> by these rules: carriers coarse to fine, top to bottom; rows inside a carrier ordered by the stage that creates them; state above, ordered by span with the shortest nearest the bands; gutter edges ordered by span with the shortest nearest the bands; at most about twelve rows per view, collapsing groups and closing boxes to stay under it.</li>
+    <li><b>Zoom where shapes change.</b> Every stage that reshapes, permutes, skews or realigns a field gets an axis view. Every join with a non-trivial discipline gets a time view.</li>
+  </ol>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>The model as text</h2>
+    <p>If the abstractions are right, an architecture should be describable in a few lines without any drawing. This is a sketch of what a model file could look like, not a syntax proposal. Here is the DP RX link layer from study 01:</p>
+  </div>
+  <pre class="code"><code>carrier sym  "symbol group per lnk_clk"   axes ℓ = P_LANES, s = P_SPL
+carrier msg  "message"                    # the control ring is its own carrier
+
+field sym.k, sym.dat : bit[ℓ,s], u8[ℓ,s]
+field sym.lock       : bit
+group sym.tag        : {sol, eol, vid, sdp, msa, vbid} : bit[ℓ,s]
+
+state cfg  out-of-flow {lanes, scrm_en, mst_en, bpc}   written by CTL from msg
+
+stage TRN   writes lock; writes k, dat;           taps msg
+fork  raw  = {k, dat}
+stage PARS  reads raw[ℓ = 0]; creates tag.*        latency 1
+stage SCRM  ×ℓ; writes k, dat; writes lock = ∧ℓ   latency 1; reads cfg
+join  lat(PARS, SCRM)                              # check: 1 == 1 ✓
+stage MSA   reads k, dat, tag.msa; consumes tag.msa; emits msg
+stage SDP   if P_SDP; reads k, dat, tag.sdp; consumes tag.sdp; emits sdp_out @ sdp_clk
+stage VID   consumes all; emits video @ vid_clk     boundary rigid → elastic via FIFO</code></pre>
+  <div class="prose">
+    <p>Around fifteen lines hold everything FIG B of study 01 shows, plus the check that study 01 could only state in prose.</p>
+  </div>
+</section>
+
+<section>
+  <div class="prose">
+    <h2>Not yet covered</h2>
+    <p>Four things showed up in the designs but were collapsed into boxes rather than drawn. They should be tested before v1 is called stable.</p>
+  </div>
+  <ul class="findings">
+    <li><b>Merge and route of different items.</b> Joins re-unite parts of <em>one</em> item. Arbiters merge <em>different</em> items onto one carrier, and demuxes route items by a field (Ethernet's <span class="mono">ip_arb_mux</span> and ARP/IP split, Gemmini's issue to three pipelines). These probably need an eighth primitive with a policy attribute (priority, round-robin, by field).</li>
+    <li><b>Modes.</b> DP RX training versus normal operation, bubbletea configuring versus computing. A likely answer is that the bus view is drawn per mode, with stages and fields marked by the modes they exist in. This hasn't been tried.</li>
+    <li><b>Out-of-order completion.</b> Kill covers in-order squashing. A reorder buffer is a key join over many items at once, and the notation hasn't met one yet.</li>
+    <li><b>Clock-ratio carriers.</b> Two carriers in different domains at a fixed ratio (a 2:1 gearbox, DDR) might be nested carriers rather than a CDC. This is a guess so far.</li>
+  </ul>
+  <div class="prose">
+    <h3>Suggested next step</h3>
+    <p>Run the method by hand on the part of your DP RX controller you know best, from memory and without the code. It is the design that motivated all this, and it has the two things this draft is least sure of: packet merging (SDP and MST streams) and modes (training). If those fit without new primitives beyond merge/route, v1 is close to right.</p>
+  </div>
+  <p class="note">This page consolidates what studies 01–03 found and adds no new design reading. The worked redraw is based on the bubbletea sources read for study 02.</p>
+</section>
+
+</div>
