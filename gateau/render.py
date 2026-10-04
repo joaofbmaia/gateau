@@ -65,6 +65,7 @@ class Layout:
     col: dict[str, int] = field(default_factory=dict)
     bx: dict[str, float] = field(default_factory=dict)        # boundary → x
     pills: dict[str, tuple[float, float, float]] = field(default_factory=dict)   # state → (x0, x1, y)
+    spans: dict[str, tuple[float, Optional[float]]] = field(default_factory=dict)          # row key → live (x0, x1)
 
 
 # ── helpers ───────────────────────────────────────────────────────────────
@@ -221,6 +222,13 @@ def carrier_order(d: Design, col: dict[str, int]) -> list[str]:
     return out
 
 
+def _cover(bx: Box, y: float) -> None:
+    if bx.kind == "stage":
+        bx.y0, bx.y1 = min(bx.y0, y - 11), max(bx.y1, y + 11)
+    else:                                    # trapezoids: keep the row clear of the slanted corner
+        bx.y0, bx.y1 = min(bx.y0, y - 11 - INSET), max(bx.y1, y + 11 + INSET)
+
+
 # ── layout ────────────────────────────────────────────────────────────────
 
 def layout(d: Design) -> Layout:
@@ -321,6 +329,28 @@ def layout(d: Design) -> Layout:
             y0, y1 = (y0 + y1) / 2 - 17, (y0 + y1) / 2 + 17
         kind = "stage" if isinstance(it, Stage) else ("route" if isinstance(it, Route) else "merge")
         L.boxes[n] = Box(n, cx - BOX_W / 2, y0, y1, kind, min(band_index[b] for b in bands_touched))
+
+    # Every live row must start on a box and end on a box or on its read dot. Rows are placed
+    # by column, boxes by the rows they name, so reconcile the two here: an end that the item
+    # reads from outside its box stops at the dot on the read connector; anything else grows
+    # the box to cover the row.
+    items = dict(_items(d))
+    for b in L.bands:
+        for r in b.rows:
+            start, end = _row_owners(d, L, items, touches, r)
+            x0 = X0 if start is None else _cx(L, start) + BOX_W / 2
+            x1 = None                        # the right edge, resolved once the width is final
+            if start is not None:
+                _cover(L.boxes[start], r.y)
+            if end is not None:
+                bx = L.boxes[end]
+                read = {f.path for f in r.fields} & touches[end]["reads"]
+                if read and not bx.y0 <= r.y <= bx.y1:
+                    x1 = _cx(L, end) - 14
+                else:
+                    _cover(bx, r.y)
+                    x1 = _cx(L, end) - BOX_W / 2
+            L.spans[r.key] = (x0, x1)
 
     # boundaries
     outs, ins = {}, {}
@@ -650,26 +680,30 @@ def _moves_out(d: Design, item, carrier: str) -> bool:
     return False
 
 
-def _live_span(d: Design, L: Layout, items, touches, r: Row) -> tuple[float, float]:
-    """A row is live from the item that creates it (or the first that produces its carrier) to the item
-    that consumes it, or to the last item touching its carrier when that item moves the carrier's items
-    elsewhere; otherwise to the right edge (the row leaves the design)."""
+def _row_owners(d: Design, L: Layout, items, touches, r: Row) -> tuple[Optional[str], Optional[str]]:
+    """The items a row starts from and ends at; None means the left or right edge of the drawing.
+    A row starts at the item that creates it, or else at the first producer of its carrier. It ends
+    at the item that consumes it, or at the last item touching its carrier if that item moves the
+    carrier's items elsewhere; otherwise it leaves the design at the right edge."""
     paths = {f.path for f in r.fields}
     carrier = r.fields[0].carrier if r.fields else r.key.rstrip(":")
-    starts = [_cx(L, n) + BOX_W / 2 for n, t in touches.items() if paths & t["creates"]]
-    if not starts:
-        prods = _producers(d, carrier)
-        starts = [_cx(L, prods[0]) + BOX_W / 2] if prods else [X0]
-    x0 = min(starts)
-    ends = [_cx(L, n) - BOX_W / 2 for n, t in touches.items() if paths & t["consumes"]]
+    makers = [n for n, t in touches.items() if paths & t["creates"]] or _producers(d, carrier)
+    start = min(makers, key=lambda n: L.col[n]) if makers else None
+    after = (lambda n: start is None or L.col[n] > L.col[start])
+    ends = [n for n, t in touches.items() if paths & t["consumes"] and after(n)]
     last = None
     for n, it in items.items():
         if carrier in _carriers_touched(d, it) or _moves_out(d, it, carrier):
             last = n
-    if last is not None and _moves_out(d, items[last], carrier):
-        ends.append(_cx(L, last) - BOX_W / 2)
-    x1 = min([e for e in ends if e > x0], default=L.width - 22)
-    return x0, x1
+    if last is not None and _moves_out(d, items[last], carrier) and after(last):
+        ends.append(last)
+    end = min(ends, key=lambda n: L.col[n]) if ends else None
+    return start, end
+
+
+def _live_span(d: Design, L: Layout, items, touches, r: Row) -> tuple[float, float]:
+    x0, x1 = L.spans[r.key]
+    return x0, (L.width - 22 if x1 is None else x1)
 
 
 def _rigid_spans(d: Design, L: Layout, carrier: str, live_end: float):

@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import pytest
 
 from gateau import run_all
-from gateau.render import BOX_W, carrier_order, layout, render_html, render_svg
+from gateau.render import BOX_W, X0, carrier_order, layout, render_html, render_svg
 
 from test_examples import EXAMPLES, load
 
@@ -125,3 +125,42 @@ def test_html_page_and_cli(tmp_path, capsys):
     assert "<svg" in out.read_text()
     with pytest.raises(SystemExit):
         main(["gateau", str(EXAMPLES / "mstrx.py"), "--mode", "nope"])
+
+
+def _anchors(root):
+    """Vertical edges a row may end on: (x, y_lo, y_hi) for each box side, plus dots as points."""
+    edges = []
+    for g in root.iterfind(".//s:g[@data-item]", NS):
+        shape = g[0]
+        if shape.tag.endswith("rect"):
+            x, y, w, h = (float(shape.get(k)) for k in ("x", "y", "width", "height"))
+            edges += [(x, y, y + h), (x + w, y, y + h)]
+        else:
+            pts = [tuple(map(float, p.split(","))) for p in shape.get("points").split()]
+            for xa in {p[0] for p in pts}:
+                ys = [p[1] for p in pts if p[0] == xa]
+                edges.append((xa, min(ys), max(ys)))
+    dots = [(float(c.get("cx")), float(c.get("cy"))) for c in root.iterfind(".//s:circle[@class='dot']", NS)]
+    return edges, dots
+
+
+@pytest.mark.parametrize("name", NAMES)
+def test_no_row_starts_or_ends_in_mid_air(name):
+    """Every live row starts on a box side or the left margin, and ends on a box side, its read dot,
+    or the right margin."""
+    _, root = svg(name)
+    width = float(root.get("width"))
+    edges, dots = _anchors(root)
+
+    def anchored(x, y):
+        return (any(abs(x - ex) < 0.6 and lo - 0.5 <= y <= hi + 0.5 for ex, lo, hi in edges)
+                or any(abs(x - dx) < 0.6 and abs(y - dy) < 0.6 for dx, dy in dots))
+    loose = []
+    for ln in root.iterfind(".//s:line[@data-row]", NS):
+        y = float(ln.get("y1"))
+        x1, x2 = float(ln.get("x1")), float(ln.get("x2"))
+        if not (x1 <= X0 or anchored(x1, y)):
+            loose.append(f"{ln.get('data-row')} starts at {x1:.0f}")
+        if not (x2 >= width - 22 or anchored(x2, y)):
+            loose.append(f"{ln.get('data-row')} ends at {x2:.0f}")
+    assert not loose
