@@ -21,6 +21,7 @@ ROW_H, BAND_HEAD, BAND_PAD, BAND_GAP = 24, 20, 10, 16
 PILL_H, PILL_GAP, LANE_H = 18, 8, 22
 READ_X, TAP_X, EMIT_X = -14, -2, 22  # x slots in a column, from its centre: read connector, state taps, emits
 DOT_R = 3.2
+BOX_CHAR_W = 7.0                  # advance of one box-label character (11.5 px bold monospace)
 STUB_H = 13                       # height of a state stub
 INSET = 12                        # slant of the route / merge trapezoids
 MAX_ROWS = 18                     # collapse groups when a view would exceed this many rows
@@ -599,7 +600,9 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
         if bx.kind == "merge" and _merge_on_dst(d, it):
             text = f'<text class="t-sub" x="{bx.x+58}" y="{ty+14}" style="text-anchor:start;fill:var(--fg)">{_t(n)} · {_t(it.policy)}</text>'
         else:
-            text = f'<text class="t-box" x="{bx.x+BOX_W/2}" y="{ty - (6 if sub else 0)}">{_t(label)}</text>'
+            fit = (f' textLength="{BOX_W - 8}" lengthAdjust="spacingAndGlyphs"'
+                   if len(label) * BOX_CHAR_W > BOX_W - 8 else "")      # squeeze a label that would spill out
+            text = f'<text class="t-box" x="{bx.x+BOX_W/2}" y="{ty - (6 if sub else 0)}"{fit}>{_t(label)}</text>'
             if sub:
                 text += f'<text class="t-sub" x="{bx.x+BOX_W/2}" y="{ty+8}">{_t(sub)}</text>'
 

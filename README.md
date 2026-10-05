@@ -9,7 +9,16 @@ This package holds the model, the checks, and a renderer for the bus view.
 
 ## Models
 
-Models are plain Python. A model file defines `build() -> Design`:
+Models are plain Python. To write one for your own design:
+
+- **Guide:** [`docs/authoring.md`](docs/authoring.md) walks through the method using the Ethernet
+  model, with the RTL file each fact came from.
+- **Template:** copy [`examples/template.py`](examples/template.py), a runnable starting point.
+- **With Claude Code:** the repo skill [`.claude/skills/gateau-model`](.claude/skills/gateau-model/SKILL.md)
+  gives an agent the gateau API and check semantics. Point the agent at your RTL and docs and ask
+  it to model the design.
+
+A model file defines `build() -> Design`:
 
 ```python
 from gateau import Design

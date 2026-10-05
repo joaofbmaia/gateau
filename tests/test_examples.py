@@ -115,3 +115,11 @@ def test_ethernet_buffer_mutations_fail(mutate, expect):
     d = mod.build()
     mutate(d)
     assert expect in table(run_all(d, mod.OUTSIDE))
+
+
+def test_template_is_a_clean_starting_point():
+    """examples/template.py is copied to start new models: it must validate, render and pass."""
+    assert table(findings("template")) == {
+        ("join", "lat(DLY, CRC)", "pass"),
+        ("rigid edge", "FIFO", "pass"),
+    }

@@ -212,6 +212,7 @@ def test_unread_config_field_is_flagged():
     lambda d: d.stage("Y", "c", state_reads=["cfg.nope"]),
     lambda d: d.stage("Y", "nowhere"),
     lambda d: d.stage("Y", "c", between=("b0", "b9")),
+    lambda d: d.merge("M", [MergeInput("c")], "c", "round-robin", "c"),      # a merge input must be a stage
 ])
 def test_validate_rejects_undeclared_references(mutate):
     d = Design("v")

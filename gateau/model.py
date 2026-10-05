@@ -190,7 +190,7 @@ class Route:
 
 @dataclass
 class MergeInput:
-    source: str                           # stage or carrier feeding the merge
+    source: str                           # the stage feeding the merge
     replicate: Optional[str] = None       # one input per value of this axis
     msg_id: Optional[str] = None
 

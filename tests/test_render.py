@@ -256,3 +256,14 @@ def test_badge_status_prefers_verdicts_over_info():
     root = ET.fromstring(render_svg(d, fs, overlay="checks"))
     route = [g for g in root.iterfind(".//s:g[@data-findings='3']", NS)]
     assert [g[0].get("class") for g in route] == ["badge-pass"]
+
+
+@pytest.mark.parametrize("name", NAMES + ["template"])
+def test_box_labels_fit_their_boxes(name):
+    """A label that would be wider than its box is squeezed to fit, never left spilling over the edge."""
+    from gateau.render import BOX_CHAR_W
+    _, root = svg(name)
+    for g in root.iterfind(".//s:g[@data-item]", NS):
+        for t in g.iterfind("s:text[@class='t-box']", NS):
+            fits = len(t.text) * BOX_CHAR_W <= BOX_W - 8
+            assert fits or float(t.get("textLength")) <= BOX_W - 8, t.text

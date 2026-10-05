@@ -72,6 +72,9 @@ def validate(d: Design, outside: tuple[str, ...] = ()) -> None:
             need(t.state in d.states, f"route {r.name}: unknown state {t.state}")
     for m in d.merges.values():
         need(m.dst in d.carriers, f"merge {m.name}: unknown carrier {m.dst}")
+        for i in m.inputs:
+            need(i.source in d.stages, f"merge {m.name}: input {i.source} must be a stage")
+            need(i.replicate is None or i.replicate in d.axes, f"merge {m.name}: unknown axis {i.replicate}")
         need(m.granularity in d.carriers, f"merge {m.name}: granularity must name a carrier")
 
 
