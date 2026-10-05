@@ -70,13 +70,15 @@ placed by hand.
 - **State:** shown as pills above the bands. Out-of-flow reads from deep bands are drawn
   as stubs.
 - **Feedback:** drawn in the gutter, shortest span nearest the bands.
-- **Badges:** come from the check findings.
+- **Checks:** only in the checks view (below), so the other views stay plain drawings.
 
 Two options change the drawing without moving the layout:
 
 - `--mode` fades whatever is inactive in that mode.
-- `--overlay cost` scales line weight by bits × copies. `--overlay checks` fades
-  everything except the badges and the findings list.
+- `--overlay cost` scales line weight by bits × copies.
+- `--overlay checks` is the only view with check results. It puts one badge on each subject
+  (worst status, a count when there are several, every message in the tooltip) and lists every
+  finding under the figure. The drawing keeps full contrast.
 
 ## Examples and tests
 

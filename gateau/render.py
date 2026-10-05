@@ -436,7 +436,9 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
     band_index = {b.carrier: i for i, b in enumerate(L.bands)}
 
     fy = L.height
-    fl = [f for f in (findings or []) if f.status != "pass" or checks]
+    # checks are an analysis of the drawing, not part of it: only the checks view shows them
+    shown = list(findings or []) if checks else []
+    fl = shown
     if fl:
         fy += 30 + len(fl) * 18
     a(f'<svg xmlns="http://www.w3.org/2000/svg" class="gateau{" ov-checks" if checks else ""}" '
@@ -629,7 +631,7 @@ def render_svg(d: Design, findings: Optional[list[Finding]] = None, mode: Option
     o.extend(labels)
 
     # finding badges on their subjects, and the list below the gutter
-    if findings is not None:
+    if shown:
         # one badge per subject: the worst status, a count when there are several, all of them in the tooltip
         groups: dict[tuple[float, float], list[Finding]] = {}
         for f in findings:
@@ -813,7 +815,6 @@ svg.gateau text { fill:var(--fg); }
 .gateau .badge-unchecked { fill:var(--accent-soft); stroke:var(--accent); } .gateau .badge-info { fill:var(--soft); stroke:var(--muted); }
 .gateau text.st-pass { fill:var(--ok); } .gateau text.st-fail { fill:var(--bad); } .gateau text.st-unchecked { fill:var(--accent); }
 .gateau .off { opacity:.18; }
-svg.gateau.ov-checks > *:not(.chk):not(defs):not(.chk-state) { opacity:.25; }
 """
 
 

@@ -97,15 +97,29 @@ def test_mode_fades_inactive_items():
     assert root.find(".//s:g[@data-item='MSA']", NS).get("class") is None
 
 
-def test_findings_become_badges_and_a_list():
-    _, root = svg("dprx")
+def test_checks_show_only_in_the_checks_view():
+    """Badges and the findings list belong to the checks view; every other view is the plain drawing."""
+    d, fs = model("dprx")
+    for kw in ({}, {"mode": "training"}, {"overlay": "cost"}):
+        root = ET.fromstring(render_svg(d, fs, **kw))
+        assert root.find(".//s:g[@class='chk']", NS) is None, kw
+        assert "findings" not in " ".join(t.text or "" for t in root.iterfind(".//s:text", NS)), kw
+    _, root = svg("dprx", overlay="checks")
     fails = root.findall(".//s:circle[@class='badge-fail']", NS)
     assert len(fails) == 1
     text = " ".join(t.text or "" for t in root.iterfind(".//s:text", NS))
-    assert "cfg.scrm_en" in text
-    _, root = svg("rocket")                     # all pass: badges, but no list
-    assert root.findall(".//s:circle[@class='badge-pass']", NS)
-    assert "findings" not in " ".join(t.text or "" for t in root.iterfind(".//s:text", NS))
+    assert "cfg.scrm_en" in text and "findings" in text
+    listed = [t for t in root.iterfind(".//s:text", NS) if (t.get("class") or "").startswith("t-w st-")]
+    assert len(listed) == len(fs)                # the checks view lists every finding, passes included
+
+
+def test_checks_view_is_not_faded():
+    """The checks view keeps the drawing at full contrast: badges carry their own colour."""
+    d, fs = model("mstrx")
+    page = render_html(d, fs, overlay="checks")
+    assert "ov-checks >" not in page and "ov-checks>" not in page
+    root = ET.fromstring(render_svg(d, fs, overlay="checks"))
+    assert not [g for g in root.iter(f"{{{NS['s']}}}g") if g.get("class") == "off"]
 
 
 def test_cost_overlay_scales_rows_by_bits():
@@ -201,7 +215,7 @@ def test_stubs_sit_in_free_space(name):
 def test_no_connector_runs_through_a_badge(name):
     """Check badges sit on box corners; no tap, read or emit connector may touch one."""
     d, fs = model(name)
-    root = ET.fromstring(render_svg(d, fs))
+    root = ET.fromstring(render_svg(d, fs, overlay="checks"))
     badges = [(float(c.get("cx")), float(c.get("cy")), float(c.get("r")))
               for c in root.iter(f"{{{NS['s']}}}circle") if (c.get("class") or "").startswith("badge-")]
     hits = []
@@ -220,7 +234,7 @@ def test_one_badge_per_subject_covers_every_finding(name):
     """Badges never stack: a subject with several findings gets one badge showing the worst status and
     a count, and every finding still reaches a badge (or the list) and its tooltip."""
     d, fs = model(name)
-    root = ET.fromstring(render_svg(d, fs))
+    root = ET.fromstring(render_svg(d, fs, overlay="checks"))
     groups = [g for g in root.iterfind(".//s:g[@data-findings]", NS)]
     spots = [(float(g[0].get("cx")), float(g[0].get("cy"))) for g in groups]
     assert len(spots) == len(set(spots))
@@ -239,6 +253,6 @@ def test_one_badge_per_subject_covers_every_finding(name):
 def test_badge_status_prefers_verdicts_over_info():
     """ROUTE has two passes and a cost note: its badge is a pass, not the info dot."""
     d, fs = model("mstrx")
-    root = ET.fromstring(render_svg(d, fs))
+    root = ET.fromstring(render_svg(d, fs, overlay="checks"))
     route = [g for g in root.iterfind(".//s:g[@data-findings='3']", NS)]
     assert [g[0].get("class") for g in route] == ["badge-pass"]
